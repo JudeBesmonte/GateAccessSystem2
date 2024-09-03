@@ -31,8 +31,15 @@ namespace GateAccessSystem2
             Label label2 = new Label(); 
             label2.Location = new Point(20, 20);
             tabPage2.Controls.Add(label2);
+            //aaaaaaaaaaaaaaaaaaaaaaaa
+            //hehehehehehe
+            //hehehehehehe
+            //hehehehehehe
+            //hehehehehehe
+            //hehehehehehe
+            //hehehehehehe
 
-  
+
         }
     }
 }
