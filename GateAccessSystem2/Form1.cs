@@ -11,7 +11,7 @@ using Tesseract;
 using Emgu.CV.CvEnum;
 using System.Threading.Tasks;
 using System.Net;
-
+using Python.Runtime;
 
 namespace GateAccessSystem2
 {
@@ -45,9 +45,9 @@ namespace GateAccessSystem2
             label2.Location = new Point(20, 20);
             tabPage2.Controls.Add(label2);
 
-           
+
         }
-        
+
 
         private void InitializeOCR()
         {
@@ -89,8 +89,6 @@ namespace GateAccessSystem2
             try
             {
                 Bitmap frame = (Bitmap)eventArgs.Frame.Clone();
-
-                ProcessFrameForOCR(frame);
 
                 if (DL_pictureBox.InvokeRequired)
                 {
@@ -139,7 +137,7 @@ namespace GateAccessSystem2
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
-            StopCamera(); 
+            StopCamera();
 
             if (ocrEngine != null)
             {
@@ -227,11 +225,11 @@ namespace GateAccessSystem2
                     }
                 }
 
-                StartCamera();
+                StartCamera(); // Start the camera when the switch is toggled on
             }
             else
             {
-                StopCamera();
+                StopCamera(); // Stop the camera when the switch is toggled off
                 DL_pictureBox.Visible = false;
             }
         }
@@ -247,7 +245,7 @@ namespace GateAccessSystem2
                 {
                     string filePath = openFileDialog.FileName;
                     LP_pictureBox.Image = Image.FromFile(filePath);
-                    LP_pictureBox.Tag = filePath; 
+                    LP_pictureBox.Tag = filePath;
                 }
             }
         }
@@ -256,10 +254,10 @@ namespace GateAccessSystem2
         {
             try
             {
-                
+
                 if (LP_pictureBox.Image != null)
                 {
-                    
+
                     Bitmap bitmap = new Bitmap(LP_pictureBox.Image);
 
                     // Perform OCR on the image
@@ -287,6 +285,45 @@ namespace GateAccessSystem2
             catch (Exception ex)
             {
                 MessageBox.Show($"Error during OCR processing: {ex.Message}\n\nStack Trace:\n{ex.StackTrace}");
+            }
+        }
+        private void RunYOLODetection(string imagePath)
+        {
+            try
+            {
+                using (Py.GIL())
+                {
+                    dynamic yoloScript = Py.Import("yolo_license_plate_detection");
+                    dynamic results = yoloScript.detect_license_plate(imagePath);
+
+                    // Process and display the results as needed
+                    MessageBox.Show(results.ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error during YOLO detection: {ex.Message}");
+            }
+        }
+
+        private void btnCapture_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (DL_pictureBox.Image != null)
+                {
+                    Bitmap capturedFrame = new Bitmap(DL_pictureBox.Image);
+
+                    ProcessFrameForOCR(capturedFrame);
+                }
+                else
+                {
+                    MessageBox.Show("No image found. Please make sure the camera is on.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error during capture and OCR processing: {ex.Message}\n\nStack Trace:\n{ex.StackTrace}");
             }
         }
     }
