@@ -12,6 +12,7 @@ using Emgu.CV.CvEnum;
 using System.Threading.Tasks;
 using System.Net;
 using Python.Runtime;
+using System.Text.RegularExpressions;
 
 namespace GateAccessSystem2
 {
@@ -21,10 +22,12 @@ namespace GateAccessSystem2
         private VideoCaptureDevice videoSource;
         private TesseractEngine ocrEngine;
 
+       
         public Form1()
         {
             InitializeComponent();
             InitializeOCR();
+            
 
             var materialSkinManager = MaterialSkinManager.Instance;
             materialSkinManager.AddFormToManage(this);
@@ -234,6 +237,8 @@ namespace GateAccessSystem2
             }
         }
 
+        
+
         private void btn_browse_Click(object sender, EventArgs e)
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
@@ -254,28 +259,23 @@ namespace GateAccessSystem2
         {
             try
             {
-
                 if (LP_pictureBox.Image != null)
                 {
-
                     Bitmap bitmap = new Bitmap(LP_pictureBox.Image);
 
                     // Perform OCR on the image
-                    using (var img = bitmap.ToImage<Bgr, byte>())
-                    {
-                        var gray = img.Convert<Gray, byte>();
-                        var threshold = gray.ThresholdBinary(new Gray(100), new Gray(255));
+                    string rawText = PerformOCR(bitmap);
 
-                        using (var pix = PixConverter.ToPix(threshold.ToBitmap()))
-                        {
-                            using (var result = ocrEngine.Process(pix))
-                            {
-                                string text = result.GetText().Trim();
+                    // Clean the OCR output by removing unnecessary special characters
+                    rawText = CleanText(rawText);
 
-                                materialMultiLineTextBox21.Invoke(new Action(() => materialMultiLineTextBox21.Text = text));
-                            }
-                        }
-                    }
+                    // Extract specific fields from the text
+                    var licenseInfo = ExtractLicenseInfo(rawText);
+
+                    // Update the text boxes with the extracted information
+                    UpdateTextBoxes(licenseInfo);
+
+                    MessageBox.Show(rawText);
                 }
                 else
                 {
@@ -287,6 +287,143 @@ namespace GateAccessSystem2
                 MessageBox.Show($"Error during OCR processing: {ex.Message}\n\nStack Trace:\n{ex.StackTrace}");
             }
         }
+        private void UpdateTextBoxes(LicenseInfo licenseInfo)
+        {
+            // Update each text box with corresponding data
+            foreach (Control ctrl in Controls)
+            {
+                if (ctrl is MaterialTextBox textBox)
+                {
+                    int index = int.Parse(textBox.Name.Replace("materialTextBox", ""));
+                    switch (index)
+                    {
+                        case 0:
+                            textBox.Text = licenseInfo.LastName;
+                            break;
+                        case 1:
+                            textBox.Text = licenseInfo.FirstName;
+                            break;
+                        case 2:
+                            textBox.Text = licenseInfo.MiddleName;
+                            break;
+                        case 3:
+                            textBox.Text = licenseInfo.Nationality;
+                            break;
+                        case 4:
+                            textBox.Text = licenseInfo.Sex;
+                            break;
+                        case 5:
+                            textBox.Text = licenseInfo.DateOfBirth;
+                            break;
+                        case 6:
+                            textBox.Text = licenseInfo.Weight;
+                            break;
+                        case 7:
+                            textBox.Text = licenseInfo.Height;
+                            break;
+                        case 8:
+                            textBox.Text = licenseInfo.Address;
+                            break;
+                        case 9:
+                            textBox.Text = licenseInfo.LicenseNo;
+                            break;
+                        case 10:
+                            textBox.Text = licenseInfo.ExpirationDate;
+                            break;
+                        case 11:
+                            textBox.Text = licenseInfo.AgencyCode;
+                            break;
+                        case 12:
+                            textBox.Text = licenseInfo.BloodType;
+                            break;
+                        case 13:
+                            textBox.Text = licenseInfo.EyeColor;
+                            break;
+                        case 14:
+                            textBox.Text = licenseInfo.Restrictions;
+                            break;
+                        case 15:
+                            textBox.Text = licenseInfo.Conditions;
+                            break;
+                    }
+                }
+            }
+        }
+        private string CleanText(string input)
+        {
+            return System.Text.RegularExpressions.Regex.Replace(input, @"[^a-zA-Z0-9\s:/,-]", string.Empty);
+        }
+        //hereeeeeeeeeeeeeeeeeee
+        private LicenseInfo ExtractLicenseInfo(string text)
+        {
+            LicenseInfo info = new LicenseInfo();
+
+            // Use regular expressions or string manipulation to extract specific fields
+            info.LastName = ExtractField(text, @"Last Name:\s*(\w+)");
+            info.FirstName = ExtractField(text, @"First Name:\s*(\w+)");
+            info.MiddleName = ExtractField(text, @"Middle Name:\s*(\w+)");
+            info.Nationality = ExtractField(text, @"Nationality:\s*(\w+)");
+            info.Sex = ExtractField(text, @"Sex:\s*(M|F)");
+            info.DateOfBirth = ExtractField(text, @"Date of Birth:\s*(\d{4}/\d{2}/\d{2})");
+            info.Weight = ExtractField(text, @"Weight:\s*(\d+)");
+            info.Height = ExtractField(text, @"Height:\s*(\d+)");
+            info.Address = ExtractField(text, @"Address:\s*(.+)");
+            info.LicenseNo = ExtractField(text, @"License No.:\s*(\w+)");
+            info.ExpirationDate = ExtractField(text, @"Expiration Date:\s*(\d{4}/\d{2}/\d{2})");
+            info.AgencyCode = ExtractField(text, @"Agency Code:\s*(\w+)");
+            info.BloodType = ExtractField(text, @"Blood Type:\s*(\w+)");
+            info.EyeColor = ExtractField(text, @"Eye Color:\s*(\w+)");
+            info.Restrictions = ExtractField(text, @"Restrictions:\s*(.+)");
+            info.Conditions = ExtractField(text, @"Conditions:\s*(.+)");
+
+            return info;
+        }
+
+        // Helper method to extract specific fields using regex
+        private string ExtractField(string text, string pattern)
+        {
+            var match = System.Text.RegularExpressions.Regex.Match(text, pattern);
+            return match.Success ? match.Groups[1].Value.Trim() : string.Empty;
+        }
+
+        // Class to hold the driver's license information
+        class LicenseInfo
+        {
+            public string LastName { get; set; }
+            public string FirstName { get; set; }
+            public string MiddleName { get; set; }
+            public string Nationality { get; set; }
+            public string Sex { get; set; }
+            public string DateOfBirth { get; set; }
+            public string Weight { get; set; }
+            public string Height { get; set; }
+            public string Address { get; set; }
+            public string LicenseNo { get; set; }
+            public string ExpirationDate { get; set; }
+            public string AgencyCode { get; set; }
+            public string BloodType { get; set; }
+            public string EyeColor { get; set; }
+            public string Restrictions { get; set; }
+            public string Conditions { get; set; }
+        }
+
+        private string PerformOCR(Bitmap bitmap)
+        {
+            using (var img = bitmap.ToImage<Bgr, byte>())
+            {
+                var gray = img.Convert<Gray, byte>();
+                var threshold = gray.ThresholdBinary(new Gray(100), new Gray(255));
+
+                using (var pix = PixConverter.ToPix(threshold.ToBitmap()))
+                {
+                    using (var result = ocrEngine.Process(pix))
+                    {
+                        return result.GetText().Trim();
+                    }
+                }
+            }
+        }
+        
         private void RunYOLODetection(string imagePath)
         {
             try
@@ -306,14 +443,19 @@ namespace GateAccessSystem2
             }
         }
 
-        private void btnCapture_Click(object sender, EventArgs e)
+        private async void btnCapture_Click(object sender, EventArgs e)
         {
             try
             {
                 if (DL_pictureBox.Image != null)
                 {
+                    // Capture the current frame displayed in DL_pictureBox
                     Bitmap capturedFrame = new Bitmap(DL_pictureBox.Image);
 
+                    // Display the captured frame in pictureBoxFrame
+                    pictureBoxFrame.Image = new Bitmap(capturedFrame);
+
+                    // Process the frame for OCR
                     ProcessFrameForOCR(capturedFrame);
                 }
                 else
