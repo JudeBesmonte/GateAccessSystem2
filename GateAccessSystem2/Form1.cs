@@ -13,11 +13,13 @@ using System.Threading.Tasks;
 using System.Net;
 using Python.Runtime;
 using System.Text.RegularExpressions;
+using MySql.Data.MySqlClient;
 
 namespace GateAccessSystem2
 {
     public partial class Form1 : MaterialForm
     {
+        private string connectionString = "server=localhost;database=thesis;user=root;password=parasathesis;";
         private FilterInfoCollection videoDevices;
         private VideoCaptureDevice videoSource;
         private TesseractEngine ocrEngine;
@@ -431,7 +433,64 @@ namespace GateAccessSystem2
                 MessageBox.Show($"Error during capture and OCR processing: {ex.Message}\n\nStack Trace:\n{ex.StackTrace}");
             }
         }
+
+        private void btnRecord_Click(object sender, EventArgs e)
+        {
+            string connStr = "server=localhost;user=root;database=thesis;password=parasathesis;";
+
+            using (MySqlConnection conn = new MySqlConnection(connStr))
+            {
+                try
+                {
+                    conn.Open();
+
+                    // SQL query to insert data into the license table
+                    string query = @"INSERT INTO license (
+                                lastname, firstname, middlename, nationality, sex, 
+                                `date of birth`, weight, height, address, 
+                                `license number`, `expiration date`, `agency code`, 
+                                `blood type`, `eye color`, restrictions, conditions
+                            ) VALUES (
+                                @lastname, @firstname, @middlename, @nationality, @sex, 
+                                @date_of_birth, @weight, @height, @address, 
+                                @license_number, @expiration_date, @agency_code, 
+                                @blood_type, @eye_color, @restrictions, @conditions
+                            )";
+
+                    // Prepare the command
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        // Set parameters from the MaterialTextBoxes
+                        cmd.Parameters.AddWithValue("@lastname", materialTextBox1.Text);
+                        cmd.Parameters.AddWithValue("@firstname", materialTextBox2.Text);
+                        cmd.Parameters.AddWithValue("@middlename", materialTextBox3.Text);
+                        cmd.Parameters.AddWithValue("@nationality", materialTextBox4.Text);
+                        cmd.Parameters.AddWithValue("@sex", materialTextBox5.Text);
+                        cmd.Parameters.AddWithValue("@date_of_birth", DateTime.Parse(materialTextBox6.Text));
+                        cmd.Parameters.AddWithValue("@weight", float.Parse(materialTextBox7.Text));
+                        cmd.Parameters.AddWithValue("@height", float.Parse(materialTextBox8.Text));
+                        cmd.Parameters.AddWithValue("@address", materialTextBox9.Text);
+                        cmd.Parameters.AddWithValue("@license_number", materialTextBox10.Text);
+                        cmd.Parameters.AddWithValue("@expiration_date", DateTime.Parse(materialTextBox11.Text));
+                        cmd.Parameters.AddWithValue("@agency_code", materialTextBox12.Text);
+                        cmd.Parameters.AddWithValue("@blood_type", materialTextBox13.Text);
+                        cmd.Parameters.AddWithValue("@eye_color", materialTextBox14.Text);
+                        cmd.Parameters.AddWithValue("@restrictions", materialTextBox15.Text);
+                        cmd.Parameters.AddWithValue("@conditions", materialTextBox16.Text);
+
+                        // Execute the insert command
+                        cmd.ExecuteNonQuery();
+
+                        MessageBox.Show("Data successfully added to the database.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error: {ex.Message}");
+                }
+            }
+        }
     }
 }
-
+   
 
