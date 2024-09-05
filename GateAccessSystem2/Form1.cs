@@ -13,6 +13,8 @@ using System.Threading.Tasks;
 using System.Net;
 using Python.Runtime;
 using System.Text.RegularExpressions;
+using GateAccessSystem2.data;
+using MySql.Data.MySqlClient;
 
 namespace GateAccessSystem2
 {
