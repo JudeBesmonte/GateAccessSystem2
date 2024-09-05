@@ -13,8 +13,6 @@ using System.Threading.Tasks;
 using System.Net;
 using Python.Runtime;
 using System.Text.RegularExpressions;
-using GateAccessSystem2.data;
-using MySql.Data.MySqlClient;
 
 namespace GateAccessSystem2
 {
@@ -266,18 +264,25 @@ namespace GateAccessSystem2
                     Bitmap bitmap = new Bitmap(LP_pictureBox.Image);
 
                     // Perform OCR on the image
-                    string rawText = PerformOCR(bitmap);
+                    using (var img = bitmap.ToImage<Bgr, byte>())
+                    {
+                        var gray = img.Convert<Gray, byte>();
+                        var threshold = gray.ThresholdBinary(new Gray(100), new Gray(255));
 
-                    // Clean the OCR output by removing unnecessary special characters
-                    rawText = CleanText(rawText);
+                        using (var pix = PixConverter.ToPix(threshold.ToBitmap()))
+                        {
+                            using (var result = ocrEngine.Process(pix))
+                            {
+                                string text = result.GetText().Trim();
 
-                    // Extract specific fields from the text
-                    var licenseInfo = ExtractLicenseInfo(rawText);
+                                // Display the full text in the multi-line text box
+                                MessageBox.Show(text, "Extracted Text");
 
-                    // Update the text boxes with the extracted information
-                    UpdateTextBoxes(licenseInfo);
-
-                    MessageBox.Show(rawText);
+                                // Clean and process the text
+                                CleanAndProcessText(text);
+                            }
+                        }
+                    }
                 }
                 else
                 {
@@ -289,125 +294,81 @@ namespace GateAccessSystem2
                 MessageBox.Show($"Error during OCR processing: {ex.Message}\n\nStack Trace:\n{ex.StackTrace}");
             }
         }
-        private void UpdateTextBoxes(LicenseInfo licenseInfo)
+        private void CleanAndProcessText(string rawText)
         {
-            // Update each text box with corresponding data
-            foreach (Control ctrl in Controls)
+            try
             {
-                if (ctrl is MaterialTextBox textBox)
+                // Define the field names and headings to be removed
+                var headings = new[]
                 {
-                    int index = int.Parse(textBox.Name.Replace("materialTextBox", ""));
-                    switch (index)
+            "REPUBLIC OF THE PHILIPPINES", "DEPARTMENT OF TRANSPORTATION",
+            "LAND TRANSPORTATION OFFICE", "NON-PROFESSIONAL DRIVER'S LICENSE",
+            "Last Hame. First Name. Middle Name.", "Nationality", "Sex", "Date of Sith",
+            "Weight (kg)", "Height)", "Addrass", "ene fo Expiration Date",
+            "Agency Code", "Blood lype", "Eyes Color", "COTE", "Restgctions", "Conditions"
+        };
+
+                // Remove headings and labels from the text
+                string cleanedText = rawText;
+                foreach (var heading in headings)
+                {
+                    cleanedText = cleanedText.Replace(heading, string.Empty);
+                }
+
+                // Optionally remove extra spaces and new lines
+                cleanedText = System.Text.RegularExpressions.Regex.Replace(cleanedText, @"\s+", " ").Trim();
+
+                // Define the regular expressions for each field
+                var fieldRegex = new[]
+                {
+            new { Pattern = @"([A-Za-z\s]+)", Field = materialTextBox1 }, // Last Name
+            new { Pattern = @"([A-Za-z\s]+)", Field = materialTextBox2 }, // First Name
+            new { Pattern = @"([A-Za-z\s]+)\s([A-Za-z\s]+)\s([A-Za-z\s]+)", Field = materialTextBox3 }, // Middle Name
+            new { Pattern = @"([A-Z]{3})", Field = materialTextBox4 }, // Nationality
+            new { Pattern = @"([M|F])", Field = materialTextBox5 }, // Sex
+            new { Pattern = @"(\d{4}/\d{2}/\d{2})", Field = materialTextBox6 }, // Date of Birth
+            new { Pattern = @"(\d{2})", Field = materialTextBox7 }, // Weight
+            new { Pattern = @"(\d{3})", Field = materialTextBox8 }, // Height
+            new { Pattern = @"(UNIT/HOUSE NO.\sBUILDING,\sSTREET NAME,\sBARANGAY,\sCITY/MUNICIPALITY)", Field = materialTextBox9 }, // Address
+            new { Pattern = @"(NO\d-\d{2}-\d{6})", Field = materialTextBox10 }, // License No.
+            new { Pattern = @"(\d{4}/\d{2}/\d{2})", Field = materialTextBox11 }, // Expiration Date
+            new { Pattern = @"(N\d{2})", Field = materialTextBox12 }, // Agency Code
+            new { Pattern = @"([A-Z])", Field = materialTextBox13 }, // Blood Type
+            new { Pattern = @"([A-Z]+)", Field = materialTextBox14 }, // Eye Color
+            new { Pattern = @"(\d{2})", Field = materialTextBox15 }, // Restrictions
+            new { Pattern = @"(NONE)", Field = materialTextBox16 } // Conditions
+        };
+
+                // Extract the values for each field using regular expressions
+                foreach (var field in fieldRegex)
+                {
+                    var match = System.Text.RegularExpressions.Regex.Match(cleanedText, field.Pattern);
+                    if (match.Success)
                     {
-                        case 0:
-                            textBox.Text = licenseInfo.LastName;
-                            break;
-                        case 1:
-                            textBox.Text = licenseInfo.FirstName;
-                            break;
-                        case 2:
-                            textBox.Text = licenseInfo.MiddleName;
-                            break;
-                        case 3:
-                            textBox.Text = licenseInfo.Nationality;
-                            break;
-                        case 4:
-                            textBox.Text = licenseInfo.Sex;
-                            break;
-                        case 5:
-                            textBox.Text = licenseInfo.DateOfBirth;
-                            break;
-                        case 6:
-                            textBox.Text = licenseInfo.Weight;
-                            break;
-                        case 7:
-                            textBox.Text = licenseInfo.Height;
-                            break;
-                        case 8:
-                            textBox.Text = licenseInfo.Address;
-                            break;
-                        case 9:
-                            textBox.Text = licenseInfo.LicenseNo;
-                            break;
-                        case 10:
-                            textBox.Text = licenseInfo.ExpirationDate;
-                            break;
-                        case 11:
-                            textBox.Text = licenseInfo.AgencyCode;
-                            break;
-                        case 12:
-                            textBox.Text = licenseInfo.BloodType;
-                            break;
-                        case 13:
-                            textBox.Text = licenseInfo.EyeColor;
-                            break;
-                        case 14:
-                            textBox.Text = licenseInfo.Restrictions;
-                            break;
-                        case 15:
-                            textBox.Text = licenseInfo.Conditions;
-                            break;
+                        if (field.Field == materialTextBox2)
+                        {
+                            field.Field.Text = match.Groups[1].Value.Trim() + " " + match.Groups[2].Value.Trim();
+                        }
+                        else if (field.Field == materialTextBox3)
+                        {
+                            field.Field.Text = match.Groups[3].Value.Trim();
+                        }
+                        else
+                        {
+                            field.Field.Text = match.Groups[1].Value.Trim();
+                        }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error processing cleaned text: {ex.Message}");
+            }
         }
-        private string CleanText(string input)
-        {
-            return System.Text.RegularExpressions.Regex.Replace(input, @"[^a-zA-Z0-9\s:/,-]", string.Empty);
-        }
-        //hereeeeeeeeeeeeeeeeeee
-        private LicenseInfo ExtractLicenseInfo(string text)
-        {
-            LicenseInfo info = new LicenseInfo();
-
-            // Use regular expressions or string manipulation to extract specific fields
-            info.LastName = ExtractField(text, @"Last Name:\s*(\w+)");
-            info.FirstName = ExtractField(text, @"First Name:\s*(\w+)");
-            info.MiddleName = ExtractField(text, @"Middle Name:\s*(\w+)");
-            info.Nationality = ExtractField(text, @"Nationality:\s*(\w+)");
-            info.Sex = ExtractField(text, @"Sex:\s*(M|F)");
-            info.DateOfBirth = ExtractField(text, @"Date of Birth:\s*(\d{4}/\d{2}/\d{2})");
-            info.Weight = ExtractField(text, @"Weight:\s*(\d+)");
-            info.Height = ExtractField(text, @"Height:\s*(\d+)");
-            info.Address = ExtractField(text, @"Address:\s*(.+)");
-            info.LicenseNo = ExtractField(text, @"License No.:\s*(\w+)");
-            info.ExpirationDate = ExtractField(text, @"Expiration Date:\s*(\d{4}/\d{2}/\d{2})");
-            info.AgencyCode = ExtractField(text, @"Agency Code:\s*(\w+)");
-            info.BloodType = ExtractField(text, @"Blood Type:\s*(\w+)");
-            info.EyeColor = ExtractField(text, @"Eye Color:\s*(\w+)");
-            info.Restrictions = ExtractField(text, @"Restrictions:\s*(.+)");
-            info.Conditions = ExtractField(text, @"Conditions:\s*(.+)");
-
-            return info;
-        }
+       
+     
 
         // Helper method to extract specific fields using regex
-        private string ExtractField(string text, string pattern)
-        {
-            var match = System.Text.RegularExpressions.Regex.Match(text, pattern);
-            return match.Success ? match.Groups[1].Value.Trim() : string.Empty;
-        }
-
-        // Class to hold the driver's license information
-        class LicenseInfo
-        {
-            public string LastName { get; set; }
-            public string FirstName { get; set; }
-            public string MiddleName { get; set; }
-            public string Nationality { get; set; }
-            public string Sex { get; set; }
-            public string DateOfBirth { get; set; }
-            public string Weight { get; set; }
-            public string Height { get; set; }
-            public string Address { get; set; }
-            public string LicenseNo { get; set; }
-            public string ExpirationDate { get; set; }
-            public string AgencyCode { get; set; }
-            public string BloodType { get; set; }
-            public string EyeColor { get; set; }
-            public string Restrictions { get; set; }
-            public string Conditions { get; set; }
-        }
 
         private string PerformOCR(Bitmap bitmap)
         {
