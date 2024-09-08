@@ -14,11 +14,14 @@ using System.Net;
 using Python.Runtime;
 using System.Text.RegularExpressions;
 using MySql.Data.MySqlClient;
+using System.IO.Ports;
 
 namespace GateAccessSystem2
 {
     public partial class Form1 : MaterialForm
     {
+        private SerialPort serialPort;
+        private bool isRfidOn = false;
         private string connectionString = "server=localhost;database=thesis;user=root;password=parasathesis;";
         private FilterInfoCollection videoDevices;
         private VideoCaptureDevice videoSource;
@@ -49,6 +52,16 @@ namespace GateAccessSystem2
             Label label2 = new Label();
             label2.Location = new Point(20, 20);
             tabPage2.Controls.Add(label2);
+
+            
+
+            // Initialize the SerialPort with the RFID reader's port settings
+            serialPort = new SerialPort("COM3", 9600, Parity.None, 8, StopBits.One);
+            serialPort.DataReceived += new SerialDataReceivedEventHandler(SerialPort_DataReceived);
+
+            // Initialize PictureBox visibility
+            P1_pictureBox1.Visible = false;
+            P1_pictureBox2.Visible = false;
 
 
         }
@@ -151,24 +164,63 @@ namespace GateAccessSystem2
 
             base.OnFormClosing(e);
         }
+        private void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            if (isRfidOn)
+            {
+                string data = serialPort.ReadLine();  // Reads RFID tag data
+
+                // Check if data corresponds to a valid tag
+                if (!string.IsNullOrEmpty(data))
+                {
+                    this.Invoke(new MethodInvoker(delegate
+                    {
+                        P1_pictureBox1.Visible = true;  // Show checkmark
+                        P1_pictureBox2.Visible = false; // Hide X
+                    }));
+                }
+                else
+                {
+                    this.Invoke(new MethodInvoker(delegate
+                    {
+                        P1_pictureBox1.Visible = false; // Hide checkmark
+                        P1_pictureBox2.Visible = true;  // Show X
+                    }));
+                }
+            }
+        }
 
         private void materialSwitch1_CheckedChanged(object sender, EventArgs e)
         {
             if (materialSwitch1.Checked)
             {
-                P1_pictureBox1.Visible = true;
-                P1_pictureBox2.Visible = false;
-                materialLabel1.Visible = true;
-                materialLabel1.Text = "RFID Tag is Verified!";
-                materialLabel5.Visible = false;
+                // Turn on RFID reading
+                isRfidOn = true;
+                try
+                {
+                    serialPort.Open();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error opening RFID port: " + ex.Message);
+                }
             }
             else
             {
+                // Turn off RFID reading
+                isRfidOn = false;
+                try
+                {
+                    serialPort.Close();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error closing RFID port: " + ex.Message);
+                }
+
+                // Hide both picture boxes when RFID is off
                 P1_pictureBox1.Visible = false;
-                P1_pictureBox2.Visible = true;
-                materialLabel1.Visible = true;
-                materialLabel1.Text = "RFID Tag is not Verified!";
-                materialLabel5.Visible = true;
+                P1_pictureBox2.Visible = false;
             }
         }
 
@@ -324,8 +376,10 @@ namespace GateAccessSystem2
                 var fieldRegex = new[]
                 {
             new { Pattern = @"([A-Za-z\s]+)", Field = materialTextBox1 }, // Last Name
-            new { Pattern = @"([A-Za-z\s]+)", Field = materialTextBox2 }, // First Name
+            //new { Pattern = @"([A-Za-z\s]+)", Field = materialTextBox2 }, // First Name
+            
             new { Pattern = @"([A-Za-z\s]+)\s([A-Za-z\s]+)\s([A-Za-z\s]+)", Field = materialTextBox3 }, // Middle Name
+            
             new { Pattern = @"([A-Z]{3})", Field = materialTextBox4 }, // Nationality
             new { Pattern = @"([M|F])", Field = materialTextBox5 }, // Sex
             new { Pattern = @"(\d{4}/\d{2}/\d{2})", Field = materialTextBox6 }, // Date of Birth

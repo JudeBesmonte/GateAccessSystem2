@@ -62,6 +62,7 @@
             this.materialSwitch2 = new MaterialSkin.Controls.MaterialSwitch();
             this.DL_pictureBox = new System.Windows.Forms.PictureBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.btnRecord = new MaterialSkin.Controls.MaterialButton();
             this.label16 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
@@ -118,7 +119,6 @@
             this.P1_pictureBox2 = new System.Windows.Forms.PictureBox();
             this.P1_pictureBox1 = new System.Windows.Forms.PictureBox();
             this.materialTabControl1 = new MaterialSkin.Controls.MaterialTabControl();
-            this.btnRecord = new MaterialSkin.Controls.MaterialButton();
             this.tabPage6.SuspendLayout();
             this.tabPage5.SuspendLayout();
             this.materialCard8.SuspendLayout();
@@ -165,9 +165,9 @@
             this.tabPage6.Controls.Add(this.materialLabel6);
             this.tabPage6.ImageKey = "about.png";
             this.tabPage6.Location = new System.Drawing.Point(4, 39);
-            this.tabPage6.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage6.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage6.Name = "tabPage6";
-            this.tabPage6.Size = new System.Drawing.Size(1432, 661);
+            this.tabPage6.Size = new System.Drawing.Size(1432, 660);
             this.tabPage6.TabIndex = 5;
             this.tabPage6.Text = "About";
             // 
@@ -212,9 +212,9 @@
             this.tabPage5.Controls.Add(this.materialCard5);
             this.tabPage5.ImageKey = "time.png";
             this.tabPage5.Location = new System.Drawing.Point(4, 39);
-            this.tabPage5.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage5.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Size = new System.Drawing.Size(1432, 661);
+            this.tabPage5.Size = new System.Drawing.Size(1432, 660);
             this.tabPage5.TabIndex = 4;
             this.tabPage5.Text = "Reports";
             // 
@@ -418,7 +418,7 @@
             this.tabPage4.Controls.Add(this.materialCard4);
             this.tabPage4.ImageKey = "license (1).png";
             this.tabPage4.Location = new System.Drawing.Point(4, 39);
-            this.tabPage4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage4.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Size = new System.Drawing.Size(1432, 660);
             this.tabPage4.TabIndex = 3;
@@ -600,11 +600,31 @@
             this.tabPage3.Controls.Add(this.materialCard3);
             this.tabPage3.ImageKey = "number.png";
             this.tabPage3.Location = new System.Drawing.Point(4, 39);
-            this.tabPage3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage3.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Size = new System.Drawing.Size(1432, 660);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "License Plate";
+            // 
+            // btnRecord
+            // 
+            this.btnRecord.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnRecord.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
+            this.btnRecord.Depth = 0;
+            this.btnRecord.HighEmphasis = true;
+            this.btnRecord.Icon = null;
+            this.btnRecord.Location = new System.Drawing.Point(411, 501);
+            this.btnRecord.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.btnRecord.MouseState = MaterialSkin.MouseState.HOVER;
+            this.btnRecord.Name = "btnRecord";
+            this.btnRecord.NoAccentTextColor = System.Drawing.Color.Empty;
+            this.btnRecord.Size = new System.Drawing.Size(99, 36);
+            this.btnRecord.TabIndex = 47;
+            this.btnRecord.Text = "      Record      ";
+            this.btnRecord.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
+            this.btnRecord.UseAccentColor = false;
+            this.btnRecord.UseVisualStyleBackColor = true;
+            this.btnRecord.Click += new System.EventHandler(this.btnRecord_Click);
             // 
             // label16
             // 
@@ -1158,10 +1178,10 @@
             this.tabPage2.Controls.Add(this.materialCard2);
             this.tabPage2.ImageKey = "registration.png";
             this.tabPage2.Location = new System.Drawing.Point(4, 39);
-            this.tabPage2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage2.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.tabPage2.Size = new System.Drawing.Size(1432, 661);
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(4);
+            this.tabPage2.Size = new System.Drawing.Size(1432, 660);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Registration";
             // 
@@ -1242,9 +1262,9 @@
             this.tabPage1.Controls.Add(this.materialCard1);
             this.tabPage1.ImageKey = "signal.png";
             this.tabPage1.Location = new System.Drawing.Point(4, 39);
-            this.tabPage1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage1.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(4);
             this.tabPage1.Size = new System.Drawing.Size(1432, 660);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "RFID Tag";
@@ -1343,33 +1363,13 @@
             this.materialTabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.materialTabControl1.ImageList = this.imageList1;
             this.materialTabControl1.Location = new System.Drawing.Point(4, 79);
-            this.materialTabControl1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.materialTabControl1.Margin = new System.Windows.Forms.Padding(4);
             this.materialTabControl1.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialTabControl1.Multiline = true;
             this.materialTabControl1.Name = "materialTabControl1";
             this.materialTabControl1.SelectedIndex = 0;
             this.materialTabControl1.Size = new System.Drawing.Size(1440, 703);
             this.materialTabControl1.TabIndex = 0;
-            // 
-            // btnRecord
-            // 
-            this.btnRecord.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnRecord.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
-            this.btnRecord.Depth = 0;
-            this.btnRecord.HighEmphasis = true;
-            this.btnRecord.Icon = null;
-            this.btnRecord.Location = new System.Drawing.Point(411, 501);
-            this.btnRecord.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
-            this.btnRecord.MouseState = MaterialSkin.MouseState.HOVER;
-            this.btnRecord.Name = "btnRecord";
-            this.btnRecord.NoAccentTextColor = System.Drawing.Color.Empty;
-            this.btnRecord.Size = new System.Drawing.Size(99, 36);
-            this.btnRecord.TabIndex = 47;
-            this.btnRecord.Text = "      Record      ";
-            this.btnRecord.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
-            this.btnRecord.UseAccentColor = false;
-            this.btnRecord.UseVisualStyleBackColor = true;
-            this.btnRecord.Click += new System.EventHandler(this.btnRecord_Click);
             // 
             // Form1
             // 
@@ -1380,7 +1380,7 @@
             this.DrawerIsOpen = true;
             this.DrawerShowIconsWhenHidden = true;
             this.DrawerTabControl = this.materialTabControl1;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Form1";
             this.Padding = new System.Windows.Forms.Padding(4, 79, 4, 4);
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
