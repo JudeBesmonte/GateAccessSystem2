@@ -48,6 +48,22 @@
             this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.label16 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.materialLabel10 = new MaterialSkin.Controls.MaterialLabel();
             this.materialLabel9 = new MaterialSkin.Controls.MaterialLabel();
             this.materialLabel8 = new MaterialSkin.Controls.MaterialLabel();
@@ -70,14 +86,12 @@
             this.materialTextBox1 = new MaterialSkin.Controls.MaterialTextBox();
             this.btn_extract = new MaterialSkin.Controls.MaterialButton();
             this.btn_browse = new MaterialSkin.Controls.MaterialButton();
-            this.materialButton1 = new MaterialSkin.Controls.MaterialButton();
             this.materialCard3 = new MaterialSkin.Controls.MaterialCard();
             this.LP_pictureBox = new System.Windows.Forms.PictureBox();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.materialCard9 = new MaterialSkin.Controls.MaterialCard();
             this.pictureBoxFrame = new System.Windows.Forms.PictureBox();
             this.btnCapture = new MaterialSkin.Controls.MaterialButton();
-            this.materialButton4 = new MaterialSkin.Controls.MaterialButton();
             this.DL_materialTextbox = new MaterialSkin.Controls.MaterialMultiLineTextBox2();
             this.materialCard4 = new MaterialSkin.Controls.MaterialCard();
             this.materialSwitch2 = new MaterialSkin.Controls.MaterialSwitch();
@@ -103,22 +117,9 @@
             this.tabPage6 = new System.Windows.Forms.TabPage();
             this.materialMultiLineTextBox1 = new MaterialSkin.Controls.MaterialMultiLineTextBox();
             this.materialLabel6 = new MaterialSkin.Controls.MaterialLabel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
-            this.label13 = new System.Windows.Forms.Label();
-            this.label14 = new System.Windows.Forms.Label();
-            this.label15 = new System.Windows.Forms.Label();
-            this.label16 = new System.Windows.Forms.Label();
+            this.timerRfid = new System.Windows.Forms.Timer(this.components);
+            this.btnRecord = new MaterialSkin.Controls.MaterialButton();
+            this.btnPlateRecord = new MaterialSkin.Controls.MaterialButton();
             this.materialTabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.materialCard1.SuspendLayout();
@@ -261,7 +262,6 @@
             this.P1_pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.P1_pictureBox2.TabIndex = 1;
             this.P1_pictureBox2.TabStop = false;
-            this.P1_pictureBox2.Visible = false;
             // 
             // P1_pictureBox1
             // 
@@ -357,6 +357,7 @@
             // tabPage3
             // 
             this.tabPage3.BackColor = System.Drawing.Color.White;
+            this.tabPage3.Controls.Add(this.btnRecord);
             this.tabPage3.Controls.Add(this.label16);
             this.tabPage3.Controls.Add(this.label15);
             this.tabPage3.Controls.Add(this.label14);
@@ -395,7 +396,6 @@
             this.tabPage3.Controls.Add(this.materialTextBox1);
             this.tabPage3.Controls.Add(this.btn_extract);
             this.tabPage3.Controls.Add(this.btn_browse);
-            this.tabPage3.Controls.Add(this.materialButton1);
             this.tabPage3.Controls.Add(this.materialCard3);
             this.tabPage3.ImageKey = "number.png";
             this.tabPage3.Location = new System.Drawing.Point(4, 39);
@@ -404,6 +404,150 @@
             this.tabPage3.Size = new System.Drawing.Size(1432, 660);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "License Plate";
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(212, 555);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(70, 16);
+            this.label16.TabIndex = 46;
+            this.label16.Text = "Conditions";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(54, 551);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(77, 16);
+            this.label15.TabIndex = 45;
+            this.label15.Text = "Restrictions";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(212, 469);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(66, 16);
+            this.label14.TabIndex = 44;
+            this.label14.Text = "Eye Color";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(54, 469);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(78, 16);
+            this.label13.TabIndex = 43;
+            this.label13.Text = "Blood Type";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(473, 387);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(89, 16);
+            this.label12.TabIndex = 42;
+            this.label12.Text = "Agency Code";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(264, 387);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(98, 16);
+            this.label11.TabIndex = 42;
+            this.label11.Text = "Expiration Data";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(51, 387);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(78, 16);
+            this.label10.TabIndex = 41;
+            this.label10.Text = "License No.";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(51, 304);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(58, 16);
+            this.label9.TabIndex = 40;
+            this.label9.Text = "Address";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(580, 221);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(46, 16);
+            this.label8.TabIndex = 39;
+            this.label8.Text = "Height";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(494, 221);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(49, 16);
+            this.label7.TabIndex = 38;
+            this.label7.Text = "Weight";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(339, 221);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(79, 16);
+            this.label6.TabIndex = 37;
+            this.label6.Text = "Date of Birth";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(212, 221);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(30, 16);
+            this.label5.TabIndex = 36;
+            this.label5.Text = "Sex";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(54, 221);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(70, 16);
+            this.label4.TabIndex = 35;
+            this.label4.Text = "Nationality";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(473, 135);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(88, 16);
+            this.label3.TabIndex = 34;
+            this.label3.Text = "Middle Name";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(264, 135);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(72, 16);
+            this.label2.TabIndex = 33;
+            this.label2.Text = "First Name";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(54, 138);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(72, 16);
+            this.label1.TabIndex = 32;
+            this.label1.Text = "Last Name";
             // 
             // materialLabel10
             // 
@@ -767,25 +911,6 @@
             this.btn_browse.UseVisualStyleBackColor = true;
             this.btn_browse.Click += new System.EventHandler(this.btn_browse_Click);
             // 
-            // materialButton1
-            // 
-            this.materialButton1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.materialButton1.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
-            this.materialButton1.Depth = 0;
-            this.materialButton1.HighEmphasis = true;
-            this.materialButton1.Icon = null;
-            this.materialButton1.Location = new System.Drawing.Point(423, 488);
-            this.materialButton1.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
-            this.materialButton1.MouseState = MaterialSkin.MouseState.HOVER;
-            this.materialButton1.Name = "materialButton1";
-            this.materialButton1.NoAccentTextColor = System.Drawing.Color.Empty;
-            this.materialButton1.Size = new System.Drawing.Size(99, 36);
-            this.materialButton1.TabIndex = 9;
-            this.materialButton1.Text = "      Record      ";
-            this.materialButton1.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
-            this.materialButton1.UseAccentColor = false;
-            this.materialButton1.UseVisualStyleBackColor = true;
-            // 
             // materialCard3
             // 
             this.materialCard3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
@@ -812,9 +937,9 @@
             // tabPage4
             // 
             this.tabPage4.BackColor = System.Drawing.Color.White;
+            this.tabPage4.Controls.Add(this.btnPlateRecord);
             this.tabPage4.Controls.Add(this.materialCard9);
             this.tabPage4.Controls.Add(this.btnCapture);
-            this.tabPage4.Controls.Add(this.materialButton4);
             this.tabPage4.Controls.Add(this.DL_materialTextbox);
             this.tabPage4.Controls.Add(this.materialCard4);
             this.tabPage4.ImageKey = "license (1).png";
@@ -868,25 +993,6 @@
             this.btnCapture.UseAccentColor = false;
             this.btnCapture.UseVisualStyleBackColor = true;
             this.btnCapture.Click += new System.EventHandler(this.btnCapture_Click);
-            // 
-            // materialButton4
-            // 
-            this.materialButton4.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.materialButton4.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
-            this.materialButton4.Depth = 0;
-            this.materialButton4.HighEmphasis = true;
-            this.materialButton4.Icon = null;
-            this.materialButton4.Location = new System.Drawing.Point(39, 572);
-            this.materialButton4.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
-            this.materialButton4.MouseState = MaterialSkin.MouseState.HOVER;
-            this.materialButton4.Name = "materialButton4";
-            this.materialButton4.NoAccentTextColor = System.Drawing.Color.Empty;
-            this.materialButton4.Size = new System.Drawing.Size(99, 36);
-            this.materialButton4.TabIndex = 6;
-            this.materialButton4.Text = "      Record      ";
-            this.materialButton4.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
-            this.materialButton4.UseAccentColor = false;
-            this.materialButton4.UseVisualStyleBackColor = true;
             // 
             // DL_materialTextbox
             // 
@@ -1198,149 +1304,48 @@
             this.materialLabel6.TabIndex = 1;
             this.materialLabel6.Text = "About";
             // 
-            // label1
+            // timerRfid
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(54, 138);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(72, 16);
-            this.label1.TabIndex = 32;
-            this.label1.Text = "Last Name";
+            this.timerRfid.Tick += new System.EventHandler(this.timerRfid_Tick);
             // 
-            // label2
+            // btnRecord
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(264, 135);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(72, 16);
-            this.label2.TabIndex = 33;
-            this.label2.Text = "First Name";
+            this.btnRecord.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnRecord.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
+            this.btnRecord.Depth = 0;
+            this.btnRecord.HighEmphasis = true;
+            this.btnRecord.Icon = null;
+            this.btnRecord.Location = new System.Drawing.Point(553, 535);
+            this.btnRecord.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.btnRecord.MouseState = MaterialSkin.MouseState.HOVER;
+            this.btnRecord.Name = "btnRecord";
+            this.btnRecord.NoAccentTextColor = System.Drawing.Color.Empty;
+            this.btnRecord.Size = new System.Drawing.Size(99, 36);
+            this.btnRecord.TabIndex = 48;
+            this.btnRecord.Text = "      Record      ";
+            this.btnRecord.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
+            this.btnRecord.UseAccentColor = false;
+            this.btnRecord.UseVisualStyleBackColor = true;
+            this.btnRecord.Click += new System.EventHandler(this.btnRecord_Click);
             // 
-            // label3
+            // btnPlateRecord
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(473, 135);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(88, 16);
-            this.label3.TabIndex = 34;
-            this.label3.Text = "Middle Name";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(54, 221);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(70, 16);
-            this.label4.TabIndex = 35;
-            this.label4.Text = "Nationality";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(212, 221);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(30, 16);
-            this.label5.TabIndex = 36;
-            this.label5.Text = "Sex";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(339, 221);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(79, 16);
-            this.label6.TabIndex = 37;
-            this.label6.Text = "Date of Birth";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(494, 221);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(49, 16);
-            this.label7.TabIndex = 38;
-            this.label7.Text = "Weight";
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(580, 221);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(46, 16);
-            this.label8.TabIndex = 39;
-            this.label8.Text = "Height";
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(51, 304);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(58, 16);
-            this.label9.TabIndex = 40;
-            this.label9.Text = "Address";
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(51, 387);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(78, 16);
-            this.label10.TabIndex = 41;
-            this.label10.Text = "License No.";
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(264, 387);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(98, 16);
-            this.label11.TabIndex = 42;
-            this.label11.Text = "Expiration Data";
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(473, 387);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(89, 16);
-            this.label12.TabIndex = 42;
-            this.label12.Text = "Agency Code";
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(54, 469);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(78, 16);
-            this.label13.TabIndex = 43;
-            this.label13.Text = "Blood Type";
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(212, 469);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(66, 16);
-            this.label14.TabIndex = 44;
-            this.label14.Text = "Eye Color";
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(54, 551);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(77, 16);
-            this.label15.TabIndex = 45;
-            this.label15.Text = "Restrictions";
-            // 
-            // label16
-            // 
-            this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(212, 555);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(70, 16);
-            this.label16.TabIndex = 46;
-            this.label16.Text = "Conditions";
+            this.btnPlateRecord.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnPlateRecord.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
+            this.btnPlateRecord.Depth = 0;
+            this.btnPlateRecord.HighEmphasis = true;
+            this.btnPlateRecord.Icon = null;
+            this.btnPlateRecord.Location = new System.Drawing.Point(162, 571);
+            this.btnPlateRecord.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.btnPlateRecord.MouseState = MaterialSkin.MouseState.HOVER;
+            this.btnPlateRecord.Name = "btnPlateRecord";
+            this.btnPlateRecord.NoAccentTextColor = System.Drawing.Color.Empty;
+            this.btnPlateRecord.Size = new System.Drawing.Size(99, 36);
+            this.btnPlateRecord.TabIndex = 8;
+            this.btnPlateRecord.Text = "      Record      ";
+            this.btnPlateRecord.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
+            this.btnPlateRecord.UseAccentColor = false;
+            this.btnPlateRecord.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -1403,11 +1408,9 @@
         private System.Windows.Forms.TabPage tabPage6;
         private MaterialSkin.Controls.MaterialLabel materialLabel6;
         private MaterialSkin.Controls.MaterialCard materialCard1;
-        private MaterialSkin.Controls.MaterialButton materialButton4;
         private MaterialSkin.Controls.MaterialMultiLineTextBox2 DL_materialTextbox;
         private MaterialSkin.Controls.MaterialCard materialCard4;
         private System.Windows.Forms.PictureBox P1_pictureBox1;
-        private MaterialSkin.Controls.MaterialButton materialButton1;
         private MaterialSkin.Controls.MaterialCard materialCard3;
         private System.Windows.Forms.PictureBox P1_pictureBox2;
         private MaterialSkin.Controls.MaterialSwitch materialSwitch1;
@@ -1482,6 +1485,9 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Timer timerRfid;
+        private MaterialSkin.Controls.MaterialButton btnRecord;
+        private MaterialSkin.Controls.MaterialButton btnPlateRecord;
     }
 }
 

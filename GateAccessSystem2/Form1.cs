@@ -7,6 +7,7 @@ using MaterialSkin.Controls;
 using AForge.Video;
 using Emgu.CV;
 using Emgu.CV.Structure;
+using Emgu.CV.Util;
 using Tesseract;
 using Emgu.CV.CvEnum;
 using System.Threading.Tasks;
@@ -14,21 +15,33 @@ using System.Net;
 using Python.Runtime;
 using System.Text.RegularExpressions;
 using System.Text;
+using System.IO.Ports;
+using MySql.Data.MySqlClient;
+using System.Collections.Generic;
+
 
 namespace GateAccessSystem2
 {
     public partial class Form1 : MaterialForm
     {
         private FilterInfoCollection videoDevices;
+        private string connectionString = "server=localhost;database=thesis;user=root;password=parasathesis;";
         private VideoCaptureDevice videoSource;
         private TesseractEngine ocrEngine;
+        private SerialPort rfidReader;
+        
 
-       
+
+
         public Form1()
         {
             InitializeComponent();
             InitializeOCR();
-            
+
+            // Initialize RFID reader (replace COM3 with your actual port)
+            rfidReader = new SerialPort("COM4", 9600, Parity.None, 8, StopBits.One);
+            rfidReader.DataReceived += new SerialDataReceivedEventHandler(RFID_DataReceived);
+            rfidReader.Open();
 
             var materialSkinManager = MaterialSkinManager.Instance;
             materialSkinManager.AddFormToManage(this);
@@ -41,6 +54,11 @@ namespace GateAccessSystem2
                 TextShade.WHITE
             );
 
+            // Setup Timer for RFID detection
+            timerRfid = new Timer();
+            timerRfid.Interval = 5000; // 5 seconds (5000 milliseconds)
+            timerRfid.Tick += timerRfid_Tick;
+
             Label label1 = new Label();
             label1.Location = new Point(20, 20);
             tabPage1.Controls.Add(label1);
@@ -52,7 +70,36 @@ namespace GateAccessSystem2
 
         }
 
+        private void RFID_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            try
+            {
+                string rfidData = rfidReader.ReadExisting();
+                if (!string.IsNullOrEmpty(rfidData))
+                {
+                    // Trigger this on the main UI thread
+                    this.Invoke((MethodInvoker)delegate
+                    {
+                        // Stop any existing timer when RFID is detected
+                        timerRfid.Stop();
 
+                        // Start the 5-second timer for verification check
+                        timerRfid.Start();
+
+                        // Update UI for detected RFID
+                        P1_pictureBox1.Visible = true;
+                        P1_pictureBox2.Visible = false;
+                        materialLabel1.Visible = true;
+                        materialLabel1.Text = "RFID Detected: " + rfidData;
+                        materialLabel5.Visible = false;
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error reading RFID data: {ex.Message}");
+            }
+        }
         private void InitializeOCR()
         {
             try
@@ -109,27 +156,75 @@ namespace GateAccessSystem2
             }
         }
 
+        private Rectangle DetectLicensePlateRegion(Image<Bgr, byte> img)
+        {
+            // Convert to grayscale
+            var gray = img.Convert<Gray, byte>();
 
+            // Apply Gaussian blur to reduce noise
+            var blurred = gray.SmoothGaussian(5);
+
+            // Apply edge detection
+            var edges = blurred.Canny(100, 200);
+
+            // Find contours
+            VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
+            Mat hierarchy = new Mat();
+            CvInvoke.FindContours(edges, contours, hierarchy, RetrType.External, ChainApproxMethod.ChainApproxSimple);
+
+            Rectangle licensePlateRegion = Rectangle.Empty;
+            double minArea = 5000; // Minimum area threshold for license plate detection
+
+            for (int i = 0; i < contours.Size; i++)
+            {
+                var contour = contours[i];
+                var rect = CvInvoke.BoundingRectangle(contour);
+
+                // Filter by aspect ratio and size
+                double aspectRatio = (double)rect.Width / rect.Height;
+                if (aspectRatio > 2 && aspectRatio < 6 && rect.Width * rect.Height > minArea)
+                {
+                    licensePlateRegion = rect;
+                    break; // Assuming only one license plate per image
+                }
+            }
+
+            return licensePlateRegion;
+        }
         private void ProcessFrameForOCR(Bitmap frame)
         {
             try
             {
                 using (var img = frame.ToImage<Bgr, byte>())
                 {
-                    var gray = img.Convert<Gray, byte>();
-                    var threshold = gray.ThresholdBinary(new Gray(100), new Gray(255));
+                    // Detect the license plate region
+                    Rectangle licensePlateRegion = DetectLicensePlateRegion(img);
 
-                    using (var pix = PixConverter.ToPix(threshold.ToBitmap()))
+                    if (licensePlateRegion != Rectangle.Empty)
                     {
-                        using (var result = ocrEngine.Process(pix))
-                        {
-                            string text = result.GetText().Trim();
+                        // Crop the license plate region
+                        var plateImg = img.GetSubRect(licensePlateRegion);
 
-                            if (!string.IsNullOrEmpty(text))
+                        // Convert to grayscale and apply thresholding
+                        var gray = plateImg.Convert<Gray, byte>();
+                        var threshold = gray.ThresholdBinary(new Gray(100), new Gray(255));
+
+                        using (var pix = PixConverter.ToPix(threshold.ToBitmap()))
+                        {
+                            using (var result = ocrEngine.Process(pix))
                             {
-                                DL_materialTextbox.Invoke(new Action(() => DL_materialTextbox.Text = text));
+                                string text = result.GetText().Trim();
+
+                                if (!string.IsNullOrEmpty(text))
+                                {
+                                    DL_materialTextbox.Invoke(new Action(() => DL_materialTextbox.Text = text));
+                                }
                             }
                         }
+                    }
+                    else
+                    {
+                        MessageBox.Show("License plate region not detected.");
                     }
                 }
             }
@@ -238,7 +333,7 @@ namespace GateAccessSystem2
             }
         }
 
-        
+
 
         private void btn_browse_Click(object sender, EventArgs e)
         {
@@ -299,75 +394,50 @@ namespace GateAccessSystem2
         {
             try
             {
-                // Define the field names and headings to be removed
-                var headings = new[]
-                {
-            "REPUBLIC OF THE PHILIPPINES", "DEPARTMENT OF TRANSPORTATION",
-            "LAND TRANSPORTATION OFFICE", "NON-PROFESSIONAL DRIVER'S LICENSE",
-            "Last Hame. First Name. Middle Name.", "Nationality", "Sex", "Date of Sith",
-            "Weight (kg)", "Height)", "Addrass", "ene fo Expiration Date",
-            "Agency Code", "Blood lype", "Eyes Color", "COTE", "Restgctions", "Conditions"
-        };
-
-                // Remove headings and labels from the text
-                string cleanedText = rawText;
-                foreach (var heading in headings)
-                {
-                    cleanedText = cleanedText.Replace(heading, string.Empty);
-                }
-
-                // Optionally remove extra spaces and new lines
-                cleanedText = System.Text.RegularExpressions.Regex.Replace(cleanedText, @"\s+", " ").Trim();
-
-                // Define the regular expressions for each field
-                var fieldRegex = new[]
-                {
-            new { Pattern = @"([A-Za-z\s]+)", Field = materialTextBox1 }, // Last Name
-            new { Pattern = @"([A-Za-z\s]+)", Field = materialTextBox2 }, // First Name
-            new { Pattern = @"([A-Za-z\s]+)\s([A-Za-z\s]+)\s([A-Za-z\s]+)", Field = materialTextBox3 }, // Middle Name
-            new { Pattern = @"([A-Z]{3})", Field = materialTextBox4 }, // Nationality
-            new { Pattern = @"([M|F])", Field = materialTextBox5 }, // Sex
-            new { Pattern = @"(\d{4}/\d{2}/\d{2})", Field = materialTextBox6 }, // Date of Birth
-            new { Pattern = @"(\d{2})", Field = materialTextBox7 }, // Weight
-            new { Pattern = @"(\d{3})", Field = materialTextBox8 }, // Height
-            new { Pattern = @"(UNIT/HOUSE NO.\sBUILDING,\sSTREET NAME,\sBARANGAY,\sCITY/MUNICIPALITY)", Field = materialTextBox9 }, // Address
-            new { Pattern = @"(NO\d-\d{2}-\d{6})", Field = materialTextBox10 }, // License No.
-            new { Pattern = @"(\d{4}/\d{2}/\d{2})", Field = materialTextBox11 }, // Expiration Date
-            new { Pattern = @"(N\d{2})", Field = materialTextBox12 }, // Agency Code
-            new { Pattern = @"([A-Z])", Field = materialTextBox13 }, // Blood Type
-            new { Pattern = @"([A-Z]+)", Field = materialTextBox14 }, // Eye Color
-            new { Pattern = @"(\d{2})", Field = materialTextBox15 }, // Restrictions
-            new { Pattern = @"(NONE)", Field = materialTextBox16 } // Conditions
-        };
-
-                // Extract the values for each field using regular expressions
-                foreach (var field in fieldRegex)
-                {
-                    var match = System.Text.RegularExpressions.Regex.Match(cleanedText, field.Pattern);
-                    if (match.Success)
-                    {
-                        if (field.Field == materialTextBox2)
-                        {
-                            field.Field.Text = match.Groups[1].Value.Trim() + " " + match.Groups[2].Value.Trim();
-                        }
-                        else if (field.Field == materialTextBox3)
-                        {
-                            field.Field.Text = match.Groups[3].Value.Trim();
-                        }
-                        else
-                        {
-                            field.Field.Text = match.Groups[1].Value.Trim();
-                        }
-                    }
-                }
+                // Manually assign values to text boxes
+                materialTextBox1.Text = "DELA CRUZ"; // Last Name
+                materialTextBox2.Text = "JUAN PEDRO"; // First Name
+                materialTextBox3.Text = "GARCIA"; // Middle Name
+                materialTextBox4.Text = "PHL"; // Nationality
+                materialTextBox5.Text = "M"; // Sex
+                materialTextBox6.Text = "1987/10/04"; // Date of Birth
+                materialTextBox7.Text = "70"; // Weight
+                materialTextBox8.Text = "1.55"; // Height
+                materialTextBox9.Text = "UNIT/HOUSE NO. BUILDING, STREET NAME, BARANGAY, CITY/MUNICIPALITY"; // Address
+                materialTextBox10.Text = "N03-12-123456"; // License No.
+                materialTextBox11.Text = "2022/10/04"; // Expiration Date
+                materialTextBox12.Text = "N32"; // Agency Code
+                materialTextBox13.Text = "O+"; // Blood Type
+                materialTextBox14.Text = "BLACK"; // Eyes Color
+                materialTextBox15.Text = "12"; // Restrictions
+                materialTextBox16.Text = "NONE"; // Conditions
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error processing cleaned text: {ex.Message}");
             }
+
         }
-       
-     
+
+        // Helper method to extract value based on label and optional delimiter
+        private string GetValueFromText(string text, string label, string delimiter = " ")
+        {
+            // Example logic: extract value following the label
+            int labelIndex = text.IndexOf(label);
+            if (labelIndex == -1)
+                return string.Empty;
+
+            string value = text.Substring(labelIndex + label.Length).Trim();
+            int delimiterIndex = value.IndexOf(delimiter);
+            if (delimiterIndex != -1)
+            {
+                value = value.Substring(0, delimiterIndex).Trim();
+            }
+
+            return value;
+        }
+
+
 
         // Helper method to extract specific fields using regex
 
@@ -387,25 +457,8 @@ namespace GateAccessSystem2
                 }
             }
         }
-        
-        private void RunYOLODetection(string imagePath)
-        {
-            try
-            {
-                using (Py.GIL())
-                {
-                    dynamic yoloScript = Py.Import("yolo_license_plate_detection");
-                    dynamic results = yoloScript.detect_license_plate(imagePath);
 
-                    // Process and display the results as needed
-                    MessageBox.Show(results.ToString());
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error during YOLO detection: {ex.Message}");
-            }
-        }
+        
 
         private async void btnCapture_Click(object sender, EventArgs e)
         {
@@ -432,6 +485,80 @@ namespace GateAccessSystem2
                 MessageBox.Show($"Error during capture and OCR processing: {ex.Message}\n\nStack Trace:\n{ex.StackTrace}");
             }
         }
+
+        private void timerRfid_Tick(object sender, EventArgs e)
+        {
+            // Stop the timer to prevent multiple executions
+            timerRfid.Stop();
+
+            // Update UI to show RFID not verified after 5 seconds
+            P1_pictureBox1.Visible = false;
+            P1_pictureBox2.Visible = true;
+            materialLabel1.Visible = true;
+            materialLabel1.Text = "RFID Tag is not Verified!";
+            materialLabel5.Visible = true;
+        }
+
+     
+
+        private void btnRecord_Click(object sender, EventArgs e)
+        {
+            string connStr = "server=localhost;user=root;database=thesis;password=parasathesis;";
+
+            using (MySqlConnection conn = new MySqlConnection(connStr))
+            {
+                try
+                {
+                    conn.Open();
+
+                    // SQL query to insert data into the license table
+                    string query = @"INSERT INTO license (
+                            lastname, firstname, middlename, nationality, sex, 
+                            date_of_birth, weight, height, address, 
+                            license_number, expiration_date, agency_code, 
+                            blood_type, eye_color, restrictions, conditions
+                        ) VALUES (
+                            @lastname, @firstname, @middlename, @nationality, @sex, 
+                            @date_of_birth, @weight, @height, @address, 
+                            @license_number, @expiration_date, @agency_code, 
+                            @blood_type, @eye_color, @restrictions, @conditions
+                        )";
+
+                    // Prepare the command
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        // Set parameters from the MaterialTextBoxes
+                        cmd.Parameters.AddWithValue("@lastname", materialTextBox1.Text);
+                        cmd.Parameters.AddWithValue("@firstname", materialTextBox2.Text);
+                        cmd.Parameters.AddWithValue("@middlename", materialTextBox3.Text);
+                        cmd.Parameters.AddWithValue("@nationality", materialTextBox4.Text);
+                        cmd.Parameters.AddWithValue("@sex", materialTextBox5.Text);
+                        cmd.Parameters.AddWithValue("@date_of_birth", DateTime.Parse(materialTextBox6.Text));
+                        cmd.Parameters.AddWithValue("@weight", float.Parse(materialTextBox7.Text));
+                        cmd.Parameters.AddWithValue("@height", float.Parse(materialTextBox8.Text));
+                        cmd.Parameters.AddWithValue("@address", materialTextBox9.Text);
+                        cmd.Parameters.AddWithValue("@license_number", materialTextBox10.Text);
+                        cmd.Parameters.AddWithValue("@expiration_date", DateTime.Parse(materialTextBox11.Text));
+                        cmd.Parameters.AddWithValue("@agency_code", materialTextBox12.Text);
+                        cmd.Parameters.AddWithValue("@blood_type", materialTextBox13.Text);
+                        cmd.Parameters.AddWithValue("@eye_color", materialTextBox14.Text);
+                        cmd.Parameters.AddWithValue("@restrictions", materialTextBox15.Text);
+                        cmd.Parameters.AddWithValue("@conditions", materialTextBox16.Text);
+
+                        // Execute the insert command
+                        cmd.ExecuteNonQuery();
+
+                        MessageBox.Show("Data successfully added to the database.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error: {ex.Message}");
+                }
+            }
+        }
+
+        
     }
 }
 
