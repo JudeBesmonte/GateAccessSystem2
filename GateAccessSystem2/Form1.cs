@@ -15,15 +15,15 @@ using System.Net;
 using Python.Runtime;
 using System.Text.RegularExpressions;
 using System.Text;
-using System.IO.Ports;
-using MySql.Data.MySqlClient;
-using System.Collections.Generic;
 
 
 namespace GateAccessSystem2
 {
     public partial class Form1 : MaterialForm
     {
+        private SerialPort serialPort;
+        private bool isRfidOn = false;
+        private string connectionString = "server=localhost;database=thesis;user=root;password=parasathesis;";
         private FilterInfoCollection videoDevices;
         private string connectionString = "server=localhost;database=thesis;user=root;password=parasathesis;";
         private VideoCaptureDevice videoSource;
@@ -66,6 +66,16 @@ namespace GateAccessSystem2
             Label label2 = new Label();
             label2.Location = new Point(20, 20);
             tabPage2.Controls.Add(label2);
+
+            
+
+            // Initialize the SerialPort with the RFID reader's port settings
+            serialPort = new SerialPort("COM3", 9600, Parity.None, 8, StopBits.One);
+            serialPort.DataReceived += new SerialDataReceivedEventHandler(SerialPort_DataReceived);
+
+            // Initialize PictureBox visibility
+            P1_pictureBox1.Visible = false;
+            P1_pictureBox2.Visible = false;
 
 
         }
@@ -245,24 +255,63 @@ namespace GateAccessSystem2
 
             base.OnFormClosing(e);
         }
+        private void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            if (isRfidOn)
+            {
+                string data = serialPort.ReadLine();  // Reads RFID tag data
+
+                // Check if data corresponds to a valid tag
+                if (!string.IsNullOrEmpty(data))
+                {
+                    this.Invoke(new MethodInvoker(delegate
+                    {
+                        P1_pictureBox1.Visible = true;  // Show checkmark
+                        P1_pictureBox2.Visible = false; // Hide X
+                    }));
+                }
+                else
+                {
+                    this.Invoke(new MethodInvoker(delegate
+                    {
+                        P1_pictureBox1.Visible = false; // Hide checkmark
+                        P1_pictureBox2.Visible = true;  // Show X
+                    }));
+                }
+            }
+        }
 
         private void materialSwitch1_CheckedChanged(object sender, EventArgs e)
         {
             if (materialSwitch1.Checked)
             {
-                P1_pictureBox1.Visible = true;
-                P1_pictureBox2.Visible = false;
-                materialLabel1.Visible = true;
-                materialLabel1.Text = "RFID Tag is Verified!";
-                materialLabel5.Visible = false;
+                // Turn on RFID reading
+                isRfidOn = true;
+                try
+                {
+                    serialPort.Open();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error opening RFID port: " + ex.Message);
+                }
             }
             else
             {
+                // Turn off RFID reading
+                isRfidOn = false;
+                try
+                {
+                    serialPort.Close();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error closing RFID port: " + ex.Message);
+                }
+
+                // Hide both picture boxes when RFID is off
                 P1_pictureBox1.Visible = false;
-                P1_pictureBox2.Visible = true;
-                materialLabel1.Visible = true;
-                materialLabel1.Text = "RFID Tag is not Verified!";
-                materialLabel5.Visible = true;
+                P1_pictureBox2.Visible = false;
             }
         }
 
@@ -530,81 +579,7 @@ namespace GateAccessSystem2
                 MessageBox.Show($"Error during capture and OCR processing: {ex.Message}\n\nStack Trace:\n{ex.StackTrace}");
             }
         }
-
-        private void timerRfid_Tick(object sender, EventArgs e)
-        {
-            // Stop the timer to prevent multiple executions
-            timerRfid.Stop();
-
-            // Update UI to show RFID not verified after 5 seconds
-            P1_pictureBox1.Visible = false;
-            P1_pictureBox2.Visible = true;
-            materialLabel1.Visible = true;
-            materialLabel1.Text = "RFID Tag is not Verified!";
-            materialLabel5.Visible = true;
-        }
-
-     
-
-        private void btnRecord_Click(object sender, EventArgs e)
-        {
-            string connStr = "server=localhost;user=root;database=thesis;password=parasathesis;";
-
-            using (MySqlConnection conn = new MySqlConnection(connStr))
-            {
-                try
-                {
-                    conn.Open();
-
-                    // SQL query to insert data into the license table
-                    string query = @"INSERT INTO license (
-                                lastname, firstname, middlename, nationality, sex, 
-                                `date of birth`, weight, height, address, 
-                                `license number`, `expiration date`, `agency code`, 
-                                `blood type`, `eye color`, restrictions, conditions
-                            ) VALUES (
-                                @lastname, @firstname, @middlename, @nationality, @sex, 
-                                @date_of_birth, @weight, @height, @address, 
-                                @license_number, @expiration_date, @agency_code, 
-                                @blood_type, @eye_color, @restrictions, @conditions
-                            )";
-
-                    // Prepare the command
-                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                    {
-                        // Set parameters from the MaterialTextBoxes
-                        cmd.Parameters.AddWithValue("@lastname", materialTextBox1.Text);
-                        cmd.Parameters.AddWithValue("@firstname", materialTextBox2.Text);
-                        cmd.Parameters.AddWithValue("@middlename", materialTextBox3.Text);
-                        cmd.Parameters.AddWithValue("@nationality", materialTextBox4.Text);
-                        cmd.Parameters.AddWithValue("@sex", materialTextBox5.Text);
-                        cmd.Parameters.AddWithValue("@date_of_birth", DateTime.Parse(materialTextBox6.Text));
-                        cmd.Parameters.AddWithValue("@weight", float.Parse(materialTextBox7.Text));
-                        cmd.Parameters.AddWithValue("@height", float.Parse(materialTextBox8.Text));
-                        cmd.Parameters.AddWithValue("@address", materialTextBox9.Text);
-                        cmd.Parameters.AddWithValue("@license_number", materialTextBox10.Text);
-                        cmd.Parameters.AddWithValue("@expiration_date", DateTime.Parse(materialTextBox11.Text));
-                        cmd.Parameters.AddWithValue("@agency_code", materialTextBox12.Text);
-                        cmd.Parameters.AddWithValue("@blood_type", materialTextBox13.Text);
-                        cmd.Parameters.AddWithValue("@eye_color", materialTextBox14.Text);
-                        cmd.Parameters.AddWithValue("@restrictions", materialTextBox15.Text);
-                        cmd.Parameters.AddWithValue("@conditions", materialTextBox16.Text);
-
-                        // Execute the insert command
-                        cmd.ExecuteNonQuery();
-
-                        MessageBox.Show("Data successfully added to the database.");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error: {ex.Message}");
-                }
-            }
-        }
-
-        
     }
 }
-
+   
 
