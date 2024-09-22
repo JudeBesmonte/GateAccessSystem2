@@ -394,28 +394,73 @@ namespace GateAccessSystem2
         {
             try
             {
-                // Manually assign values to text boxes
-                materialTextBox1.Text = "DELA CRUZ"; // Last Name
-                materialTextBox2.Text = "JUAN PEDRO"; // First Name
-                materialTextBox3.Text = "GARCIA"; // Middle Name
-                materialTextBox4.Text = "PHL"; // Nationality
-                materialTextBox5.Text = "M"; // Sex
-                materialTextBox6.Text = "1987/10/04"; // Date of Birth
-                materialTextBox7.Text = "70"; // Weight
-                materialTextBox8.Text = "1.55"; // Height
-                materialTextBox9.Text = "UNIT/HOUSE NO. BUILDING, STREET NAME, BARANGAY, CITY/MUNICIPALITY"; // Address
-                materialTextBox10.Text = "N03-12-123456"; // License No.
-                materialTextBox11.Text = "2022/10/04"; // Expiration Date
-                materialTextBox12.Text = "N32"; // Agency Code
-                materialTextBox13.Text = "O+"; // Blood Type
-                materialTextBox14.Text = "BLACK"; // Eyes Color
-                materialTextBox15.Text = "12"; // Restrictions
-                materialTextBox16.Text = "NONE"; // Conditions
+                // Define the field names and headings to be removed
+                var headings = new[]
+                {
+            "REPUBLIC OF THE PHILIPPINES", "DEPARTMENT OF TRANSPORTATION",
+            "LAND TRANSPORTATION OFFICE", "NON-PROFESSIONAL DRIVER'S LICENSE",
+            "Last Hame. First Name. Middle Name.", "Nationality", "Sex", "Date of Sith",
+            "Weight (kg)", "Height)", "Addrass", "ene fo Expiration Date",
+            "Agency Code", "Blood lype", "Eyes Color", "COTE", "Restgctions", "Conditions"
+        };
+
+                // Remove headings and labels from the text
+                string cleanedText = rawText;
+                foreach (var heading in headings)
+                {
+                    cleanedText = cleanedText.Replace(heading, string.Empty);
+                }
+
+                // Optionally remove extra spaces and new lines
+                cleanedText = System.Text.RegularExpressions.Regex.Replace(cleanedText, @"\s+", " ").Trim();
+
+                // Define the regular expressions for each field
+                var fieldRegex = new[]
+                {
+            new { Pattern = @"([A-Za-z\s]+)", Field = materialTextBox1 }, // Last Name
+            //new { Pattern = @"([A-Za-z\s]+)", Field = materialTextBox2 }, // First Name
+            
+            new { Pattern = @"([A-Za-z\s]+)\s([A-Za-z\s]+)\s([A-Za-z\s]+)", Field = materialTextBox3 }, // Middle Name
+            
+            new { Pattern = @"([A-Z]{3})", Field = materialTextBox4 }, // Nationality
+            new { Pattern = @"([M|F])", Field = materialTextBox5 }, // Sex
+            new { Pattern = @"(\d{4}/\d{2}/\d{2})", Field = materialTextBox6 }, // Date of Birth
+            new { Pattern = @"(\d{2})", Field = materialTextBox7 }, // Weight
+            new { Pattern = @"(\d{3})", Field = materialTextBox8 }, // Height
+            new { Pattern = @"(UNIT/HOUSE NO.\sBUILDING,\sSTREET NAME,\sBARANGAY,\sCITY/MUNICIPALITY)", Field = materialTextBox9 }, // Address
+            new { Pattern = @"(NO\d-\d{2}-\d{6})", Field = materialTextBox10 }, // License No.
+            new { Pattern = @"(\d{4}/\d{2}/\d{2})", Field = materialTextBox11 }, // Expiration Date
+            new { Pattern = @"(N\d{2})", Field = materialTextBox12 }, // Agency Code
+            new { Pattern = @"([A-Z])", Field = materialTextBox13 }, // Blood Type
+            new { Pattern = @"([A-Z]+)", Field = materialTextBox14 }, // Eye Color
+            new { Pattern = @"(\d{2})", Field = materialTextBox15 }, // Restrictions
+            new { Pattern = @"(NONE)", Field = materialTextBox16 } // Conditions
+        };
+
+                // Extract the values for each field using regular expressions
+                foreach (var field in fieldRegex)
+                {
+                    var match = System.Text.RegularExpressions.Regex.Match(cleanedText, field.Pattern);
+                    if (match.Success)
+                    {
+                        field.Field.Text = match.Groups[1].Value.Trim();
+                    }
+                }
+
+                // Handle cases where multiple groups are needed (e.g., Name fields)
+                var nameMatch = System.Text.RegularExpressions.Regex.Match(cleanedText, @"([A-Z\s]+),\s([A-Z\s]+)\s([A-Z\s]+)");
+                if (nameMatch.Success)
+                {
+                    materialTextBox1.Text = nameMatch.Groups[1].Value.Trim(); // Last Name
+                    materialTextBox2.Text = nameMatch.Groups[2].Value.Trim(); // First Name
+                    materialTextBox3.Text = nameMatch.Groups[3].Value.Trim(); // Middle Name
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error processing cleaned text: {ex.Message}");
             }
+
 
         }
 
@@ -513,16 +558,16 @@ namespace GateAccessSystem2
 
                     // SQL query to insert data into the license table
                     string query = @"INSERT INTO license (
-                            lastname, firstname, middlename, nationality, sex, 
-                            date_of_birth, weight, height, address, 
-                            license_number, expiration_date, agency_code, 
-                            blood_type, eye_color, restrictions, conditions
-                        ) VALUES (
-                            @lastname, @firstname, @middlename, @nationality, @sex, 
-                            @date_of_birth, @weight, @height, @address, 
-                            @license_number, @expiration_date, @agency_code, 
-                            @blood_type, @eye_color, @restrictions, @conditions
-                        )";
+                                lastname, firstname, middlename, nationality, sex, 
+                                `date of birth`, weight, height, address, 
+                                `license number`, `expiration date`, `agency code`, 
+                                `blood type`, `eye color`, restrictions, conditions
+                            ) VALUES (
+                                @lastname, @firstname, @middlename, @nationality, @sex, 
+                                @date_of_birth, @weight, @height, @address, 
+                                @license_number, @expiration_date, @agency_code, 
+                                @blood_type, @eye_color, @restrictions, @conditions
+                            )";
 
                     // Prepare the command
                     using (MySqlCommand cmd = new MySqlCommand(query, conn))
