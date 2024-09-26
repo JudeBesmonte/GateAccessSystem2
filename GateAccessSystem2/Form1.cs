@@ -74,30 +74,64 @@ namespace GateAccessSystem2
         {
             try
             {
-                string rfidData = rfidReader.ReadExisting();
+                string rfidData = rfidReader.ReadExisting().Trim(); // Read the RFID tag
+
                 if (!string.IsNullOrEmpty(rfidData))
                 {
-                    // Trigger this on the main UI thread
                     this.Invoke((MethodInvoker)delegate
                     {
-                        // Stop any existing timer when RFID is detected
-                        timerRfid.Stop();
-
-                        // Start the 5-second timer for verification check
-                        timerRfid.Start();
-
-                        // Update UI for detected RFID
+                        // Update the UI with the detected RFID data
                         P1_pictureBox1.Visible = true;
                         P1_pictureBox2.Visible = false;
                         materialLabel1.Visible = true;
                         materialLabel1.Text = "RFID Detected: " + rfidData;
                         materialLabel5.Visible = false;
+
+                        // Call method to insert RFID data into the database
+                        RecordRFIDTagToDatabase(rfidData);
                     });
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error reading RFID data: {ex.Message}");
+            }
+        }
+        private void RecordRFIDTagToDatabase(string rfidTag)
+        {
+            using (MySqlConnection conn = new MySqlConnection(connectionString))
+            {
+                try
+                {
+                    conn.Open();
+
+                    // Check if the RFID tag already exists (optional, depends on your use case)
+                    string query = "INSERT INTO rfid_tag (tag, detection_time) VALUES (@tag, @time)";
+
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@tag", rfidTag);
+                        cmd.Parameters.AddWithValue("@time", DateTime.Now); // Record the current time of detection
+
+                        int rowsAffected = cmd.ExecuteNonQuery();
+                        if (rowsAffected > 0)
+                        {
+                            MessageBox.Show("RFID tag recorded successfully!");
+                        }
+                        else
+                        {
+                            MessageBox.Show("Failed to record RFID tag.");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error while inserting RFID data to the database: {ex.Message}");
+                }
+                finally
+                {
+                    conn.Close();
+                }
             }
         }
         private void InitializeOCR()
