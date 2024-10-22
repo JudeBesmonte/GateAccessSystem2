@@ -33,21 +33,23 @@
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.materialTabControl1 = new MaterialSkin.Controls.MaterialTabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.materialLabel5 = new MaterialSkin.Controls.MaterialLabel();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.materialLabel1 = new MaterialSkin.Controls.MaterialLabel();
+            this.lblenterexit = new MaterialSkin.Controls.MaterialLabel();
+            this.pictureBox4 = new System.Windows.Forms.PictureBox();
+            this.materialLabel5 = new MaterialSkin.Controls.MaterialLabel();
             this.materialSwitch1 = new MaterialSkin.Controls.MaterialSwitch();
             this.materialCard1 = new MaterialSkin.Controls.MaterialCard();
             this.P1_pictureBox2 = new System.Windows.Forms.PictureBox();
             this.P1_pictureBox1 = new System.Windows.Forms.PictureBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.materialCard2 = new MaterialSkin.Controls.MaterialCard();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.tbl_Date = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.materialLabel14 = new MaterialSkin.Controls.MaterialLabel();
+            this.RegDriver = new MaterialSkin.Controls.MaterialComboBox();
+            this.materialLabel12 = new MaterialSkin.Controls.MaterialLabel();
+            this.materialLabel11 = new MaterialSkin.Controls.MaterialLabel();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.btnRecord = new MaterialSkin.Controls.MaterialButton();
             this.label16 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
@@ -89,6 +91,7 @@
             this.materialCard3 = new MaterialSkin.Controls.MaterialCard();
             this.LP_pictureBox = new System.Windows.Forms.PictureBox();
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.btnPlateRecord = new MaterialSkin.Controls.MaterialButton();
             this.materialCard9 = new MaterialSkin.Controls.MaterialCard();
             this.pictureBoxFrame = new System.Windows.Forms.PictureBox();
             this.btnCapture = new MaterialSkin.Controls.MaterialButton();
@@ -118,16 +121,22 @@
             this.materialMultiLineTextBox1 = new MaterialSkin.Controls.MaterialMultiLineTextBox();
             this.materialLabel6 = new MaterialSkin.Controls.MaterialLabel();
             this.timerRfid = new System.Windows.Forms.Timer(this.components);
-            this.btnRecord = new MaterialSkin.Controls.MaterialButton();
-            this.btnPlateRecord = new MaterialSkin.Controls.MaterialButton();
+            this.RegisterAll = new MaterialSkin.Controls.MaterialButton();
+            this.RegRFID = new MaterialSkin.Controls.MaterialComboBox();
+            this.RegPlate = new MaterialSkin.Controls.MaterialComboBox();
+            this.pictureBox5 = new System.Windows.Forms.PictureBox();
+            this.searchButton = new MaterialSkin.Controls.MaterialButton();
+            this.searchTextBox = new System.Windows.Forms.TextBox();
+            this.searchResultsGridView = new System.Windows.Forms.DataGridView();
             this.materialTabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             this.materialCard1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.P1_pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.P1_pictureBox1)).BeginInit();
             this.tabPage2.SuspendLayout();
             this.materialCard2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.tabPage3.SuspendLayout();
             this.materialCard3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.LP_pictureBox)).BeginInit();
@@ -146,6 +155,8 @@
             this.materialCard5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             this.tabPage6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.searchResultsGridView)).BeginInit();
             this.SuspendLayout();
             // 
             // imageList1
@@ -182,8 +193,9 @@
             // tabPage1
             // 
             this.tabPage1.BackColor = System.Drawing.Color.White;
+            this.tabPage1.Controls.Add(this.panel1);
+            this.tabPage1.Controls.Add(this.pictureBox4);
             this.tabPage1.Controls.Add(this.materialLabel5);
-            this.tabPage1.Controls.Add(this.materialLabel1);
             this.tabPage1.Controls.Add(this.materialSwitch1);
             this.tabPage1.Controls.Add(this.materialCard1);
             this.tabPage1.ImageKey = "signal.png";
@@ -194,6 +206,54 @@
             this.tabPage1.Size = new System.Drawing.Size(1432, 660);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "RFID Tag";
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.materialLabel1);
+            this.panel1.Controls.Add(this.lblenterexit);
+            this.panel1.Location = new System.Drawing.Point(510, 471);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(440, 144);
+            this.panel1.TabIndex = 10;
+            // 
+            // materialLabel1
+            // 
+            this.materialLabel1.AutoSize = true;
+            this.materialLabel1.Depth = 0;
+            this.materialLabel1.Font = new System.Drawing.Font("Roboto Medium", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.materialLabel1.FontType = MaterialSkin.MaterialSkinManager.fontType.H6;
+            this.materialLabel1.Location = new System.Drawing.Point(85, 25);
+            this.materialLabel1.MouseState = MaterialSkin.MouseState.HOVER;
+            this.materialLabel1.Name = "materialLabel1";
+            this.materialLabel1.Size = new System.Drawing.Size(182, 24);
+            this.materialLabel1.TabIndex = 5;
+            this.materialLabel1.Text = "RFID Tag is Verified!";
+            this.materialLabel1.Visible = false;
+            // 
+            // lblenterexit
+            // 
+            this.lblenterexit.AutoSize = true;
+            this.lblenterexit.Depth = 0;
+            this.lblenterexit.Font = new System.Drawing.Font("Roboto", 34F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.lblenterexit.FontType = MaterialSkin.MaterialSkinManager.fontType.H4;
+            this.lblenterexit.Location = new System.Drawing.Point(66, 71);
+            this.lblenterexit.MouseState = MaterialSkin.MouseState.HOVER;
+            this.lblenterexit.Name = "lblenterexit";
+            this.lblenterexit.Size = new System.Drawing.Size(223, 41);
+            this.lblenterexit.TabIndex = 9;
+            this.lblenterexit.Text = "Vehicle ENTER";
+            this.lblenterexit.Visible = false;
+            // 
+            // pictureBox4
+            // 
+            this.pictureBox4.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox4.Image")));
+            this.pictureBox4.Location = new System.Drawing.Point(219, 428);
+            this.pictureBox4.Name = "pictureBox4";
+            this.pictureBox4.Size = new System.Drawing.Size(981, 242);
+            this.pictureBox4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox4.TabIndex = 0;
+            this.pictureBox4.TabStop = false;
+            this.pictureBox4.Visible = false;
             // 
             // materialLabel5
             // 
@@ -208,20 +268,6 @@
             this.materialLabel5.TabIndex = 8;
             this.materialLabel5.Text = "Please continue on License Plate and Drivers License Page";
             this.materialLabel5.Visible = false;
-            // 
-            // materialLabel1
-            // 
-            this.materialLabel1.AutoSize = true;
-            this.materialLabel1.Depth = 0;
-            this.materialLabel1.Font = new System.Drawing.Font("Roboto Medium", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
-            this.materialLabel1.FontType = MaterialSkin.MaterialSkinManager.fontType.H6;
-            this.materialLabel1.Location = new System.Drawing.Point(588, 425);
-            this.materialLabel1.MouseState = MaterialSkin.MouseState.HOVER;
-            this.materialLabel1.Name = "materialLabel1";
-            this.materialLabel1.Size = new System.Drawing.Size(182, 24);
-            this.materialLabel1.TabIndex = 5;
-            this.materialLabel1.Text = "RFID Tag is Verified!";
-            this.materialLabel1.Visible = false;
             // 
             // materialSwitch1
             // 
@@ -277,6 +323,9 @@
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.Color.White;
+            this.tabPage2.Controls.Add(this.searchResultsGridView);
+            this.tabPage2.Controls.Add(this.searchTextBox);
+            this.tabPage2.Controls.Add(this.searchButton);
             this.tabPage2.Controls.Add(this.materialCard2);
             this.tabPage2.ImageKey = "registration.png";
             this.tabPage2.Location = new System.Drawing.Point(4, 39);
@@ -290,69 +339,84 @@
             // materialCard2
             // 
             this.materialCard2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.materialCard2.Controls.Add(this.dataGridView1);
+            this.materialCard2.Controls.Add(this.pictureBox5);
+            this.materialCard2.Controls.Add(this.RegPlate);
+            this.materialCard2.Controls.Add(this.RegRFID);
+            this.materialCard2.Controls.Add(this.RegisterAll);
+            this.materialCard2.Controls.Add(this.materialLabel14);
+            this.materialCard2.Controls.Add(this.RegDriver);
+            this.materialCard2.Controls.Add(this.materialLabel12);
+            this.materialCard2.Controls.Add(this.materialLabel11);
             this.materialCard2.Depth = 0;
             this.materialCard2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.materialCard2.Location = new System.Drawing.Point(57, 49);
+            this.materialCard2.Location = new System.Drawing.Point(294, 163);
             this.materialCard2.Margin = new System.Windows.Forms.Padding(14);
             this.materialCard2.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialCard2.Name = "materialCard2";
             this.materialCard2.Padding = new System.Windows.Forms.Padding(14);
-            this.materialCard2.Size = new System.Drawing.Size(1264, 601);
+            this.materialCard2.Size = new System.Drawing.Size(752, 521);
             this.materialCard2.TabIndex = 0;
             // 
-            // dataGridView1
+            // materialLabel14
             // 
-            this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.ControlLight;
-            this.dataGridView1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.tbl_Date,
-            this.Column1,
-            this.Column2,
-            this.Column3,
-            this.Column4});
-            this.dataGridView1.Location = new System.Drawing.Point(34, 17);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.RowHeadersWidth = 51;
-            this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(1202, 567);
-            this.dataGridView1.TabIndex = 0;
+            this.materialLabel14.AutoSize = true;
+            this.materialLabel14.Depth = 0;
+            this.materialLabel14.Font = new System.Drawing.Font("Roboto Medium", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.materialLabel14.FontType = MaterialSkin.MaterialSkinManager.fontType.H6;
+            this.materialLabel14.Location = new System.Drawing.Point(156, 360);
+            this.materialLabel14.MouseState = MaterialSkin.MouseState.HOVER;
+            this.materialLabel14.Name = "materialLabel14";
+            this.materialLabel14.Size = new System.Drawing.Size(54, 24);
+            this.materialLabel14.TabIndex = 8;
+            this.materialLabel14.Text = "Driver";
             // 
-            // tbl_Date
+            // RegDriver
             // 
-            this.tbl_Date.HeaderText = "Date";
-            this.tbl_Date.MinimumWidth = 6;
-            this.tbl_Date.Name = "tbl_Date";
-            this.tbl_Date.Width = 170;
+            this.RegDriver.AutoResize = false;
+            this.RegDriver.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.RegDriver.Depth = 0;
+            this.RegDriver.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+            this.RegDriver.DropDownHeight = 174;
+            this.RegDriver.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.RegDriver.DropDownWidth = 121;
+            this.RegDriver.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.RegDriver.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.RegDriver.FormattingEnabled = true;
+            this.RegDriver.IntegralHeight = false;
+            this.RegDriver.ItemHeight = 43;
+            this.RegDriver.Location = new System.Drawing.Point(160, 387);
+            this.RegDriver.MaxDropDownItems = 4;
+            this.RegDriver.MouseState = MaterialSkin.MouseState.OUT;
+            this.RegDriver.Name = "RegDriver";
+            this.RegDriver.Size = new System.Drawing.Size(522, 49);
+            this.RegDriver.StartIndex = 0;
+            this.RegDriver.TabIndex = 7;
             // 
-            // Column1
+            // materialLabel12
             // 
-            this.Column1.HeaderText = "Plate Number";
-            this.Column1.MinimumWidth = 6;
-            this.Column1.Name = "Column1";
-            this.Column1.Width = 170;
+            this.materialLabel12.AutoSize = true;
+            this.materialLabel12.Depth = 0;
+            this.materialLabel12.Font = new System.Drawing.Font("Roboto Medium", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.materialLabel12.FontType = MaterialSkin.MaterialSkinManager.fontType.H6;
+            this.materialLabel12.Location = new System.Drawing.Point(156, 253);
+            this.materialLabel12.MouseState = MaterialSkin.MouseState.HOVER;
+            this.materialLabel12.Name = "materialLabel12";
+            this.materialLabel12.Size = new System.Drawing.Size(82, 24);
+            this.materialLabel12.TabIndex = 3;
+            this.materialLabel12.Text = "RFID Tag";
             // 
-            // Column2
+            // materialLabel11
             // 
-            this.Column2.HeaderText = "Drivers License";
-            this.Column2.MinimumWidth = 6;
-            this.Column2.Name = "Column2";
-            this.Column2.Width = 170;
-            // 
-            // Column3
-            // 
-            this.Column3.HeaderText = "Status";
-            this.Column3.MinimumWidth = 6;
-            this.Column3.Name = "Column3";
-            this.Column3.Width = 170;
-            // 
-            // Column4
-            // 
-            this.Column4.HeaderText = "RFID Tag";
-            this.Column4.MinimumWidth = 6;
-            this.Column4.Name = "Column4";
-            this.Column4.Width = 170;
+            this.materialLabel11.AutoSize = true;
+            this.materialLabel11.Depth = 0;
+            this.materialLabel11.Font = new System.Drawing.Font("Roboto Medium", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.materialLabel11.FontType = MaterialSkin.MaterialSkinManager.fontType.H6;
+            this.materialLabel11.Location = new System.Drawing.Point(156, 129);
+            this.materialLabel11.MouseState = MaterialSkin.MouseState.HOVER;
+            this.materialLabel11.Name = "materialLabel11";
+            this.materialLabel11.Size = new System.Drawing.Size(124, 24);
+            this.materialLabel11.TabIndex = 1;
+            this.materialLabel11.Text = "Plate Number";
             // 
             // tabPage3
             // 
@@ -404,6 +468,26 @@
             this.tabPage3.Size = new System.Drawing.Size(1432, 660);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "License Plate";
+            // 
+            // btnRecord
+            // 
+            this.btnRecord.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnRecord.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
+            this.btnRecord.Depth = 0;
+            this.btnRecord.HighEmphasis = true;
+            this.btnRecord.Icon = null;
+            this.btnRecord.Location = new System.Drawing.Point(553, 535);
+            this.btnRecord.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.btnRecord.MouseState = MaterialSkin.MouseState.HOVER;
+            this.btnRecord.Name = "btnRecord";
+            this.btnRecord.NoAccentTextColor = System.Drawing.Color.Empty;
+            this.btnRecord.Size = new System.Drawing.Size(99, 36);
+            this.btnRecord.TabIndex = 48;
+            this.btnRecord.Text = "      Record      ";
+            this.btnRecord.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
+            this.btnRecord.UseAccentColor = false;
+            this.btnRecord.UseVisualStyleBackColor = true;
+            this.btnRecord.Click += new System.EventHandler(this.btnRecord_Click);
             // 
             // label16
             // 
@@ -950,6 +1034,26 @@
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Drivers License";
             // 
+            // btnPlateRecord
+            // 
+            this.btnPlateRecord.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnPlateRecord.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
+            this.btnPlateRecord.Depth = 0;
+            this.btnPlateRecord.HighEmphasis = true;
+            this.btnPlateRecord.Icon = null;
+            this.btnPlateRecord.Location = new System.Drawing.Point(162, 571);
+            this.btnPlateRecord.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.btnPlateRecord.MouseState = MaterialSkin.MouseState.HOVER;
+            this.btnPlateRecord.Name = "btnPlateRecord";
+            this.btnPlateRecord.NoAccentTextColor = System.Drawing.Color.Empty;
+            this.btnPlateRecord.Size = new System.Drawing.Size(99, 36);
+            this.btnPlateRecord.TabIndex = 8;
+            this.btnPlateRecord.Text = "      Record      ";
+            this.btnPlateRecord.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
+            this.btnPlateRecord.UseAccentColor = false;
+            this.btnPlateRecord.UseVisualStyleBackColor = true;
+            this.btnPlateRecord.Click += new System.EventHandler(this.btnPlateRecord_Click);
+            // 
             // materialCard9
             // 
             this.materialCard9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
@@ -963,6 +1067,7 @@
             this.materialCard9.Padding = new System.Windows.Forms.Padding(14);
             this.materialCard9.Size = new System.Drawing.Size(456, 412);
             this.materialCard9.TabIndex = 7;
+            this.materialCard9.Visible = false;
             // 
             // pictureBoxFrame
             // 
@@ -992,6 +1097,7 @@
             this.btnCapture.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
             this.btnCapture.UseAccentColor = false;
             this.btnCapture.UseVisualStyleBackColor = true;
+            this.btnCapture.Visible = false;
             this.btnCapture.Click += new System.EventHandler(this.btnCapture_Click);
             // 
             // DL_materialTextbox
@@ -1033,6 +1139,7 @@
             this.materialCard4.Padding = new System.Windows.Forms.Padding(19, 17, 19, 17);
             this.materialCard4.Size = new System.Drawing.Size(806, 529);
             this.materialCard4.TabIndex = 4;
+            this.materialCard4.Visible = false;
             // 
             // materialSwitch2
             // 
@@ -1308,44 +1415,119 @@
             // 
             this.timerRfid.Tick += new System.EventHandler(this.timerRfid_Tick);
             // 
-            // btnRecord
+            // RegisterAll
             // 
-            this.btnRecord.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnRecord.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
-            this.btnRecord.Depth = 0;
-            this.btnRecord.HighEmphasis = true;
-            this.btnRecord.Icon = null;
-            this.btnRecord.Location = new System.Drawing.Point(553, 535);
-            this.btnRecord.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
-            this.btnRecord.MouseState = MaterialSkin.MouseState.HOVER;
-            this.btnRecord.Name = "btnRecord";
-            this.btnRecord.NoAccentTextColor = System.Drawing.Color.Empty;
-            this.btnRecord.Size = new System.Drawing.Size(99, 36);
-            this.btnRecord.TabIndex = 48;
-            this.btnRecord.Text = "      Record      ";
-            this.btnRecord.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
-            this.btnRecord.UseAccentColor = false;
-            this.btnRecord.UseVisualStyleBackColor = true;
-            this.btnRecord.Click += new System.EventHandler(this.btnRecord_Click);
+            this.RegisterAll.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.RegisterAll.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
+            this.RegisterAll.Depth = 0;
+            this.RegisterAll.HighEmphasis = true;
+            this.RegisterAll.Icon = null;
+            this.RegisterAll.Location = new System.Drawing.Point(328, 465);
+            this.RegisterAll.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.RegisterAll.MouseState = MaterialSkin.MouseState.HOVER;
+            this.RegisterAll.Name = "RegisterAll";
+            this.RegisterAll.NoAccentTextColor = System.Drawing.Color.Empty;
+            this.RegisterAll.Size = new System.Drawing.Size(89, 36);
+            this.RegisterAll.TabIndex = 9;
+            this.RegisterAll.Text = "Register";
+            this.RegisterAll.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
+            this.RegisterAll.UseAccentColor = false;
+            this.RegisterAll.UseVisualStyleBackColor = true;
+            this.RegisterAll.Click += new System.EventHandler(this.RegisterAll_Click);
             // 
-            // btnPlateRecord
+            // RegRFID
             // 
-            this.btnPlateRecord.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnPlateRecord.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
-            this.btnPlateRecord.Depth = 0;
-            this.btnPlateRecord.HighEmphasis = true;
-            this.btnPlateRecord.Icon = null;
-            this.btnPlateRecord.Location = new System.Drawing.Point(162, 571);
-            this.btnPlateRecord.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
-            this.btnPlateRecord.MouseState = MaterialSkin.MouseState.HOVER;
-            this.btnPlateRecord.Name = "btnPlateRecord";
-            this.btnPlateRecord.NoAccentTextColor = System.Drawing.Color.Empty;
-            this.btnPlateRecord.Size = new System.Drawing.Size(99, 36);
-            this.btnPlateRecord.TabIndex = 8;
-            this.btnPlateRecord.Text = "      Record      ";
-            this.btnPlateRecord.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
-            this.btnPlateRecord.UseAccentColor = false;
-            this.btnPlateRecord.UseVisualStyleBackColor = true;
+            this.RegRFID.AutoResize = false;
+            this.RegRFID.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.RegRFID.Depth = 0;
+            this.RegRFID.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+            this.RegRFID.DropDownHeight = 174;
+            this.RegRFID.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.RegRFID.DropDownWidth = 121;
+            this.RegRFID.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.RegRFID.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.RegRFID.FormattingEnabled = true;
+            this.RegRFID.IntegralHeight = false;
+            this.RegRFID.ItemHeight = 43;
+            this.RegRFID.Location = new System.Drawing.Point(160, 280);
+            this.RegRFID.MaxDropDownItems = 4;
+            this.RegRFID.MouseState = MaterialSkin.MouseState.OUT;
+            this.RegRFID.Name = "RegRFID";
+            this.RegRFID.Size = new System.Drawing.Size(367, 49);
+            this.RegRFID.StartIndex = 0;
+            this.RegRFID.TabIndex = 11;
+            // 
+            // RegPlate
+            // 
+            this.RegPlate.AutoResize = false;
+            this.RegPlate.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.RegPlate.Depth = 0;
+            this.RegPlate.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+            this.RegPlate.DropDownHeight = 174;
+            this.RegPlate.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.RegPlate.DropDownWidth = 121;
+            this.RegPlate.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.RegPlate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.RegPlate.FormattingEnabled = true;
+            this.RegPlate.IntegralHeight = false;
+            this.RegPlate.ItemHeight = 43;
+            this.RegPlate.Location = new System.Drawing.Point(160, 166);
+            this.RegPlate.MaxDropDownItems = 4;
+            this.RegPlate.MouseState = MaterialSkin.MouseState.OUT;
+            this.RegPlate.Name = "RegPlate";
+            this.RegPlate.Size = new System.Drawing.Size(249, 49);
+            this.RegPlate.StartIndex = 0;
+            this.RegPlate.TabIndex = 12;
+            // 
+            // pictureBox5
+            // 
+            this.pictureBox5.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox5.Image")));
+            this.pictureBox5.Location = new System.Drawing.Point(328, 17);
+            this.pictureBox5.Name = "pictureBox5";
+            this.pictureBox5.Size = new System.Drawing.Size(107, 106);
+            this.pictureBox5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox5.TabIndex = 13;
+            this.pictureBox5.TabStop = false;
+            // 
+            // searchButton
+            // 
+            this.searchButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.searchButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("searchButton.BackgroundImage")));
+            this.searchButton.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
+            this.searchButton.Depth = 0;
+            this.searchButton.HighEmphasis = true;
+            this.searchButton.Icon = null;
+            this.searchButton.Location = new System.Drawing.Point(375, 22);
+            this.searchButton.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.searchButton.MouseState = MaterialSkin.MouseState.HOVER;
+            this.searchButton.Name = "searchButton";
+            this.searchButton.NoAccentTextColor = System.Drawing.Color.Empty;
+            this.searchButton.Size = new System.Drawing.Size(64, 36);
+            this.searchButton.TabIndex = 14;
+            this.searchButton.Text = "   ";
+            this.searchButton.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
+            this.searchButton.UseAccentColor = false;
+            this.searchButton.UseVisualStyleBackColor = true;
+            this.searchButton.Click += new System.EventHandler(this.searchButton_Click);
+            // 
+            // searchTextBox
+            // 
+            this.searchTextBox.Location = new System.Drawing.Point(24, 36);
+            this.searchTextBox.Name = "searchTextBox";
+            this.searchTextBox.Size = new System.Drawing.Size(344, 22);
+            this.searchTextBox.TabIndex = 15;
+            // 
+            // searchResultsGridView
+            // 
+            this.searchResultsGridView.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.searchResultsGridView.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.searchResultsGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.searchResultsGridView.Location = new System.Drawing.Point(463, 22);
+            this.searchResultsGridView.Name = "searchResultsGridView";
+            this.searchResultsGridView.RowHeadersWidth = 51;
+            this.searchResultsGridView.RowTemplate.Height = 24;
+            this.searchResultsGridView.Size = new System.Drawing.Size(697, 108);
+            this.searchResultsGridView.TabIndex = 14;
             // 
             // Form1
             // 
@@ -1364,12 +1546,16 @@
             this.materialTabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
             this.materialCard1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.P1_pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.P1_pictureBox1)).EndInit();
             this.tabPage2.ResumeLayout(false);
+            this.tabPage2.PerformLayout();
             this.materialCard2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.materialCard2.PerformLayout();
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
             this.materialCard3.ResumeLayout(false);
@@ -1393,6 +1579,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
             this.tabPage6.ResumeLayout(false);
             this.tabPage6.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.searchResultsGridView)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1421,12 +1609,6 @@
         private MaterialSkin.Controls.MaterialButton btn_browse;
         private System.Windows.Forms.PictureBox LP_pictureBox;
         private MaterialSkin.Controls.MaterialCard materialCard2;
-        private System.Windows.Forms.DataGridView dataGridView1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn tbl_Date;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
         private MaterialSkin.Controls.MaterialCard materialCard5;
         private System.Windows.Forms.DataGridView dataGridView2;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
@@ -1488,6 +1670,20 @@
         private System.Windows.Forms.Timer timerRfid;
         private MaterialSkin.Controls.MaterialButton btnRecord;
         private MaterialSkin.Controls.MaterialButton btnPlateRecord;
+        private MaterialSkin.Controls.MaterialLabel lblenterexit;
+        private System.Windows.Forms.PictureBox pictureBox4;
+        private System.Windows.Forms.Panel panel1;
+        private MaterialSkin.Controls.MaterialLabel materialLabel14;
+        private MaterialSkin.Controls.MaterialComboBox RegDriver;
+        private MaterialSkin.Controls.MaterialLabel materialLabel12;
+        private MaterialSkin.Controls.MaterialLabel materialLabel11;
+        private MaterialSkin.Controls.MaterialButton RegisterAll;
+        private MaterialSkin.Controls.MaterialComboBox RegRFID;
+        private MaterialSkin.Controls.MaterialComboBox RegPlate;
+        private System.Windows.Forms.PictureBox pictureBox5;
+        private System.Windows.Forms.DataGridView searchResultsGridView;
+        private System.Windows.Forms.TextBox searchTextBox;
+        private MaterialSkin.Controls.MaterialButton searchButton;
     }
 }
 

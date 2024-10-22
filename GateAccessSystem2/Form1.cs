@@ -18,6 +18,9 @@ using System.Text;
 using System.IO.Ports;
 using MySql.Data.MySqlClient;
 using System.Collections.Generic;
+using System.Data;
+using MySql.Data.MySqlClient; // Make sure this is included for MySQL
+
 
 
 namespace GateAccessSystem2
@@ -29,7 +32,10 @@ namespace GateAccessSystem2
         private VideoCaptureDevice videoSource;
         private TesseractEngine ocrEngine;
         private SerialPort rfidReader;
-        
+
+        private bool isVehicleInside = false; // Tracks whether the vehicle is inside
+        private Timer detectionCooldownTimer; // Timer for 10-second interval
+        private bool detectionOnCooldown = false; // Prevents multiple detections within the interval
 
 
 
@@ -54,10 +60,20 @@ namespace GateAccessSystem2
                 TextShade.WHITE
             );
 
+            // Set form start position to manual
+            this.StartPosition = FormStartPosition.Manual;
+
+            // Manually set the position (x, y coordinates)
+            this.Location = new Point(195, 82); // Example: x = 100, y = 100
+
+            // Setup Timer for RFID detection cooldown (10 seconds)
+            detectionCooldownTimer = new Timer();
+            detectionCooldownTimer.Interval = 10000; // 10 seconds
+            detectionCooldownTimer.Tick += DetectionCooldownTimer_Tick;
             // Setup Timer for RFID detection
             timerRfid = new Timer();
             timerRfid.Interval = 5000; // 5 seconds (5000 milliseconds)
-            timerRfid.Tick += timerRfid_Tick;
+            
 
             Label label1 = new Label();
             label1.Location = new Point(20, 20);
@@ -66,8 +82,32 @@ namespace GateAccessSystem2
             Label label2 = new Label();
             label2.Location = new Point(20, 20);
             tabPage2.Controls.Add(label2);
+            // Populate ComboBoxes
+            PopulateComboBoxes();
 
+            // Bind Registration Button Click Event
+            
 
+        }
+
+        private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Check if tabPage4 is selected
+            if (materialTabControl1.SelectedTab == tabPage4)
+            {
+                // Define the path to the external .exe
+                string exePath = @"C:\Users\judde\Downloads\Auto_parking\Auto_parking\bin\Debug\Auto_parking.exe";
+
+                // Start the external .exe
+                try
+                {
+                    System.Diagnostics.Process.Start(exePath);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error launching the application: {ex.Message}");
+                }
+            }
         }
 
         private void RFID_DataReceived(object sender, SerialDataReceivedEventArgs e)
@@ -76,19 +116,46 @@ namespace GateAccessSystem2
             {
                 string rfidData = rfidReader.ReadExisting().Trim(); // Read the RFID tag
 
-                if (!string.IsNullOrEmpty(rfidData))
+                if (!string.IsNullOrEmpty(rfidData) && !detectionOnCooldown) // Check if not on cooldown
                 {
                     this.Invoke((MethodInvoker)delegate
                     {
+                        // Reset and stop the timerRfid if RFID data is received
+                        timerRfid.Stop(); // Stop the timer to prevent red cross image display
+
                         // Update the UI with the detected RFID data
-                        P1_pictureBox1.Visible = true;
-                        P1_pictureBox2.Visible = false;
+                        P1_pictureBox1.Visible = true; // Show check image
+                        P1_pictureBox2.Visible = false; // Hide red cross image
                         materialLabel1.Visible = true;
                         materialLabel1.Text = "RFID Detected: " + rfidData;
                         materialLabel5.Visible = false;
 
+
+                        // Check vehicle status (enter/exit)
+                        if (isVehicleInside)
+                        {
+                            pictureBox4.Visible = true;
+                            lblenterexit.Visible = true;
+                            lblenterexit.Text = "Vehicle EXIT";
+                            isVehicleInside = false; // Set state to outside
+                        }
+                        else
+                        {
+                            pictureBox4.Visible = true;
+                            lblenterexit.Visible = true;
+                            lblenterexit.Text = "Vehicle ENTER";
+                            isVehicleInside = true; // Set state to inside
+                        }
+
+                        // Start cooldown timer
+                        detectionOnCooldown = true;
+                        detectionCooldownTimer.Start();
+
                         // Call method to insert RFID data into the database
                         RecordRFIDTagToDatabase(rfidData);
+
+                        // Start the timer again for the next 5-second detection window
+                        timerRfid.Start();
                     });
                 }
             }
@@ -97,6 +164,12 @@ namespace GateAccessSystem2
                 MessageBox.Show($"Error reading RFID data: {ex.Message}");
             }
         }
+        private void DetectionCooldownTimer_Tick(object sender, EventArgs e)
+        {
+            detectionOnCooldown = false; // Allow new detection
+            detectionCooldownTimer.Stop(); // Stop the timer until next detection
+        }
+        
         private void RecordRFIDTagToDatabase(string rfidTag)
         {
             using (MySqlConnection conn = new MySqlConnection(connectionString))
@@ -106,22 +179,16 @@ namespace GateAccessSystem2
                     conn.Open();
 
                     // Check if the RFID tag already exists (optional, depends on your use case)
-                    string query = "INSERT INTO rfid_tag (tag, detection_time) VALUES (@tag, @time)";
+                    string query = "INSERT INTO rfid_tag (tag, detection_time, status) VALUES (@tag, @time, @status)";
 
                     using (MySqlCommand cmd = new MySqlCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("@tag", rfidTag);
                         cmd.Parameters.AddWithValue("@time", DateTime.Now); // Record the current time of detection
+                        cmd.Parameters.AddWithValue("@status", isVehicleInside ? "ENTER" : "EXIT");
 
                         int rowsAffected = cmd.ExecuteNonQuery();
-                        if (rowsAffected > 0)
-                        {
-                            MessageBox.Show("RFID tag recorded successfully!");
-                        }
-                        else
-                        {
-                            MessageBox.Show("Failed to record RFID tag.");
-                        }
+                        // No need to show a success message
                     }
                 }
                 catch (Exception ex)
@@ -138,7 +205,7 @@ namespace GateAccessSystem2
         {
             try
             {
-                string tessDataPath = @"C:\Users\judde\source\repos\GateAccessSystem2\GateAccessSystem2\GateAccessSystem2\tessdata";
+                string tessDataPath = @"C:\Users\judde\source\repos\GateAccessSystem2\GateAccessSystem2\tessdata";
                 ocrEngine = new TesseractEngine(tessDataPath, "eng", EngineMode.Default);
             }
             catch (Exception ex)
@@ -423,6 +490,7 @@ namespace GateAccessSystem2
             {
                 MessageBox.Show($"Error during OCR processing: {ex.Message}\n\nStack Trace:\n{ex.StackTrace}");
             }
+
         }
         private void CleanAndProcessText(string rawText)
         {
@@ -538,26 +606,23 @@ namespace GateAccessSystem2
         private void btnRecord_Click(object sender, EventArgs e)
         {
             string connStr = "server=localhost;user=root;database=thesis;password=parasathesis;";
-
             using (MySqlConnection conn = new MySqlConnection(connStr))
             {
                 try
                 {
                     conn.Open();
-
                     // SQL query to insert data into the license table
                     string query = @"INSERT INTO license (
-                            lastname, firstname, middlename, nationality, sex, 
-                            date_of_birth, weight, height, address, 
-                            license_number, expiration_date, agency_code, 
-                            blood_type, eye_color, restrictions, conditions
-                        ) VALUES (
-                            @lastname, @firstname, @middlename, @nationality, @sex, 
-                            @date_of_birth, @weight, @height, @address, 
-                            @license_number, @expiration_date, @agency_code, 
-                            @blood_type, @eye_color, @restrictions, @conditions
-                        )";
-
+                                lastname, firstname, middlename, nationality, sex, 
+                                `date of birth`, weight, height, address, 
+                                `license_number`, `expiration date`, `agency code`, 
+                                `blood type`, `eye color`, restrictions, conditions
+                            ) VALUES (
+                                @lastname, @firstname, @middlename, @nationality, @sex, 
+                                @date_of_birth, @weight, @height, @address, 
+                                @license_number, @expiration_date, @agency_code, 
+                                @blood_type, @eye_color, @restrictions, @conditions
+                            )";
                     // Prepare the command
                     using (MySqlCommand cmd = new MySqlCommand(query, conn))
                     {
@@ -578,10 +643,8 @@ namespace GateAccessSystem2
                         cmd.Parameters.AddWithValue("@eye_color", materialTextBox14.Text);
                         cmd.Parameters.AddWithValue("@restrictions", materialTextBox15.Text);
                         cmd.Parameters.AddWithValue("@conditions", materialTextBox16.Text);
-
                         // Execute the insert command
                         cmd.ExecuteNonQuery();
-
                         MessageBox.Show("Data successfully added to the database.");
                     }
                 }
@@ -592,7 +655,142 @@ namespace GateAccessSystem2
             }
         }
 
-        
+        private void btnPlateRecord_Click(object sender, EventArgs e)
+        {
+            string connStr = "server=localhost;user=root;database=thesis;password=parasathesis;";
+
+            using (MySqlConnection conn = new MySqlConnection(connStr))
+            {
+                try
+                {
+                    conn.Open();
+
+                    // SQL query to insert data into the license_plate table
+                    string query = @"INSERT INTO license_plate (plate_number) VALUES (@plate_number)";
+
+                    // Prepare the command
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        // Set parameters from the DL_materialTextbox
+                        cmd.Parameters.AddWithValue("@plate_number", DL_materialTextbox.Text);
+
+                        // Execute the insert command
+                        cmd.ExecuteNonQuery();
+
+                        MessageBox.Show("Plate number successfully added to the database.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error: {ex.Message}");
+                }
+            }
+        }
+        private void PopulateComboBoxes()
+        {
+            string connectionString = "server=localhost;database=thesis;user=root;password=parasathesis;";
+
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
+
+                // Populate RegPlate ComboBox
+                MySqlDataAdapter daPlate = new MySqlDataAdapter("SELECT plate_number FROM license_plate", connection);
+                DataTable dtPlate = new DataTable();
+                daPlate.Fill(dtPlate);
+                RegPlate.DisplayMember = "plate_number";
+                RegPlate.DataSource = dtPlate;
+
+                // Populate RegRFID ComboBox
+                MySqlDataAdapter daRFID = new MySqlDataAdapter("SELECT tag FROM rfid_tag", connection);
+                DataTable dtRFID = new DataTable();
+                daRFID.Fill(dtRFID);
+                RegRFID.DisplayMember = "tag";
+                RegRFID.DataSource = dtRFID;
+
+                // Populate RegDriver ComboBox
+                MySqlDataAdapter daDriver = new MySqlDataAdapter("SELECT CONCAT(lastname, ', ', firstname, ' - ', license_number) AS driver_info FROM license", connection);
+                DataTable dtDriver = new DataTable();
+                daDriver.Fill(dtDriver);
+                RegDriver.DisplayMember = "driver_info";
+                RegDriver.DataSource = dtDriver;
+            }
+        }
+
+
+        private void RegisterAll_Click(object sender, EventArgs e)
+        {
+            // Get the correct data from ComboBoxes
+            string selectedPlate = RegPlate.Text; // Get the text of the selected plate number
+            string selectedRFID = RegRFID.Text;   // Get the text of the selected RFID tag
+            string selectedDriver = RegDriver.Text; // Get the displayed text directly for now
+
+            // Database connection string
+            string connStr = "server=localhost;user=root;database=thesis;password=parasathesis;";
+
+            using (MySqlConnection conn = new MySqlConnection(connStr))
+            {
+                try
+                {
+                    conn.Open();
+
+                    // SQL query to insert data into the vehicle_registration table
+                    string query = @"INSERT INTO vehicle_registration (plate_number, rfid_tag, driver_name)
+                             VALUES (@plate_number, @rfid_tag, @driver_name)";
+
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        // Set the parameters
+                        cmd.Parameters.AddWithValue("@plate_number", selectedPlate);
+                        cmd.Parameters.AddWithValue("@rfid_tag", selectedRFID);
+                        cmd.Parameters.AddWithValue("@driver_name", selectedDriver); // Save the driver's info from ComboBox
+
+                        // Execute the insert command
+                        cmd.ExecuteNonQuery();
+                        MessageBox.Show("Data successfully registered.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error: {ex.Message}");
+                }
+            }
+        }
+
+        private void searchButton_Click(object sender, EventArgs e)
+        {
+            string searchTerm = searchTextBox.Text.Trim();
+            string connStr = "server=localhost;user=root;database=thesis;password=parasathesis;";
+
+            using (MySqlConnection conn = new MySqlConnection(connStr))
+            {
+                try
+                {
+                    conn.Open();
+
+                    // SQL query to search by driver_name or plate_number
+                    string query = @"SELECT * FROM vehicle_registration
+                             WHERE driver_name LIKE @searchTerm 
+                             OR plate_number LIKE @searchTerm";
+
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@searchTerm", "%" + searchTerm + "%");
+
+                        using (MySqlDataAdapter adapter = new MySqlDataAdapter(cmd))
+                        {
+                            DataTable results = new DataTable();
+                            adapter.Fill(results);
+                            searchResultsGridView.DataSource = results;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error: {ex.Message}");
+                }
+            }
+        }
     }
 }
 
