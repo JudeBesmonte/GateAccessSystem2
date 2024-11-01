@@ -73,7 +73,7 @@ namespace GateAccessSystem2
             // Setup Timer for RFID detection
             timerRfid = new Timer();
             timerRfid.Interval = 5000; // 5 seconds (5000 milliseconds)
-            
+
 
             Label label1 = new Label();
             label1.Location = new Point(20, 20);
@@ -86,7 +86,7 @@ namespace GateAccessSystem2
             PopulateComboBoxes();
 
             // Bind Registration Button Click Event
-            
+
 
         }
 
@@ -169,7 +169,7 @@ namespace GateAccessSystem2
             detectionOnCooldown = false; // Allow new detection
             detectionCooldownTimer.Stop(); // Stop the timer until next detection
         }
-        
+
         private void RecordRFIDTagToDatabase(string rfidTag)
         {
             using (MySqlConnection conn = new MySqlConnection(connectionString))
@@ -560,7 +560,7 @@ namespace GateAccessSystem2
             }
         }
 
-        
+
 
         private async void btnCapture_Click(object sender, EventArgs e)
         {
@@ -601,7 +601,7 @@ namespace GateAccessSystem2
             materialLabel5.Visible = true;
         }
 
-     
+
 
         private void btnRecord_Click(object sender, EventArgs e)
         {
@@ -757,9 +757,11 @@ namespace GateAccessSystem2
             }
         }
 
-        private void searchButton_Click(object sender, EventArgs e)
+        
+
+        private void searchButton2_Click(object sender, EventArgs e)
         {
-            string searchTerm = searchTextBox.Text.Trim();
+            string searchTerm = searchTextBox2.Text.Trim();
             string connStr = "server=localhost;user=root;database=thesis;password=parasathesis;";
 
             using (MySqlConnection conn = new MySqlConnection(connStr))
@@ -781,7 +783,7 @@ namespace GateAccessSystem2
                         {
                             DataTable results = new DataTable();
                             adapter.Fill(results);
-                            searchResultsGridView.DataSource = results;
+                            searchResultsGridView2.DataSource = results;
                         }
                     }
                 }

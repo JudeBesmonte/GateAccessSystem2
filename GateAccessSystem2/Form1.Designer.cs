@@ -44,6 +44,10 @@
             this.P1_pictureBox1 = new System.Windows.Forms.PictureBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.materialCard2 = new MaterialSkin.Controls.MaterialCard();
+            this.pictureBox5 = new System.Windows.Forms.PictureBox();
+            this.RegPlate = new MaterialSkin.Controls.MaterialComboBox();
+            this.RegRFID = new MaterialSkin.Controls.MaterialComboBox();
+            this.RegisterAll = new MaterialSkin.Controls.MaterialButton();
             this.materialLabel14 = new MaterialSkin.Controls.MaterialLabel();
             this.RegDriver = new MaterialSkin.Controls.MaterialComboBox();
             this.materialLabel12 = new MaterialSkin.Controls.MaterialLabel();
@@ -110,24 +114,14 @@
             this.materialCard6 = new MaterialSkin.Controls.MaterialCard();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.materialCard5 = new MaterialSkin.Controls.MaterialCard();
-            this.dataGridView2 = new System.Windows.Forms.DataGridView();
-            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.searchResultsGridView2 = new System.Windows.Forms.DataGridView();
+            this.pictureBox6 = new System.Windows.Forms.PictureBox();
+            this.searchButton2 = new MaterialSkin.Controls.MaterialButton();
+            this.searchTextBox2 = new System.Windows.Forms.TextBox();
             this.tabPage6 = new System.Windows.Forms.TabPage();
             this.materialMultiLineTextBox1 = new MaterialSkin.Controls.MaterialMultiLineTextBox();
             this.materialLabel6 = new MaterialSkin.Controls.MaterialLabel();
             this.timerRfid = new System.Windows.Forms.Timer(this.components);
-            this.RegisterAll = new MaterialSkin.Controls.MaterialButton();
-            this.RegRFID = new MaterialSkin.Controls.MaterialComboBox();
-            this.RegPlate = new MaterialSkin.Controls.MaterialComboBox();
-            this.pictureBox5 = new System.Windows.Forms.PictureBox();
-            this.searchButton = new MaterialSkin.Controls.MaterialButton();
-            this.searchTextBox = new System.Windows.Forms.TextBox();
-            this.searchResultsGridView = new System.Windows.Forms.DataGridView();
             this.materialTabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -137,6 +131,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.P1_pictureBox1)).BeginInit();
             this.tabPage2.SuspendLayout();
             this.materialCard2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
             this.tabPage3.SuspendLayout();
             this.materialCard3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.LP_pictureBox)).BeginInit();
@@ -153,10 +148,9 @@
             this.materialCard6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.materialCard5.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.searchResultsGridView2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
             this.tabPage6.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.searchResultsGridView)).BeginInit();
             this.SuspendLayout();
             // 
             // imageList1
@@ -323,9 +317,6 @@
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.Color.White;
-            this.tabPage2.Controls.Add(this.searchResultsGridView);
-            this.tabPage2.Controls.Add(this.searchTextBox);
-            this.tabPage2.Controls.Add(this.searchButton);
             this.tabPage2.Controls.Add(this.materialCard2);
             this.tabPage2.ImageKey = "registration.png";
             this.tabPage2.Location = new System.Drawing.Point(4, 39);
@@ -356,6 +347,80 @@
             this.materialCard2.Padding = new System.Windows.Forms.Padding(14);
             this.materialCard2.Size = new System.Drawing.Size(752, 521);
             this.materialCard2.TabIndex = 0;
+            // 
+            // pictureBox5
+            // 
+            this.pictureBox5.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox5.Image")));
+            this.pictureBox5.Location = new System.Drawing.Point(328, 17);
+            this.pictureBox5.Name = "pictureBox5";
+            this.pictureBox5.Size = new System.Drawing.Size(107, 106);
+            this.pictureBox5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox5.TabIndex = 13;
+            this.pictureBox5.TabStop = false;
+            // 
+            // RegPlate
+            // 
+            this.RegPlate.AutoResize = false;
+            this.RegPlate.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.RegPlate.Depth = 0;
+            this.RegPlate.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+            this.RegPlate.DropDownHeight = 174;
+            this.RegPlate.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.RegPlate.DropDownWidth = 121;
+            this.RegPlate.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.RegPlate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.RegPlate.FormattingEnabled = true;
+            this.RegPlate.IntegralHeight = false;
+            this.RegPlate.ItemHeight = 43;
+            this.RegPlate.Location = new System.Drawing.Point(160, 166);
+            this.RegPlate.MaxDropDownItems = 4;
+            this.RegPlate.MouseState = MaterialSkin.MouseState.OUT;
+            this.RegPlate.Name = "RegPlate";
+            this.RegPlate.Size = new System.Drawing.Size(249, 49);
+            this.RegPlate.StartIndex = 0;
+            this.RegPlate.TabIndex = 12;
+            // 
+            // RegRFID
+            // 
+            this.RegRFID.AutoResize = false;
+            this.RegRFID.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.RegRFID.Depth = 0;
+            this.RegRFID.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+            this.RegRFID.DropDownHeight = 174;
+            this.RegRFID.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.RegRFID.DropDownWidth = 121;
+            this.RegRFID.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.RegRFID.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.RegRFID.FormattingEnabled = true;
+            this.RegRFID.IntegralHeight = false;
+            this.RegRFID.ItemHeight = 43;
+            this.RegRFID.Location = new System.Drawing.Point(160, 280);
+            this.RegRFID.MaxDropDownItems = 4;
+            this.RegRFID.MouseState = MaterialSkin.MouseState.OUT;
+            this.RegRFID.Name = "RegRFID";
+            this.RegRFID.Size = new System.Drawing.Size(367, 49);
+            this.RegRFID.StartIndex = 0;
+            this.RegRFID.TabIndex = 11;
+            // 
+            // RegisterAll
+            // 
+            this.RegisterAll.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.RegisterAll.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
+            this.RegisterAll.Depth = 0;
+            this.RegisterAll.HighEmphasis = true;
+            this.RegisterAll.Icon = null;
+            this.RegisterAll.Location = new System.Drawing.Point(328, 465);
+            this.RegisterAll.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.RegisterAll.MouseState = MaterialSkin.MouseState.HOVER;
+            this.RegisterAll.Name = "RegisterAll";
+            this.RegisterAll.NoAccentTextColor = System.Drawing.Color.Empty;
+            this.RegisterAll.Size = new System.Drawing.Size(89, 36);
+            this.RegisterAll.TabIndex = 9;
+            this.RegisterAll.Text = "Register";
+            this.RegisterAll.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
+            this.RegisterAll.UseAccentColor = false;
+            this.RegisterAll.UseVisualStyleBackColor = true;
+            this.RegisterAll.Click += new System.EventHandler(this.RegisterAll_Click);
             // 
             // materialLabel14
             // 
@@ -1298,77 +1363,70 @@
             // materialCard5
             // 
             this.materialCard5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.materialCard5.Controls.Add(this.dataGridView2);
+            this.materialCard5.Controls.Add(this.searchResultsGridView2);
+            this.materialCard5.Controls.Add(this.pictureBox6);
+            this.materialCard5.Controls.Add(this.searchButton2);
+            this.materialCard5.Controls.Add(this.searchTextBox2);
             this.materialCard5.Depth = 0;
             this.materialCard5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.materialCard5.Location = new System.Drawing.Point(25, 23);
+            this.materialCard5.Location = new System.Drawing.Point(67, 23);
             this.materialCard5.Margin = new System.Windows.Forms.Padding(14);
             this.materialCard5.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialCard5.Name = "materialCard5";
             this.materialCard5.Padding = new System.Windows.Forms.Padding(14);
-            this.materialCard5.Size = new System.Drawing.Size(1306, 396);
+            this.materialCard5.Size = new System.Drawing.Size(1264, 396);
             this.materialCard5.TabIndex = 0;
             // 
-            // dataGridView2
+            // searchResultsGridView2
             // 
-            this.dataGridView2.BackgroundColor = System.Drawing.SystemColors.ControlLight;
-            this.dataGridView2.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView2.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.dataGridViewTextBoxColumn1,
-            this.dataGridViewTextBoxColumn2,
-            this.Column5,
-            this.dataGridViewTextBoxColumn3,
-            this.dataGridViewTextBoxColumn4,
-            this.dataGridViewTextBoxColumn5});
-            this.dataGridView2.Location = new System.Drawing.Point(45, 17);
-            this.dataGridView2.Name = "dataGridView2";
-            this.dataGridView2.RowHeadersWidth = 51;
-            this.dataGridView2.RowTemplate.Height = 24;
-            this.dataGridView2.Size = new System.Drawing.Size(1212, 362);
-            this.dataGridView2.TabIndex = 1;
+            this.searchResultsGridView2.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.searchResultsGridView2.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.searchResultsGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.searchResultsGridView2.Location = new System.Drawing.Point(262, 160);
+            this.searchResultsGridView2.Name = "searchResultsGridView2";
+            this.searchResultsGridView2.RowHeadersWidth = 51;
+            this.searchResultsGridView2.RowTemplate.Height = 24;
+            this.searchResultsGridView2.Size = new System.Drawing.Size(716, 199);
+            this.searchResultsGridView2.TabIndex = 19;
             // 
-            // dataGridViewTextBoxColumn1
+            // pictureBox6
             // 
-            this.dataGridViewTextBoxColumn1.HeaderText = "Time Entry";
-            this.dataGridViewTextBoxColumn1.MinimumWidth = 6;
-            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
-            this.dataGridViewTextBoxColumn1.Width = 141;
+            this.pictureBox6.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox6.Image")));
+            this.pictureBox6.Location = new System.Drawing.Point(262, 81);
+            this.pictureBox6.Name = "pictureBox6";
+            this.pictureBox6.Size = new System.Drawing.Size(56, 46);
+            this.pictureBox6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox6.TabIndex = 18;
+            this.pictureBox6.TabStop = false;
             // 
-            // dataGridViewTextBoxColumn2
+            // searchButton2
             // 
-            this.dataGridViewTextBoxColumn2.HeaderText = "Time Exit";
-            this.dataGridViewTextBoxColumn2.MinimumWidth = 6;
-            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
-            this.dataGridViewTextBoxColumn2.Width = 141;
+            this.searchButton2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.searchButton2.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
+            this.searchButton2.Depth = 0;
+            this.searchButton2.HighEmphasis = true;
+            this.searchButton2.Icon = null;
+            this.searchButton2.Location = new System.Drawing.Point(914, 91);
+            this.searchButton2.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.searchButton2.MouseState = MaterialSkin.MouseState.HOVER;
+            this.searchButton2.Name = "searchButton2";
+            this.searchButton2.NoAccentTextColor = System.Drawing.Color.Empty;
+            this.searchButton2.Size = new System.Drawing.Size(64, 36);
+            this.searchButton2.TabIndex = 17;
+            this.searchButton2.Text = "   ";
+            this.searchButton2.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
+            this.searchButton2.UseAccentColor = false;
+            this.searchButton2.UseVisualStyleBackColor = true;
+            this.searchButton2.Click += new System.EventHandler(this.searchButton2_Click);
             // 
-            // Column5
+            // searchTextBox2
             // 
-            this.Column5.HeaderText = "Plate Number";
-            this.Column5.MinimumWidth = 6;
-            this.Column5.Name = "Column5";
-            this.Column5.Width = 141;
-            // 
-            // dataGridViewTextBoxColumn3
-            // 
-            this.dataGridViewTextBoxColumn3.HeaderText = "Scanned RFID";
-            this.dataGridViewTextBoxColumn3.MinimumWidth = 6;
-            this.dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
-            this.dataGridViewTextBoxColumn3.Width = 141;
-            // 
-            // dataGridViewTextBoxColumn4
-            // 
-            this.dataGridViewTextBoxColumn4.HeaderText = "Entry Attempts";
-            this.dataGridViewTextBoxColumn4.MinimumWidth = 6;
-            this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
-            this.dataGridViewTextBoxColumn4.Width = 141;
-            // 
-            // dataGridViewTextBoxColumn5
-            // 
-            this.dataGridViewTextBoxColumn5.HeaderText = "RFID Tag";
-            this.dataGridViewTextBoxColumn5.MinimumWidth = 6;
-            this.dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
-            this.dataGridViewTextBoxColumn5.Width = 149;
+            this.searchTextBox2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.searchTextBox2.Location = new System.Drawing.Point(324, 84);
+            this.searchTextBox2.Multiline = true;
+            this.searchTextBox2.Name = "searchTextBox2";
+            this.searchTextBox2.Size = new System.Drawing.Size(583, 43);
+            this.searchTextBox2.TabIndex = 16;
             // 
             // tabPage6
             // 
@@ -1415,120 +1473,6 @@
             // 
             this.timerRfid.Tick += new System.EventHandler(this.timerRfid_Tick);
             // 
-            // RegisterAll
-            // 
-            this.RegisterAll.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.RegisterAll.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
-            this.RegisterAll.Depth = 0;
-            this.RegisterAll.HighEmphasis = true;
-            this.RegisterAll.Icon = null;
-            this.RegisterAll.Location = new System.Drawing.Point(328, 465);
-            this.RegisterAll.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
-            this.RegisterAll.MouseState = MaterialSkin.MouseState.HOVER;
-            this.RegisterAll.Name = "RegisterAll";
-            this.RegisterAll.NoAccentTextColor = System.Drawing.Color.Empty;
-            this.RegisterAll.Size = new System.Drawing.Size(89, 36);
-            this.RegisterAll.TabIndex = 9;
-            this.RegisterAll.Text = "Register";
-            this.RegisterAll.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
-            this.RegisterAll.UseAccentColor = false;
-            this.RegisterAll.UseVisualStyleBackColor = true;
-            this.RegisterAll.Click += new System.EventHandler(this.RegisterAll_Click);
-            // 
-            // RegRFID
-            // 
-            this.RegRFID.AutoResize = false;
-            this.RegRFID.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.RegRFID.Depth = 0;
-            this.RegRFID.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
-            this.RegRFID.DropDownHeight = 174;
-            this.RegRFID.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.RegRFID.DropDownWidth = 121;
-            this.RegRFID.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
-            this.RegRFID.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.RegRFID.FormattingEnabled = true;
-            this.RegRFID.IntegralHeight = false;
-            this.RegRFID.ItemHeight = 43;
-            this.RegRFID.Location = new System.Drawing.Point(160, 280);
-            this.RegRFID.MaxDropDownItems = 4;
-            this.RegRFID.MouseState = MaterialSkin.MouseState.OUT;
-            this.RegRFID.Name = "RegRFID";
-            this.RegRFID.Size = new System.Drawing.Size(367, 49);
-            this.RegRFID.StartIndex = 0;
-            this.RegRFID.TabIndex = 11;
-            // 
-            // RegPlate
-            // 
-            this.RegPlate.AutoResize = false;
-            this.RegPlate.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.RegPlate.Depth = 0;
-            this.RegPlate.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
-            this.RegPlate.DropDownHeight = 174;
-            this.RegPlate.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.RegPlate.DropDownWidth = 121;
-            this.RegPlate.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
-            this.RegPlate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.RegPlate.FormattingEnabled = true;
-            this.RegPlate.IntegralHeight = false;
-            this.RegPlate.ItemHeight = 43;
-            this.RegPlate.Location = new System.Drawing.Point(160, 166);
-            this.RegPlate.MaxDropDownItems = 4;
-            this.RegPlate.MouseState = MaterialSkin.MouseState.OUT;
-            this.RegPlate.Name = "RegPlate";
-            this.RegPlate.Size = new System.Drawing.Size(249, 49);
-            this.RegPlate.StartIndex = 0;
-            this.RegPlate.TabIndex = 12;
-            // 
-            // pictureBox5
-            // 
-            this.pictureBox5.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox5.Image")));
-            this.pictureBox5.Location = new System.Drawing.Point(328, 17);
-            this.pictureBox5.Name = "pictureBox5";
-            this.pictureBox5.Size = new System.Drawing.Size(107, 106);
-            this.pictureBox5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox5.TabIndex = 13;
-            this.pictureBox5.TabStop = false;
-            // 
-            // searchButton
-            // 
-            this.searchButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.searchButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("searchButton.BackgroundImage")));
-            this.searchButton.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
-            this.searchButton.Depth = 0;
-            this.searchButton.HighEmphasis = true;
-            this.searchButton.Icon = null;
-            this.searchButton.Location = new System.Drawing.Point(375, 22);
-            this.searchButton.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
-            this.searchButton.MouseState = MaterialSkin.MouseState.HOVER;
-            this.searchButton.Name = "searchButton";
-            this.searchButton.NoAccentTextColor = System.Drawing.Color.Empty;
-            this.searchButton.Size = new System.Drawing.Size(64, 36);
-            this.searchButton.TabIndex = 14;
-            this.searchButton.Text = "   ";
-            this.searchButton.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
-            this.searchButton.UseAccentColor = false;
-            this.searchButton.UseVisualStyleBackColor = true;
-            this.searchButton.Click += new System.EventHandler(this.searchButton_Click);
-            // 
-            // searchTextBox
-            // 
-            this.searchTextBox.Location = new System.Drawing.Point(24, 36);
-            this.searchTextBox.Name = "searchTextBox";
-            this.searchTextBox.Size = new System.Drawing.Size(344, 22);
-            this.searchTextBox.TabIndex = 15;
-            // 
-            // searchResultsGridView
-            // 
-            this.searchResultsGridView.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.searchResultsGridView.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.searchResultsGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.searchResultsGridView.Location = new System.Drawing.Point(463, 22);
-            this.searchResultsGridView.Name = "searchResultsGridView";
-            this.searchResultsGridView.RowHeadersWidth = 51;
-            this.searchResultsGridView.RowTemplate.Height = 24;
-            this.searchResultsGridView.Size = new System.Drawing.Size(697, 108);
-            this.searchResultsGridView.TabIndex = 14;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -1553,9 +1497,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.P1_pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.P1_pictureBox1)).EndInit();
             this.tabPage2.ResumeLayout(false);
-            this.tabPage2.PerformLayout();
             this.materialCard2.ResumeLayout(false);
             this.materialCard2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
             this.materialCard3.ResumeLayout(false);
@@ -1576,11 +1520,11 @@
             this.materialCard6.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.materialCard5.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
+            this.materialCard5.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.searchResultsGridView2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).EndInit();
             this.tabPage6.ResumeLayout(false);
             this.tabPage6.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.searchResultsGridView)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1610,13 +1554,6 @@
         private System.Windows.Forms.PictureBox LP_pictureBox;
         private MaterialSkin.Controls.MaterialCard materialCard2;
         private MaterialSkin.Controls.MaterialCard materialCard5;
-        private System.Windows.Forms.DataGridView dataGridView2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column5;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
         private MaterialSkin.Controls.MaterialLabel materialLabel4;
         private MaterialSkin.Controls.MaterialCard materialCard8;
         private MaterialSkin.Controls.MaterialLabel materialLabel3;
@@ -1681,9 +1618,10 @@
         private MaterialSkin.Controls.MaterialComboBox RegRFID;
         private MaterialSkin.Controls.MaterialComboBox RegPlate;
         private System.Windows.Forms.PictureBox pictureBox5;
-        private System.Windows.Forms.DataGridView searchResultsGridView;
-        private System.Windows.Forms.TextBox searchTextBox;
-        private MaterialSkin.Controls.MaterialButton searchButton;
+        private System.Windows.Forms.TextBox searchTextBox2;
+        private System.Windows.Forms.DataGridView searchResultsGridView2;
+        private System.Windows.Forms.PictureBox pictureBox6;
+        private MaterialSkin.Controls.MaterialButton searchButton2;
     }
 }
 
