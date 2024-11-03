@@ -19,7 +19,7 @@ using System.IO.Ports;
 using MySql.Data.MySqlClient;
 using System.Collections.Generic;
 using System.Data;
-using MySql.Data.MySqlClient; // Make sure this is included for MySQL
+using MySql.Data.MySqlClient; 
 
 
 
@@ -44,10 +44,17 @@ namespace GateAccessSystem2
             InitializeComponent();
             InitializeOCR();
 
-            // Initialize RFID reader (replace COM3 with your actual port)
-            rfidReader = new SerialPort("COM4", 9600, Parity.None, 8, StopBits.One);
-            rfidReader.DataReceived += new SerialDataReceivedEventHandler(RFID_DataReceived);
-            rfidReader.Open();
+            if (IsRFIDReaderConnected())
+            {
+                // Initialize RFID reader (replace COM3 with your actual port)
+                rfidReader = new SerialPort("COM4", 9600, Parity.None, 8, StopBits.One);
+                rfidReader.DataReceived += new SerialDataReceivedEventHandler(RFID_DataReceived);
+                rfidReader.Open();
+            }
+            else
+            {
+                MessageBox.Show("RFID reader not connected. The application will run without RFID functionality.");
+            }
 
             var materialSkinManager = MaterialSkinManager.Instance;
             materialSkinManager.AddFormToManage(this);
@@ -74,7 +81,6 @@ namespace GateAccessSystem2
             timerRfid = new Timer();
             timerRfid.Interval = 5000; // 5 seconds (5000 milliseconds)
 
-
             Label label1 = new Label();
             label1.Location = new Point(20, 20);
             tabPage1.Controls.Add(label1);
@@ -86,9 +92,8 @@ namespace GateAccessSystem2
             PopulateComboBoxes();
 
             // Bind Registration Button Click Event
-
-
         }
+
 
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -169,6 +174,27 @@ namespace GateAccessSystem2
             detectionOnCooldown = false; // Allow new detection
             detectionCooldownTimer.Stop(); // Stop the timer until next detection
         }
+        private bool IsRFIDReaderConnected()
+        {
+            try
+            {
+                var ports = SerialPort.GetPortNames();
+                foreach (var port in ports)
+                {
+                    if (port.Equals("COM4", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+
 
         private void RecordRFIDTagToDatabase(string rfidTag)
         {
