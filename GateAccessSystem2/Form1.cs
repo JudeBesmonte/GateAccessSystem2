@@ -19,7 +19,9 @@ using System.IO.Ports;
 using MySql.Data.MySqlClient;
 using System.Collections.Generic;
 using System.Data;
-using MySql.Data.MySqlClient; 
+using MySql.Data.MySqlClient;
+using System.Collections.Generic;
+using System.Windows.Forms.DataVisualization.Charting;
 
 
 
@@ -818,6 +820,83 @@ namespace GateAccessSystem2
                     MessageBox.Show($"Error: {ex.Message}");
                 }
             }
+        }
+
+        private void AnalyzePeakHours()
+        {
+            Dictionary<int, int> hourlyCounts = new Dictionary<int, int>();
+
+            // Initialize all hours to 0
+            for (int hour = 0; hour < 24; hour++)
+            {
+                hourlyCounts[hour] = 0;
+            }
+
+            using (MySqlConnection conn = new MySqlConnection(connectionString))
+            {
+                try
+                {
+                    conn.Open();
+                    string query = "SELECT detection_time FROM rfid_tag";
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            DateTime detectionTime = reader.GetDateTime("detection_time");
+                            int hour = detectionTime.Hour;
+                            hourlyCounts[hour]++;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error during peak hour analysis: {ex.Message}");
+                    return;
+                }
+            }
+
+            // Clear existing data in chart
+            chart1.Series.Clear();
+            Series series = new Series("Vehicle Count")
+            {
+                ChartType = SeriesChartType.Column
+            };
+
+            // Add data points to the series (ensure values are whole numbers)
+            foreach (var hour in hourlyCounts)
+            {
+                // Ensure the count is an integer
+                series.Points.AddXY(hour.Key, (int)hour.Value); // Cast to int explicitly
+            }
+
+            // Add the series to the chart
+            chart1.Series.Add(series);
+
+            // Set chart axis titles
+            chart1.ChartAreas[0].AxisX.Title = "Hour of the Day";
+            chart1.ChartAreas[0].AxisY.Title = "Vehicle Count";
+
+            // Customize Y-Axis to scale from 0 to 20 (whole numbers)
+            chart1.ChartAreas[0].AxisY.Minimum = 0;
+            chart1.ChartAreas[0].AxisY.Maximum = 20;
+
+            // Customize X-Axis for better hour display (show every hour)
+            chart1.ChartAreas[0].AxisX.Interval = 1;
+            chart1.ChartAreas[0].AxisX.LabelStyle.Format = "00"; // Display hours as two digits (e.g., 00, 01, 02, ...)
+            chart1.ChartAreas[0].AxisX.IsLabelAutoFit = true;
+            chart1.ChartAreas[0].AxisX.LabelStyle.Angle = -45; // Optional: Rotate labels for better readability
+
+            // Optional: Improve chart appearance (set grid lines, titles, etc.)
+            chart1.ChartAreas[0].AxisX.MajorGrid.LineColor = System.Drawing.Color.LightGray;
+            chart1.ChartAreas[0].AxisY.MajorGrid.LineColor = System.Drawing.Color.LightGray;
+            chart1.ChartAreas[0].AxisY.MajorTickMark.Enabled = true;
+            chart1.ChartAreas[0].AxisX.MajorTickMark.Enabled = true;
+        }
+
+        private void btnAnalyzePeakHours_Click(object sender, EventArgs e)
+        {
+            AnalyzePeakHours();
         }
     }
 }

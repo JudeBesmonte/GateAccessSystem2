@@ -30,6 +30,10 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.materialTabControl1 = new MaterialSkin.Controls.MaterialTabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
@@ -43,15 +47,13 @@
             this.P1_pictureBox2 = new System.Windows.Forms.PictureBox();
             this.P1_pictureBox1 = new System.Windows.Forms.PictureBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.materialLabel13 = new MaterialSkin.Controls.MaterialLabel();
             this.materialCard2 = new MaterialSkin.Controls.MaterialCard();
             this.pictureBox5 = new System.Windows.Forms.PictureBox();
             this.RegPlate = new MaterialSkin.Controls.MaterialComboBox();
             this.RegRFID = new MaterialSkin.Controls.MaterialComboBox();
             this.RegisterAll = new MaterialSkin.Controls.MaterialButton();
-            this.materialLabel14 = new MaterialSkin.Controls.MaterialLabel();
             this.RegDriver = new MaterialSkin.Controls.MaterialComboBox();
-            this.materialLabel12 = new MaterialSkin.Controls.MaterialLabel();
-            this.materialLabel11 = new MaterialSkin.Controls.MaterialLabel();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.btnRecord = new MaterialSkin.Controls.MaterialButton();
             this.label16 = new System.Windows.Forms.Label();
@@ -105,14 +107,7 @@
             this.DL_pictureBox = new System.Windows.Forms.PictureBox();
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.materialLabel4 = new MaterialSkin.Controls.MaterialLabel();
-            this.materialCard8 = new MaterialSkin.Controls.MaterialCard();
-            this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.materialLabel3 = new MaterialSkin.Controls.MaterialLabel();
-            this.materialLabel2 = new MaterialSkin.Controls.MaterialLabel();
-            this.materialCard7 = new MaterialSkin.Controls.MaterialCard();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            this.materialCard6 = new MaterialSkin.Controls.MaterialCard();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.materialCard5 = new MaterialSkin.Controls.MaterialCard();
             this.searchResultsGridView2 = new System.Windows.Forms.DataGridView();
             this.pictureBox6 = new System.Windows.Forms.PictureBox();
@@ -122,6 +117,13 @@
             this.materialMultiLineTextBox1 = new MaterialSkin.Controls.MaterialMultiLineTextBox();
             this.materialLabel6 = new MaterialSkin.Controls.MaterialLabel();
             this.timerRfid = new System.Windows.Forms.Timer(this.components);
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.materialCard6 = new MaterialSkin.Controls.MaterialCard();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.materialCard7 = new MaterialSkin.Controls.MaterialCard();
+            this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.btnAnalyzePeakHours = new MaterialSkin.Controls.MaterialButton();
             this.materialTabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -141,16 +143,16 @@
             this.materialCard4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DL_pictureBox)).BeginInit();
             this.tabPage5.SuspendLayout();
-            this.materialCard8.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
-            this.materialCard7.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
-            this.materialCard6.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.materialCard5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.searchResultsGridView2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
             this.tabPage6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            this.panel2.SuspendLayout();
+            this.materialCard6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.materialCard7.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.SuspendLayout();
             // 
             // imageList1
@@ -317,6 +319,7 @@
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.Color.White;
+            this.tabPage2.Controls.Add(this.materialLabel13);
             this.tabPage2.Controls.Add(this.materialCard2);
             this.tabPage2.ImageKey = "registration.png";
             this.tabPage2.Location = new System.Drawing.Point(4, 39);
@@ -327,6 +330,19 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Registration";
             // 
+            // materialLabel13
+            // 
+            this.materialLabel13.AutoSize = true;
+            this.materialLabel13.Depth = 0;
+            this.materialLabel13.Font = new System.Drawing.Font("Microsoft Sans Serif", 19.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.materialLabel13.FontType = MaterialSkin.MaterialSkinManager.fontType.H4;
+            this.materialLabel13.Location = new System.Drawing.Point(62, 22);
+            this.materialLabel13.MouseState = MaterialSkin.MouseState.HOVER;
+            this.materialLabel13.Name = "materialLabel13";
+            this.materialLabel13.Size = new System.Drawing.Size(245, 41);
+            this.materialLabel13.TabIndex = 14;
+            this.materialLabel13.Text = "Register Vehicle";
+            // 
             // materialCard2
             // 
             this.materialCard2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
@@ -334,26 +350,24 @@
             this.materialCard2.Controls.Add(this.RegPlate);
             this.materialCard2.Controls.Add(this.RegRFID);
             this.materialCard2.Controls.Add(this.RegisterAll);
-            this.materialCard2.Controls.Add(this.materialLabel14);
             this.materialCard2.Controls.Add(this.RegDriver);
-            this.materialCard2.Controls.Add(this.materialLabel12);
-            this.materialCard2.Controls.Add(this.materialLabel11);
             this.materialCard2.Depth = 0;
             this.materialCard2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.materialCard2.Location = new System.Drawing.Point(294, 163);
+            this.materialCard2.Location = new System.Drawing.Point(339, 104);
             this.materialCard2.Margin = new System.Windows.Forms.Padding(14);
             this.materialCard2.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialCard2.Name = "materialCard2";
             this.materialCard2.Padding = new System.Windows.Forms.Padding(14);
-            this.materialCard2.Size = new System.Drawing.Size(752, 521);
+            this.materialCard2.Size = new System.Drawing.Size(649, 493);
             this.materialCard2.TabIndex = 0;
             // 
             // pictureBox5
             // 
+            this.pictureBox5.Dock = System.Windows.Forms.DockStyle.Top;
             this.pictureBox5.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox5.Image")));
-            this.pictureBox5.Location = new System.Drawing.Point(328, 17);
+            this.pictureBox5.Location = new System.Drawing.Point(14, 14);
             this.pictureBox5.Name = "pictureBox5";
-            this.pictureBox5.Size = new System.Drawing.Size(107, 106);
+            this.pictureBox5.Size = new System.Drawing.Size(621, 106);
             this.pictureBox5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox5.TabIndex = 13;
             this.pictureBox5.TabStop = false;
@@ -370,13 +384,14 @@
             this.RegPlate.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.RegPlate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.RegPlate.FormattingEnabled = true;
+            this.RegPlate.Hint = "Plate Number";
             this.RegPlate.IntegralHeight = false;
             this.RegPlate.ItemHeight = 43;
-            this.RegPlate.Location = new System.Drawing.Point(160, 166);
+            this.RegPlate.Location = new System.Drawing.Point(14, 166);
             this.RegPlate.MaxDropDownItems = 4;
             this.RegPlate.MouseState = MaterialSkin.MouseState.OUT;
             this.RegPlate.Name = "RegPlate";
-            this.RegPlate.Size = new System.Drawing.Size(249, 49);
+            this.RegPlate.Size = new System.Drawing.Size(615, 49);
             this.RegPlate.StartIndex = 0;
             this.RegPlate.TabIndex = 12;
             // 
@@ -392,13 +407,14 @@
             this.RegRFID.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.RegRFID.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.RegRFID.FormattingEnabled = true;
+            this.RegRFID.Hint = "RFID Tag";
             this.RegRFID.IntegralHeight = false;
             this.RegRFID.ItemHeight = 43;
-            this.RegRFID.Location = new System.Drawing.Point(160, 280);
+            this.RegRFID.Location = new System.Drawing.Point(14, 238);
             this.RegRFID.MaxDropDownItems = 4;
             this.RegRFID.MouseState = MaterialSkin.MouseState.OUT;
             this.RegRFID.Name = "RegRFID";
-            this.RegRFID.Size = new System.Drawing.Size(367, 49);
+            this.RegRFID.Size = new System.Drawing.Size(615, 49);
             this.RegRFID.StartIndex = 0;
             this.RegRFID.TabIndex = 11;
             // 
@@ -409,7 +425,7 @@
             this.RegisterAll.Depth = 0;
             this.RegisterAll.HighEmphasis = true;
             this.RegisterAll.Icon = null;
-            this.RegisterAll.Location = new System.Drawing.Point(328, 465);
+            this.RegisterAll.Location = new System.Drawing.Point(294, 424);
             this.RegisterAll.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
             this.RegisterAll.MouseState = MaterialSkin.MouseState.HOVER;
             this.RegisterAll.Name = "RegisterAll";
@@ -421,19 +437,6 @@
             this.RegisterAll.UseAccentColor = false;
             this.RegisterAll.UseVisualStyleBackColor = true;
             this.RegisterAll.Click += new System.EventHandler(this.RegisterAll_Click);
-            // 
-            // materialLabel14
-            // 
-            this.materialLabel14.AutoSize = true;
-            this.materialLabel14.Depth = 0;
-            this.materialLabel14.Font = new System.Drawing.Font("Roboto Medium", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
-            this.materialLabel14.FontType = MaterialSkin.MaterialSkinManager.fontType.H6;
-            this.materialLabel14.Location = new System.Drawing.Point(156, 360);
-            this.materialLabel14.MouseState = MaterialSkin.MouseState.HOVER;
-            this.materialLabel14.Name = "materialLabel14";
-            this.materialLabel14.Size = new System.Drawing.Size(54, 24);
-            this.materialLabel14.TabIndex = 8;
-            this.materialLabel14.Text = "Driver";
             // 
             // RegDriver
             // 
@@ -447,41 +450,16 @@
             this.RegDriver.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.RegDriver.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.RegDriver.FormattingEnabled = true;
+            this.RegDriver.Hint = "Driver";
             this.RegDriver.IntegralHeight = false;
             this.RegDriver.ItemHeight = 43;
-            this.RegDriver.Location = new System.Drawing.Point(160, 387);
+            this.RegDriver.Location = new System.Drawing.Point(14, 313);
             this.RegDriver.MaxDropDownItems = 4;
             this.RegDriver.MouseState = MaterialSkin.MouseState.OUT;
             this.RegDriver.Name = "RegDriver";
-            this.RegDriver.Size = new System.Drawing.Size(522, 49);
+            this.RegDriver.Size = new System.Drawing.Size(615, 49);
             this.RegDriver.StartIndex = 0;
             this.RegDriver.TabIndex = 7;
-            // 
-            // materialLabel12
-            // 
-            this.materialLabel12.AutoSize = true;
-            this.materialLabel12.Depth = 0;
-            this.materialLabel12.Font = new System.Drawing.Font("Roboto Medium", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
-            this.materialLabel12.FontType = MaterialSkin.MaterialSkinManager.fontType.H6;
-            this.materialLabel12.Location = new System.Drawing.Point(156, 253);
-            this.materialLabel12.MouseState = MaterialSkin.MouseState.HOVER;
-            this.materialLabel12.Name = "materialLabel12";
-            this.materialLabel12.Size = new System.Drawing.Size(82, 24);
-            this.materialLabel12.TabIndex = 3;
-            this.materialLabel12.Text = "RFID Tag";
-            // 
-            // materialLabel11
-            // 
-            this.materialLabel11.AutoSize = true;
-            this.materialLabel11.Depth = 0;
-            this.materialLabel11.Font = new System.Drawing.Font("Roboto Medium", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
-            this.materialLabel11.FontType = MaterialSkin.MaterialSkinManager.fontType.H6;
-            this.materialLabel11.Location = new System.Drawing.Point(156, 129);
-            this.materialLabel11.MouseState = MaterialSkin.MouseState.HOVER;
-            this.materialLabel11.Name = "materialLabel11";
-            this.materialLabel11.Size = new System.Drawing.Size(124, 24);
-            this.materialLabel11.TabIndex = 1;
-            this.materialLabel11.Text = "Plate Number";
             // 
             // tabPage3
             // 
@@ -1234,13 +1212,7 @@
             // tabPage5
             // 
             this.tabPage5.BackColor = System.Drawing.Color.White;
-            this.tabPage5.Controls.Add(this.materialLabel4);
-            this.tabPage5.Controls.Add(this.materialCard8);
-            this.tabPage5.Controls.Add(this.materialLabel3);
-            this.tabPage5.Controls.Add(this.materialLabel2);
-            this.tabPage5.Controls.Add(this.materialCard7);
-            this.tabPage5.Controls.Add(this.materialCard6);
-            this.tabPage5.Controls.Add(this.materialCard5);
+            this.tabPage5.Controls.Add(this.panel2);
             this.tabPage5.ImageKey = "time.png";
             this.tabPage5.Location = new System.Drawing.Point(4, 39);
             this.tabPage5.Margin = new System.Windows.Forms.Padding(4);
@@ -1254,111 +1226,24 @@
             this.materialLabel4.AutoSize = true;
             this.materialLabel4.Depth = 0;
             this.materialLabel4.Font = new System.Drawing.Font("Roboto", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            this.materialLabel4.Location = new System.Drawing.Point(821, 627);
+            this.materialLabel4.Location = new System.Drawing.Point(64, 25);
             this.materialLabel4.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialLabel4.Name = "materialLabel4";
             this.materialLabel4.Size = new System.Drawing.Size(163, 19);
             this.materialLabel4.TabIndex = 5;
             this.materialLabel4.Text = "Unauthorized Attempts";
             // 
-            // materialCard8
-            // 
-            this.materialCard8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.materialCard8.Controls.Add(this.pictureBox3);
-            this.materialCard8.Depth = 0;
-            this.materialCard8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.materialCard8.Location = new System.Drawing.Point(824, 463);
-            this.materialCard8.Margin = new System.Windows.Forms.Padding(14);
-            this.materialCard8.MouseState = MaterialSkin.MouseState.HOVER;
-            this.materialCard8.Name = "materialCard8";
-            this.materialCard8.Padding = new System.Windows.Forms.Padding(14);
-            this.materialCard8.Size = new System.Drawing.Size(150, 150);
-            this.materialCard8.TabIndex = 3;
-            // 
-            // pictureBox3
-            // 
-            this.pictureBox3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(71)))), ((int)(((byte)(79)))));
-            this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox3.Image")));
-            this.pictureBox3.Location = new System.Drawing.Point(17, 17);
-            this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(116, 116);
-            this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.pictureBox3.TabIndex = 2;
-            this.pictureBox3.TabStop = false;
-            // 
             // materialLabel3
             // 
             this.materialLabel3.AutoSize = true;
             this.materialLabel3.Depth = 0;
             this.materialLabel3.Font = new System.Drawing.Font("Roboto", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            this.materialLabel3.Location = new System.Drawing.Point(532, 627);
+            this.materialLabel3.Location = new System.Drawing.Point(64, 25);
             this.materialLabel3.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialLabel3.Name = "materialLabel3";
             this.materialLabel3.Size = new System.Drawing.Size(138, 19);
             this.materialLabel3.TabIndex = 4;
             this.materialLabel3.Text = "Peak Hour Analysis";
-            // 
-            // materialLabel2
-            // 
-            this.materialLabel2.AutoSize = true;
-            this.materialLabel2.Depth = 0;
-            this.materialLabel2.Font = new System.Drawing.Font("Roboto", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            this.materialLabel2.Location = new System.Drawing.Point(201, 627);
-            this.materialLabel2.MouseState = MaterialSkin.MouseState.HOVER;
-            this.materialLabel2.Name = "materialLabel2";
-            this.materialLabel2.Size = new System.Drawing.Size(170, 19);
-            this.materialLabel2.TabIndex = 3;
-            this.materialLabel2.Text = "Campus Traffic Reports";
-            // 
-            // materialCard7
-            // 
-            this.materialCard7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.materialCard7.Controls.Add(this.pictureBox2);
-            this.materialCard7.Depth = 0;
-            this.materialCard7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.materialCard7.Location = new System.Drawing.Point(512, 463);
-            this.materialCard7.Margin = new System.Windows.Forms.Padding(14);
-            this.materialCard7.MouseState = MaterialSkin.MouseState.HOVER;
-            this.materialCard7.Name = "materialCard7";
-            this.materialCard7.Padding = new System.Windows.Forms.Padding(14);
-            this.materialCard7.Size = new System.Drawing.Size(150, 150);
-            this.materialCard7.TabIndex = 2;
-            // 
-            // pictureBox2
-            // 
-            this.pictureBox2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(71)))), ((int)(((byte)(79)))));
-            this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
-            this.pictureBox2.Location = new System.Drawing.Point(17, 17);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(116, 116);
-            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.pictureBox2.TabIndex = 1;
-            this.pictureBox2.TabStop = false;
-            // 
-            // materialCard6
-            // 
-            this.materialCard6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.materialCard6.Controls.Add(this.pictureBox1);
-            this.materialCard6.Depth = 0;
-            this.materialCard6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.materialCard6.Location = new System.Drawing.Point(204, 463);
-            this.materialCard6.Margin = new System.Windows.Forms.Padding(14);
-            this.materialCard6.MouseState = MaterialSkin.MouseState.HOVER;
-            this.materialCard6.Name = "materialCard6";
-            this.materialCard6.Padding = new System.Windows.Forms.Padding(14);
-            this.materialCard6.Size = new System.Drawing.Size(150, 150);
-            this.materialCard6.TabIndex = 1;
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(71)))), ((int)(((byte)(79)))));
-            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(17, 17);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(116, 116);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
             // 
             // materialCard5
             // 
@@ -1369,32 +1254,40 @@
             this.materialCard5.Controls.Add(this.searchTextBox2);
             this.materialCard5.Depth = 0;
             this.materialCard5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.materialCard5.Location = new System.Drawing.Point(67, 23);
+            this.materialCard5.Location = new System.Drawing.Point(32, 43);
             this.materialCard5.Margin = new System.Windows.Forms.Padding(14);
             this.materialCard5.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialCard5.Name = "materialCard5";
             this.materialCard5.Padding = new System.Windows.Forms.Padding(14);
-            this.materialCard5.Size = new System.Drawing.Size(1264, 396);
+            this.materialCard5.Size = new System.Drawing.Size(1246, 362);
             this.materialCard5.TabIndex = 0;
             // 
             // searchResultsGridView2
             // 
-            this.searchResultsGridView2.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.searchResultsGridView2.BackgroundColor = System.Drawing.Color.White;
             this.searchResultsGridView2.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(123)))), ((int)(((byte)(153)))));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(238)))), ((int)(((byte)(243)))));
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(123)))), ((int)(((byte)(153)))));
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(238)))), ((int)(((byte)(243)))));
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.searchResultsGridView2.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.searchResultsGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.searchResultsGridView2.Location = new System.Drawing.Point(262, 160);
+            this.searchResultsGridView2.Location = new System.Drawing.Point(334, 179);
             this.searchResultsGridView2.Name = "searchResultsGridView2";
             this.searchResultsGridView2.RowHeadersWidth = 51;
             this.searchResultsGridView2.RowTemplate.Height = 24;
-            this.searchResultsGridView2.Size = new System.Drawing.Size(716, 199);
+            this.searchResultsGridView2.Size = new System.Drawing.Size(730, 166);
             this.searchResultsGridView2.TabIndex = 19;
             // 
             // pictureBox6
             // 
             this.pictureBox6.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox6.Image")));
-            this.pictureBox6.Location = new System.Drawing.Point(262, 81);
+            this.pictureBox6.Location = new System.Drawing.Point(245, 80);
             this.pictureBox6.Name = "pictureBox6";
-            this.pictureBox6.Size = new System.Drawing.Size(56, 46);
+            this.pictureBox6.Size = new System.Drawing.Size(73, 60);
             this.pictureBox6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox6.TabIndex = 18;
             this.pictureBox6.TabStop = false;
@@ -1406,7 +1299,7 @@
             this.searchButton2.Depth = 0;
             this.searchButton2.HighEmphasis = true;
             this.searchButton2.Icon = null;
-            this.searchButton2.Location = new System.Drawing.Point(914, 91);
+            this.searchButton2.Location = new System.Drawing.Point(924, 80);
             this.searchButton2.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
             this.searchButton2.MouseState = MaterialSkin.MouseState.HOVER;
             this.searchButton2.Name = "searchButton2";
@@ -1422,10 +1315,10 @@
             // searchTextBox2
             // 
             this.searchTextBox2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.searchTextBox2.Location = new System.Drawing.Point(324, 84);
+            this.searchTextBox2.Location = new System.Drawing.Point(334, 80);
             this.searchTextBox2.Multiline = true;
             this.searchTextBox2.Name = "searchTextBox2";
-            this.searchTextBox2.Size = new System.Drawing.Size(583, 43);
+            this.searchTextBox2.Size = new System.Drawing.Size(583, 41);
             this.searchTextBox2.TabIndex = 16;
             // 
             // tabPage6
@@ -1473,6 +1366,106 @@
             // 
             this.timerRfid.Tick += new System.EventHandler(this.timerRfid_Tick);
             // 
+            // pictureBox2
+            // 
+            this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
+            this.pictureBox2.Location = new System.Drawing.Point(0, 0);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(58, 56);
+            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox2.TabIndex = 21;
+            this.pictureBox2.TabStop = false;
+            // 
+            // panel2
+            // 
+            this.panel2.AutoScroll = true;
+            this.panel2.Controls.Add(this.materialCard7);
+            this.panel2.Controls.Add(this.materialCard6);
+            this.panel2.Controls.Add(this.materialCard5);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel2.Location = new System.Drawing.Point(0, 0);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(1432, 660);
+            this.panel2.TabIndex = 22;
+            // 
+            // materialCard6
+            // 
+            this.materialCard6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.materialCard6.Controls.Add(this.btnAnalyzePeakHours);
+            this.materialCard6.Controls.Add(this.chart1);
+            this.materialCard6.Controls.Add(this.pictureBox1);
+            this.materialCard6.Controls.Add(this.materialLabel3);
+            this.materialCard6.Depth = 0;
+            this.materialCard6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.materialCard6.Location = new System.Drawing.Point(32, 422);
+            this.materialCard6.Margin = new System.Windows.Forms.Padding(14);
+            this.materialCard6.MouseState = MaterialSkin.MouseState.HOVER;
+            this.materialCard6.Name = "materialCard6";
+            this.materialCard6.Padding = new System.Windows.Forms.Padding(14);
+            this.materialCard6.Size = new System.Drawing.Size(732, 400);
+            this.materialCard6.TabIndex = 22;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+            this.pictureBox1.Location = new System.Drawing.Point(0, 0);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(58, 53);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox1.TabIndex = 20;
+            this.pictureBox1.TabStop = false;
+            // 
+            // materialCard7
+            // 
+            this.materialCard7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.materialCard7.Controls.Add(this.pictureBox2);
+            this.materialCard7.Controls.Add(this.materialLabel4);
+            this.materialCard7.Depth = 0;
+            this.materialCard7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.materialCard7.Location = new System.Drawing.Point(781, 422);
+            this.materialCard7.Margin = new System.Windows.Forms.Padding(14);
+            this.materialCard7.MouseState = MaterialSkin.MouseState.HOVER;
+            this.materialCard7.Name = "materialCard7";
+            this.materialCard7.Padding = new System.Windows.Forms.Padding(14);
+            this.materialCard7.Size = new System.Drawing.Size(497, 400);
+            this.materialCard7.TabIndex = 23;
+            // 
+            // chart1
+            // 
+            chartArea2.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea2);
+            legend2.Name = "Legend1";
+            this.chart1.Legends.Add(legend2);
+            this.chart1.Location = new System.Drawing.Point(0, 66);
+            this.chart1.Name = "chart1";
+            series2.ChartArea = "ChartArea1";
+            series2.Legend = "Legend1";
+            series2.Name = "Series1";
+            this.chart1.Series.Add(series2);
+            this.chart1.Size = new System.Drawing.Size(892, 300);
+            this.chart1.TabIndex = 21;
+            this.chart1.Text = "chart1";
+            // 
+            // btnAnalyzePeakHours
+            // 
+            this.btnAnalyzePeakHours.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnAnalyzePeakHours.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
+            this.btnAnalyzePeakHours.Depth = 0;
+            this.btnAnalyzePeakHours.HighEmphasis = true;
+            this.btnAnalyzePeakHours.Icon = null;
+            this.btnAnalyzePeakHours.Location = new System.Drawing.Point(599, 15);
+            this.btnAnalyzePeakHours.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.btnAnalyzePeakHours.MouseState = MaterialSkin.MouseState.HOVER;
+            this.btnAnalyzePeakHours.Name = "btnAnalyzePeakHours";
+            this.btnAnalyzePeakHours.NoAccentTextColor = System.Drawing.Color.Empty;
+            this.btnAnalyzePeakHours.Size = new System.Drawing.Size(86, 36);
+            this.btnAnalyzePeakHours.TabIndex = 22;
+            this.btnAnalyzePeakHours.Text = "Analyze";
+            this.btnAnalyzePeakHours.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
+            this.btnAnalyzePeakHours.UseAccentColor = false;
+            this.btnAnalyzePeakHours.UseVisualStyleBackColor = true;
+            this.btnAnalyzePeakHours.Click += new System.EventHandler(this.btnAnalyzePeakHours_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -1497,6 +1490,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.P1_pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.P1_pictureBox1)).EndInit();
             this.tabPage2.ResumeLayout(false);
+            this.tabPage2.PerformLayout();
             this.materialCard2.ResumeLayout(false);
             this.materialCard2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
@@ -1512,19 +1506,20 @@
             this.materialCard4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DL_pictureBox)).EndInit();
             this.tabPage5.ResumeLayout(false);
-            this.tabPage5.PerformLayout();
-            this.materialCard8.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
-            this.materialCard7.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
-            this.materialCard6.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.materialCard5.ResumeLayout(false);
             this.materialCard5.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.searchResultsGridView2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).EndInit();
             this.tabPage6.ResumeLayout(false);
             this.tabPage6.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            this.panel2.ResumeLayout(false);
+            this.materialCard6.ResumeLayout(false);
+            this.materialCard6.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.materialCard7.ResumeLayout(false);
+            this.materialCard7.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1555,14 +1550,7 @@
         private MaterialSkin.Controls.MaterialCard materialCard2;
         private MaterialSkin.Controls.MaterialCard materialCard5;
         private MaterialSkin.Controls.MaterialLabel materialLabel4;
-        private MaterialSkin.Controls.MaterialCard materialCard8;
         private MaterialSkin.Controls.MaterialLabel materialLabel3;
-        private MaterialSkin.Controls.MaterialLabel materialLabel2;
-        private MaterialSkin.Controls.MaterialCard materialCard7;
-        private MaterialSkin.Controls.MaterialCard materialCard6;
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.PictureBox pictureBox3;
-        private System.Windows.Forms.PictureBox pictureBox2;
         private MaterialSkin.Controls.MaterialMultiLineTextBox materialMultiLineTextBox1;
         private MaterialSkin.Controls.MaterialLabel materialLabel5;
         private MaterialSkin.Controls.MaterialButton btnCapture;
@@ -1610,10 +1598,7 @@
         private MaterialSkin.Controls.MaterialLabel lblenterexit;
         private System.Windows.Forms.PictureBox pictureBox4;
         private System.Windows.Forms.Panel panel1;
-        private MaterialSkin.Controls.MaterialLabel materialLabel14;
         private MaterialSkin.Controls.MaterialComboBox RegDriver;
-        private MaterialSkin.Controls.MaterialLabel materialLabel12;
-        private MaterialSkin.Controls.MaterialLabel materialLabel11;
         private MaterialSkin.Controls.MaterialButton RegisterAll;
         private MaterialSkin.Controls.MaterialComboBox RegRFID;
         private MaterialSkin.Controls.MaterialComboBox RegPlate;
@@ -1622,6 +1607,14 @@
         private System.Windows.Forms.DataGridView searchResultsGridView2;
         private System.Windows.Forms.PictureBox pictureBox6;
         private MaterialSkin.Controls.MaterialButton searchButton2;
+        private MaterialSkin.Controls.MaterialLabel materialLabel13;
+        private System.Windows.Forms.PictureBox pictureBox2;
+        private System.Windows.Forms.Panel panel2;
+        private MaterialSkin.Controls.MaterialCard materialCard6;
+        private MaterialSkin.Controls.MaterialCard materialCard7;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
+        private MaterialSkin.Controls.MaterialButton btnAnalyzePeakHours;
     }
 }
 
