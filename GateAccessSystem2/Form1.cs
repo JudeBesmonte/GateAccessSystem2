@@ -231,7 +231,7 @@ namespace GateAccessSystem2
         {
             try
             {
-                string tessDataPath = @"C:\Users\judde\source\repos\GateAccessSystem2\GateAccessSystem2\tessdata";
+                string tessDataPath = @"C:\Users\Kent\source\repos\GateAccessSystem2\GateAccessSystem2\tessdata";
                 ocrEngine = new TesseractEngine(tessDataPath, "eng", EngineMode.Default);
             }
             catch (Exception ex)
