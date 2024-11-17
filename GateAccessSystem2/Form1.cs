@@ -34,6 +34,8 @@ namespace GateAccessSystem2
         private VideoCaptureDevice videoSource;
         private TesseractEngine ocrEngine;
         private SerialPort rfidReader;
+        private CascadeClassifier _licensePlateCascade;
+        private TesseractEngine _tesseractEngine;
 
         private bool isVehicleInside = false; // Tracks whether the vehicle is inside
         private Timer detectionCooldownTimer; // Timer for 10-second interval
@@ -45,6 +47,8 @@ namespace GateAccessSystem2
         {
             InitializeComponent();
             InitializeOCR();
+            LoadCascade();
+            InitializeTesseract();
 
             if (IsRFIDReaderConnected())
             {
@@ -96,26 +100,6 @@ namespace GateAccessSystem2
             // Bind Registration Button Click Event
         }
 
-
-        private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // Check if tabPage4 is selected
-            if (materialTabControl1.SelectedTab == tabPage4)
-            {
-                // Define the path to the external .exe
-                string exePath = @"C:\Users\judde\Downloads\Auto_parking\Auto_parking\bin\Debug\Auto_parking.exe";
-
-                // Start the external .exe
-                try
-                {
-                    System.Diagnostics.Process.Start(exePath);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error launching the application: {ex.Message}");
-                }
-            }
-        }
 
         private void RFID_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
@@ -201,33 +185,41 @@ namespace GateAccessSystem2
         private void RecordRFIDTagToDatabase(string rfidTag)
         {
             using (MySqlConnection conn = new MySqlConnection(connectionString))
+    {
+        try
+        {
+            conn.Open();
+
+            // Check if the RFID tag exists in the vehicle_registration table
+            string checkQuery = "SELECT COUNT(*) FROM vehicle_registration WHERE rfid_tag = @rfid_tag";
+            using (MySqlCommand checkCmd = new MySqlCommand(checkQuery, conn))
             {
-                try
-                {
-                    conn.Open();
+                checkCmd.Parameters.AddWithValue("@rfid_tag", rfidTag);
+                int count = Convert.ToInt32(checkCmd.ExecuteScalar());
 
-                    // Check if the RFID tag already exists (optional, depends on your use case)
-                    string query = "INSERT INTO rfid_tag (tag, detection_time, status) VALUES (@tag, @time, @status)";
-
-                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@tag", rfidTag);
-                        cmd.Parameters.AddWithValue("@time", DateTime.Now); // Record the current time of detection
-                        cmd.Parameters.AddWithValue("@status", isVehicleInside ? "ENTER" : "EXIT");
-
-                        int rowsAffected = cmd.ExecuteNonQuery();
-                        // No need to show a success message
+                        if (count == 0)
+                        {
+                            // RFID tag is not registered, log it as unauthorized
+                            string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                            MaterialSkin.MaterialListBoxItem item = new MaterialSkin.MaterialListBoxItem
+                            {
+                                Text = rfidTag,
+                                SecondaryText = timestamp
+                            };
+                            lbUnauthorized.Items.Add(item); // Add as MaterialListBoxItem
+                            MessageBox.Show("Unauthorized attempt detected.");
+                        }
                     }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error while inserting RFID data to the database: {ex.Message}");
-                }
-                finally
-                {
-                    conn.Close();
-                }
-            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Error while inserting RFID data to the database: {ex.Message}");
+        }
+        finally
+        {
+            conn.Close();
+        }
+    }
         }
         private void InitializeOCR()
         {
@@ -242,27 +234,28 @@ namespace GateAccessSystem2
             }
         }
 
-
-        private void InitializeCamera()
+        private void InitializeTesseract()
         {
-            try
+            string tessdataPath = @"C:\Users\judde\source\repos\GateAccessSystem2\GateAccessSystem2\Resource";
+            _tesseractEngine = new TesseractEngine(tessdataPath, "eng", EngineMode.Default);
+            _tesseractEngine.SetVariable("tessedit_char_whitelist", "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
+        }
+        // Haar Cascade -------
+        private void LoadCascade()
+        {
+            string cascadePath = @"C:\Users\judde\source\repos\GateAccessSystem2\GateAccessSystem2\Resource\cascade.xml";
+            if (System.IO.File.Exists(cascadePath))
             {
-                videoDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
-                if (videoDevices.Count == 0)
-                {
-                    MessageBox.Show("No webcam found!");
-                    return;
-                }
-
-                videoSource = new VideoCaptureDevice(videoDevices[0].MonikerString);
-                videoSource.NewFrame += videoSource_NewFrame;
-                videoSource.Start();
+                _licensePlateCascade = new CascadeClassifier(cascadePath);
+                
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show($"Error initializing camera: {ex.Message}");
+                MessageBox.Show("Cascade XML file not found. Please check the path.");
             }
         }
+        
+
 
         private void videoSource_NewFrame(object sender, NewFrameEventArgs eventArgs)
         {
@@ -375,25 +368,6 @@ namespace GateAccessSystem2
             base.OnFormClosing(e);
         }
 
-        private void materialSwitch1_CheckedChanged(object sender, EventArgs e)
-        {
-            if (materialSwitch1.Checked)
-            {
-                P1_pictureBox1.Visible = true;
-                P1_pictureBox2.Visible = false;
-                materialLabel1.Visible = true;
-                materialLabel1.Text = "RFID Tag is Verified!";
-                materialLabel5.Visible = false;
-            }
-            else
-            {
-                P1_pictureBox1.Visible = false;
-                P1_pictureBox2.Visible = true;
-                materialLabel1.Visible = true;
-                materialLabel1.Text = "RFID Tag is not Verified!";
-                materialLabel5.Visible = true;
-            }
-        }
 
         private void StartCamera()
         {
@@ -601,9 +575,13 @@ namespace GateAccessSystem2
 
                     // Display the captured frame in pictureBoxFrame
                     pictureBoxFrame.Image = new Bitmap(capturedFrame);
+                    pictureBoxFrame.SizeMode = PictureBoxSizeMode.Zoom;
 
-                    // Process the frame for OCR
-                    ProcessFrameForOCR(capturedFrame);
+                    // Convert the captured frame to Emgu.CV format
+                    Image<Bgr, byte> frameImage = capturedFrame.ToImage<Bgr, byte>();
+
+                    // Detect license plates and process OCR
+                    DetectLicensePlates(frameImage);
                 }
                 else
                 {
@@ -614,6 +592,7 @@ namespace GateAccessSystem2
             {
                 MessageBox.Show($"Error during capture and OCR processing: {ex.Message}\n\nStack Trace:\n{ex.StackTrace}");
             }
+
         }
 
         private void timerRfid_Tick(object sender, EventArgs e)
@@ -685,7 +664,7 @@ namespace GateAccessSystem2
 
         private void btnPlateRecord_Click(object sender, EventArgs e)
         {
-            string connStr = "server=localhost;user=root;database=thesis;password=parasathesis;";
+            String connStr = "server=localhost;user=root;database=thesis;password=parasathesis;";
 
             using (MySqlConnection conn = new MySqlConnection(connStr))
             {
@@ -693,19 +672,20 @@ namespace GateAccessSystem2
                 {
                     conn.Open();
 
-                    // SQL query to insert data into the license_plate table
-                    string query = @"INSERT INTO license_plate (plate_number) VALUES (@plate_number)";
+                    // SQL query to insert data into the license_plate table, including detection_time
+                    string query = @"INSERT INTO license_plate (plate_number, detection_time) VALUES (@plate_number, @detection_time)";
 
                     // Prepare the command
                     using (MySqlCommand cmd = new MySqlCommand(query, conn))
                     {
-                        // Set parameters from the DL_materialTextbox
+                        // Set parameters from the DL_materialTextbox and current datetime
                         cmd.Parameters.AddWithValue("@plate_number", DL_materialTextbox.Text);
+                        cmd.Parameters.AddWithValue("@detection_time", DateTime.Now); // Record current datetime
 
                         // Execute the insert command
                         cmd.ExecuteNonQuery();
 
-                        MessageBox.Show("Plate number successfully added to the database.");
+                        MessageBox.Show("Plate number and time successfully added to the database.");
                     }
                 }
                 catch (Exception ex)
@@ -837,7 +817,13 @@ namespace GateAccessSystem2
                 try
                 {
                     conn.Open();
-                    string query = "SELECT detection_time FROM rfid_tag";
+
+                    // Query detection_time from both tables
+                    string query = @"
+                SELECT detection_time FROM rfid_tag
+                UNION ALL
+                SELECT detection_time FROM license_plate";
+
                     using (MySqlCommand cmd = new MySqlCommand(query, conn))
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -897,6 +883,94 @@ namespace GateAccessSystem2
         private void btnAnalyzePeakHours_Click(object sender, EventArgs e)
         {
             AnalyzePeakHours();
+        }
+
+        private void DL_materialTextbox_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnBrowse_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp";
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    Image<Bgr, byte> image = new Image<Bgr, byte>(openFileDialog.FileName);
+                    ShowImageInPictureBox(pictureBoxFrame, image);
+                    DetectLicensePlates(image);
+                }
+            }
+        }
+        private void ShowImageInPictureBox(PictureBox pictureBox, Image<Bgr, byte> image)
+        {
+            pictureBox.Image = image.ToBitmap();
+            pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
+        }
+        private void DetectLicensePlates(Image<Bgr, byte> image)
+        {
+            if (_licensePlateCascade == null)
+            {
+                MessageBox.Show("Cascade not loaded. Cannot perform detection.");
+                return;
+            }
+
+            using (Image<Gray, byte> grayImage = image.Convert<Gray, byte>())
+            {
+                double scaleFactor = 1.05;
+                int minNeighbors = 5;
+                Size minSize = new Size(20, 20);
+
+                Rectangle[] plates = _licensePlateCascade.DetectMultiScale(grayImage, scaleFactor, minNeighbors, minSize);
+
+                if (plates.Length == 0)
+                {
+                    MessageBox.Show("No license plates detected.");
+                }
+                else
+                {
+                    foreach (Rectangle plate in plates)
+                    {
+                        CvInvoke.Rectangle(image, plate, new MCvScalar(0, 0, 255), 2);
+                        Image<Bgr, byte> croppedPlate = image.Copy(plate);
+                        ShowImageInPictureBox(pbCropped, croppedPlate);
+                        ExtractTextFromPlate(croppedPlate);
+                    }
+                    
+                }
+
+                ShowImageInPictureBox(pictureBoxFrame, image);
+            }
+        }
+
+        private void PreprocessCroppedPlate(Image<Gray, byte> grayPlate)
+        {
+            grayPlate._SmoothGaussian(5);
+            grayPlate._ThresholdBinary(new Gray(100), new Gray(255));
+        }
+
+        private void ExtractTextFromPlate(Image<Bgr, byte> croppedPlate)
+        {
+            using (Image<Gray, byte> grayPlate = croppedPlate.Convert<Gray, byte>())
+            {
+                PreprocessCroppedPlate(grayPlate);
+                Bitmap plateBitmap = grayPlate.ToBitmap();
+
+                using (var page = _tesseractEngine.Process(plateBitmap))
+                {
+                    string extractedText = page.GetText().Trim();
+                    string cleanedText = PostprocessExtractedText(extractedText);
+                    DL_materialTextbox.Text = cleanedText;
+                }
+            }
+        }
+
+        private string PostprocessExtractedText(string text)
+        {
+            text = text.Replace("O", "0");
+            text = text.Replace("I", "1");
+            return text;
         }
     }
 }
