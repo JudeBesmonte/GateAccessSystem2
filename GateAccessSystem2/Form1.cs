@@ -49,6 +49,7 @@ namespace GateAccessSystem2
             InitializeOCR();
             LoadCascade();
             InitializeTesseract();
+            LoadUnauthorizedPlates();
 
             if (IsRFIDReaderConnected())
             {
@@ -185,41 +186,63 @@ namespace GateAccessSystem2
         private void RecordRFIDTagToDatabase(string rfidTag)
         {
             using (MySqlConnection conn = new MySqlConnection(connectionString))
-    {
-        try
-        {
-            conn.Open();
-
-            // Check if the RFID tag exists in the vehicle_registration table
-            string checkQuery = "SELECT COUNT(*) FROM vehicle_registration WHERE rfid_tag = @rfid_tag";
-            using (MySqlCommand checkCmd = new MySqlCommand(checkQuery, conn))
             {
-                checkCmd.Parameters.AddWithValue("@rfid_tag", rfidTag);
-                int count = Convert.ToInt32(checkCmd.ExecuteScalar());
+                try
+                {
+                    conn.Open();
+
+                    // Check if the RFID tag already exists (optional, depends on your use case)
+                    string query = "INSERT INTO rfid_tag (tag, detection_time, status) VALUES (@tag, @time, @status)";
+
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@tag", rfidTag);
+                        cmd.Parameters.AddWithValue("@time", DateTime.Now); // Record the current time of detection
+                        cmd.Parameters.AddWithValue("@status", isVehicleInside ? "ENTER" : "EXIT");
+
+                        int rowsAffected = cmd.ExecuteNonQuery();
+                        // No need to show a success message
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error while inserting RFID data to the database: {ex.Message}");
+                }
+                finally
+                {
+                    conn.Close();
+                }
+
+                try
+                {
+                    conn.Open();
+
+                    // Check if the RFID tag exists in the vehicle_registration table
+                    string checkQuery = "SELECT COUNT(*) FROM vehicle_registration WHERE rfid_tag = @rfid_tag";
+                    using (MySqlCommand checkCmd = new MySqlCommand(checkQuery, conn))
+                    {
+                        checkCmd.Parameters.AddWithValue("@rfid_tag", rfidTag);
+                        int count = Convert.ToInt32(checkCmd.ExecuteScalar());
 
                         if (count == 0)
                         {
                             // RFID tag is not registered, log it as unauthorized
                             string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-                            MaterialSkin.MaterialListBoxItem item = new MaterialSkin.MaterialListBoxItem
-                            {
-                                Text = rfidTag,
-                                SecondaryText = timestamp
-                            };
-                            lbUnauthorized.Items.Add(item); // Add as MaterialListBoxItem
+                            string listItem = $"{rfidTag} - {timestamp}"; // Combine RFID tag and timestamp
+                            lbUnauthorized2.Items.Add(listItem); // Add the string directly to the ListBox
                             MessageBox.Show("Unauthorized attempt detected.");
                         }
                     }
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show($"Error while inserting RFID data to the database: {ex.Message}");
-        }
-        finally
-        {
-            conn.Close();
-        }
-    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error while inserting RFID data to the database: {ex.Message}");
+                }
+                finally
+                {
+                    conn.Close();
+                }
+            }
         }
         private void InitializeOCR()
         {
@@ -778,8 +801,9 @@ namespace GateAccessSystem2
                 {
                     conn.Open();
 
-                    // SQL query to search by driver_name or plate_number
-                    string query = @"SELECT * FROM vehicle_registration
+                    // Select only the desired columns
+                    string query = @"SELECT plate_number, rfid_tag, driver_name 
+                             FROM vehicle_registration
                              WHERE driver_name LIKE @searchTerm 
                              OR plate_number LIKE @searchTerm";
 
@@ -792,6 +816,10 @@ namespace GateAccessSystem2
                             DataTable results = new DataTable();
                             adapter.Fill(results);
                             searchResultsGridView2.DataSource = results;
+
+                            // Adjust DataGridView settings
+                            searchResultsGridView2.AutoGenerateColumns = true;
+                            searchResultsGridView2.RowHeadersVisible = false; // Hide the leftmost blank column
                         }
                     }
                 }
@@ -971,6 +999,38 @@ namespace GateAccessSystem2
             text = text.Replace("O", "0");
             text = text.Replace("I", "1");
             return text;
+        }
+        private void LoadUnauthorizedPlates()
+        {
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    string query = @"
+                SELECT plate_number, detection_time
+                FROM license_plate
+                WHERE plate_number NOT IN (SELECT plate_number FROM vehicle_registration);
+            ";
+
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            string plateNumber = reader["plate_number"].ToString();
+                            string detectionTime = reader["detection_time"].ToString();
+
+                            lbUnauthorized2.Items.Add($"Plate: {plateNumber}, Time: {detectionTime}");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading unauthorized plates: {ex.Message}");
+            }
         }
     }
 }
