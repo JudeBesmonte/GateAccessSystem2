@@ -15,6 +15,7 @@ using System.Net;
 using Python.Runtime;
 using System.Text.RegularExpressions;
 using System.Text;
+using System.Linq;
 using System.IO.Ports;
 using MySql.Data.MySqlClient;
 using System.Collections.Generic;
@@ -22,6 +23,8 @@ using System.Data;
 using MySql.Data.MySqlClient;
 using System.Collections.Generic;
 using System.Windows.Forms.DataVisualization.Charting;
+using System.Globalization;
+
 
 
 
@@ -36,11 +39,15 @@ namespace GateAccessSystem2
         private SerialPort rfidReader;
         private CascadeClassifier _licensePlateCascade;
         private TesseractEngine _tesseractEngine;
+        private DataTable allLogs; // Declare at the top of your Form1 class
+
 
         private bool isVehicleInside = false; // Tracks whether the vehicle is inside
         private Timer detectionCooldownTimer; // Timer for 10-second interval
         private bool detectionOnCooldown = false; // Prevents multiple detections within the interval
-
+        private string lastRfidTag = string.Empty; // Store the last RFID tag detected
+        private DateTime lastRfidTime = DateTime.MinValue; // Store the time the tag was last detected
+        private readonly TimeSpan detectionCooldown = TimeSpan.FromSeconds(300); // 1 second cooldown
 
 
         public Form1()
@@ -50,6 +57,8 @@ namespace GateAccessSystem2
             LoadCascade();
             InitializeTesseract();
             LoadUnauthorizedPlates();
+            //InitializeLogs();
+            //SetupDateTimePicker();
 
             if (IsRFIDReaderConnected())
             {
@@ -110,6 +119,16 @@ namespace GateAccessSystem2
 
                 if (!string.IsNullOrEmpty(rfidData) && !detectionOnCooldown) // Check if not on cooldown
                 {
+                    // Check if the detected tag is the same as the last one and if the cooldown period has passed
+                    if (rfidData == lastRfidTag && DateTime.Now - lastRfidTime < detectionCooldown)
+                    {
+                        return; // Skip processing this tag if it's the same as the last one within the cooldown period
+                    }
+
+                    // Update the last detected RFID tag and the time
+                    lastRfidTag = rfidData;
+                    lastRfidTime = DateTime.Now;
+
                     this.Invoke((MethodInvoker)delegate
                     {
                         // Reset and stop the timerRfid if RFID data is received
@@ -121,7 +140,6 @@ namespace GateAccessSystem2
                         materialLabel1.Visible = true;
                         materialLabel1.Text = "RFID Detected: " + rfidData;
                         materialLabel5.Visible = false;
-
 
                         // Check vehicle status (enter/exit)
                         if (isVehicleInside)
@@ -191,35 +209,46 @@ namespace GateAccessSystem2
                 {
                     conn.Open();
 
-                    // Check if the RFID tag already exists (optional, depends on your use case)
-                    string query = "INSERT INTO rfid_tag (tag, detection_time, status) VALUES (@tag, @time, @status)";
+                    // Check if the RFID tag exists in the rfid_tag table
+                    string checkQuery = "SELECT status, detection_time FROM rfid_tag WHERE tag = @tag ORDER BY detection_time DESC LIMIT 1";
+                    string status = "";
+                    DateTime? lastDetectionTime = null;
 
-                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    using (MySqlCommand checkCmd = new MySqlCommand(checkQuery, conn))
+                    {
+                        checkCmd.Parameters.AddWithValue("@tag", rfidTag);
+                        using (MySqlDataReader reader = checkCmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                // Get the latest status and detection time
+                                status = reader.GetString("status");
+                                lastDetectionTime = reader.IsDBNull(reader.GetOrdinal("detection_time")) ? (DateTime?)null : reader.GetDateTime("detection_time");
+                            }
+                        }
+                    }
+
+                    // Determine the new status based on the current status and detection time
+                    string newStatus = "ENTER"; // Default to ENTER if the tag is not found
+                    if (status == "ENTER")
+                    {
+                        newStatus = "EXIT"; // If the last status was ENTER, it should now be EXIT
+                    }
+
+                    // Insert the RFID data into the rfid_tag table
+                    string insertQuery = "INSERT INTO rfid_tag (tag, detection_time, status) VALUES (@tag, @time, @status)";
+                    using (MySqlCommand cmd = new MySqlCommand(insertQuery, conn))
                     {
                         cmd.Parameters.AddWithValue("@tag", rfidTag);
                         cmd.Parameters.AddWithValue("@time", DateTime.Now); // Record the current time of detection
-                        cmd.Parameters.AddWithValue("@status", isVehicleInside ? "ENTER" : "EXIT");
+                        cmd.Parameters.AddWithValue("@status", newStatus); // Use the new status (ENTER/EXIT)
 
                         int rowsAffected = cmd.ExecuteNonQuery();
-                        // No need to show a success message
                     }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error while inserting RFID data to the database: {ex.Message}");
-                }
-                finally
-                {
-                    conn.Close();
-                }
 
-                try
-                {
-                    conn.Open();
-
-                    // Check if the RFID tag exists in the vehicle_registration table
-                    string checkQuery = "SELECT COUNT(*) FROM vehicle_registration WHERE rfid_tag = @rfid_tag";
-                    using (MySqlCommand checkCmd = new MySqlCommand(checkQuery, conn))
+                    // Additional logic for vehicle registration check (same as your existing code)
+                    string checkRegistrationQuery = "SELECT COUNT(*) FROM vehicle_registration WHERE rfid_tag = @rfid_tag";
+                    using (MySqlCommand checkCmd = new MySqlCommand(checkRegistrationQuery, conn))
                     {
                         checkCmd.Parameters.AddWithValue("@rfid_tag", rfidTag);
                         int count = Convert.ToInt32(checkCmd.ExecuteScalar());
@@ -228,7 +257,7 @@ namespace GateAccessSystem2
                         {
                             // RFID tag is not registered, log it as unauthorized
                             string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-                            string listItem = $"{rfidTag} - {timestamp}"; // Combine RFID tag and timestamp
+                            string listItem = $"{rfidTag} - {timestamp}";
                             lbUnauthorized2.Items.Add(listItem); // Add the string directly to the ListBox
                             MessageBox.Show("Unauthorized attempt detected.");
                         }
@@ -643,16 +672,18 @@ namespace GateAccessSystem2
                     conn.Open();
                     // SQL query to insert data into the license table
                     string query = @"INSERT INTO license (
-                                lastname, firstname, middlename, nationality, sex, 
-                                `date of birth`, weight, height, address, 
-                                `license_number`, `expiration date`, `agency code`, 
-                                `blood type`, `eye color`, restrictions, conditions
-                            ) VALUES (
-                                @lastname, @firstname, @middlename, @nationality, @sex, 
-                                @date_of_birth, @weight, @height, @address, 
-                                @license_number, @expiration_date, @agency_code, 
-                                @blood_type, @eye_color, @restrictions, @conditions
-                            )";
+                            lastname, firstname, middlename, nationality, sex, 
+                            `date of birth`, weight, height, address, 
+                            `license_number`, `expiration date`, `agency code`, 
+                            `blood type`, `eye color`, restrictions, conditions, 
+                            detection_time
+                        ) VALUES (
+                            @lastname, @firstname, @middlename, @nationality, @sex, 
+                            @date_of_birth, @weight, @height, @address, 
+                            @license_number, @expiration_date, @agency_code, 
+                            @blood_type, @eye_color, @restrictions, @conditions, 
+                            @detection_time
+                        )";
                     // Prepare the command
                     using (MySqlCommand cmd = new MySqlCommand(query, conn))
                     {
@@ -673,6 +704,9 @@ namespace GateAccessSystem2
                         cmd.Parameters.AddWithValue("@eye_color", materialTextBox14.Text);
                         cmd.Parameters.AddWithValue("@restrictions", materialTextBox15.Text);
                         cmd.Parameters.AddWithValue("@conditions", materialTextBox16.Text);
+                        // Add current date and time for detection_time
+                        cmd.Parameters.AddWithValue("@detection_time", DateTime.Now);
+
                         // Execute the insert command
                         cmd.ExecuteNonQuery();
                         MessageBox.Show("Data successfully added to the database.");
@@ -729,22 +763,22 @@ namespace GateAccessSystem2
                 MySqlDataAdapter daPlate = new MySqlDataAdapter("SELECT plate_number FROM license_plate", connection);
                 DataTable dtPlate = new DataTable();
                 daPlate.Fill(dtPlate);
-                RegPlate.DisplayMember = "plate_number";
-                RegPlate.DataSource = dtPlate;
+                RegPlate2.DisplayMember = "plate_number";
+                RegPlate2.DataSource = dtPlate;
 
                 // Populate RegRFID ComboBox
                 MySqlDataAdapter daRFID = new MySqlDataAdapter("SELECT tag FROM rfid_tag", connection);
                 DataTable dtRFID = new DataTable();
                 daRFID.Fill(dtRFID);
-                RegRFID.DisplayMember = "tag";
-                RegRFID.DataSource = dtRFID;
+                RegRFID2.DisplayMember = "tag";
+                RegRFID2.DataSource = dtRFID;
 
                 // Populate RegDriver ComboBox
                 MySqlDataAdapter daDriver = new MySqlDataAdapter("SELECT CONCAT(lastname, ', ', firstname, ' - ', license_number) AS driver_info FROM license", connection);
                 DataTable dtDriver = new DataTable();
                 daDriver.Fill(dtDriver);
-                RegDriver.DisplayMember = "driver_info";
-                RegDriver.DataSource = dtDriver;
+                RegDriver2.DisplayMember = "driver_info";
+                RegDriver2.DataSource = dtDriver;
             }
         }
 
@@ -752,9 +786,12 @@ namespace GateAccessSystem2
         private void RegisterAll_Click(object sender, EventArgs e)
         {
             // Get the correct data from ComboBoxes
-            string selectedPlate = RegPlate.Text; // Get the text of the selected plate number
-            string selectedRFID = RegRFID.Text;   // Get the text of the selected RFID tag
-            string selectedDriver = RegDriver.Text; // Get the displayed text directly for now
+            string selectedPlate = RegPlate2.Text;
+            string selectedRFID = RegRFID2.Text;
+            string selectedDriver = RegDriver2.Text;
+            string selectedStickerType = cbStickerType.Text; // Get sticker type
+            string selectedVehicleType = cbVehicleType.Text; // Get vehicle type
+            string selectedColor = cbColor.Text;            // Get color
 
             // Database connection string
             string connStr = "server=localhost;user=root;database=thesis;password=parasathesis;";
@@ -766,15 +803,19 @@ namespace GateAccessSystem2
                     conn.Open();
 
                     // SQL query to insert data into the vehicle_registration table
-                    string query = @"INSERT INTO vehicle_registration (plate_number, rfid_tag, driver_name)
-                             VALUES (@plate_number, @rfid_tag, @driver_name)";
+                    string query = @"INSERT INTO vehicle_registration 
+                             (plate_number, rfid_tag, driver_name, sticker_type, vehicle_type, color)
+                             VALUES (@plate_number, @rfid_tag, @driver_name, @sticker_type, @vehicle_type, @color)";
 
                     using (MySqlCommand cmd = new MySqlCommand(query, conn))
                     {
                         // Set the parameters
                         cmd.Parameters.AddWithValue("@plate_number", selectedPlate);
                         cmd.Parameters.AddWithValue("@rfid_tag", selectedRFID);
-                        cmd.Parameters.AddWithValue("@driver_name", selectedDriver); // Save the driver's info from ComboBox
+                        cmd.Parameters.AddWithValue("@driver_name", selectedDriver);
+                        cmd.Parameters.AddWithValue("@sticker_type", selectedStickerType);
+                        cmd.Parameters.AddWithValue("@vehicle_type", selectedVehicleType);
+                        cmd.Parameters.AddWithValue("@color", selectedColor);
 
                         // Execute the insert command
                         cmd.ExecuteNonQuery();
@@ -1032,7 +1073,728 @@ namespace GateAccessSystem2
                 MessageBox.Show($"Error loading unauthorized plates: {ex.Message}");
             }
         }
+
+        private void tabPage7_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            displaDays();
+            LoadLogs();
+            
+        }
+
+        private void displaDays()
+        {
+            DateTime now = DateTime.Now;
+
+            DateTime startofthemonth = new DateTime(now.Year, now.Month, 1);
+            //get the count of days of the month
+            int days = DateTime.DaysInMonth(now.Year, now.Month);
+            //convert the start of the month to integer
+            int dayoftheweek = Convert.ToInt32(startofthemonth.DayOfWeek.ToString("d")) + 1;
+            
+            for (int i = 1; i < dayoftheweek; i++)
+            {
+                UserControlBlank ucblank = new UserControlBlank();
+               
+            }
+            //user control for days
+            for(int i = 1; i <= days; i++)
+            {
+                UserControlDays ucdays = new UserControlDays();
+                ucdays.days(i);
+             
+            }
+        }
+       
+        private void LoadLogs(DateTime? filterDate = null)
+        {
+            DataTable unifiedLogs = new DataTable();
+            unifiedLogs.Columns.Add("tag", typeof(string));
+            unifiedLogs.Columns.Add("plate_number", typeof(string));
+            unifiedLogs.Columns.Add("detection_time", typeof(DateTime));
+            unifiedLogs.Columns.Add("logType", typeof(string));
+            unifiedLogs.Columns.Add("status", typeof(string)); // Status for RFID
+            unifiedLogs.Columns.Add("registration", typeof(string)); // Registration status
+            unifiedLogs.Columns.Add("vehicle_type", typeof(string)); // Vehicle type
+            unifiedLogs.Columns.Add("sticker_type", typeof(string)); // Sticker type
+
+            string connStr = "server=localhost;user=root;database=thesis;password=parasathesis;";
+
+            try
+            {
+                // RFID logs with status
+                using (MySqlConnection conn = new MySqlConnection(connStr))
+                {
+                    conn.Open();
+                    string rfidQuery = "SELECT tag, detection_time, status FROM rfid_tag";
+                    using (MySqlCommand rfidCmd = new MySqlCommand(rfidQuery, conn))
+                    using (MySqlDataReader rfidReader = rfidCmd.ExecuteReader())
+                    {
+                        while (rfidReader.Read())
+                        {
+                            DateTime detectionTime = Convert.ToDateTime(rfidReader["detection_time"]);
+                            if (filterDate == null || detectionTime.Date == filterDate.Value.Date)
+                            {
+                                string tag = rfidReader["tag"].ToString();
+                                string status = rfidReader["status"].ToString();
+                                (string registration, string vehicleType, string stickerType) = GetRegistrationDetails(tag, null, connStr);
+
+                                unifiedLogs.Rows.Add(
+                                    tag,
+                                    DBNull.Value,
+                                    detectionTime,
+                                    "RFID",
+                                    status,
+                                    registration,
+                                    vehicleType,
+                                    stickerType
+                                );
+                            }
+                        }
+                    }
+                }
+
+                // Plate logs with registration check
+                using (MySqlConnection conn = new MySqlConnection(connStr))
+                {
+                    conn.Open();
+                    string plateQuery = "SELECT plate_number, detection_time FROM license_plate";
+                    using (MySqlCommand plateCmd = new MySqlCommand(plateQuery, conn))
+                    using (MySqlDataReader plateReader = plateCmd.ExecuteReader())
+                    {
+                        while (plateReader.Read())
+                        {
+                            DateTime detectionTime = Convert.ToDateTime(plateReader["detection_time"]);
+                            if (filterDate == null || detectionTime.Date == filterDate.Value.Date)
+                            {
+                                string plateNumber = plateReader["plate_number"].ToString();
+                                (string registration, string vehicleType, string stickerType) = GetRegistrationDetails(null, plateNumber, connStr);
+
+                                unifiedLogs.Rows.Add(
+                                    DBNull.Value,
+                                    plateNumber,
+                                    detectionTime,
+                                    "Plate",
+                                    DBNull.Value, // No status for plates
+                                    registration,
+                                    vehicleType,
+                                    stickerType
+                                );
+                            }
+                        }
+                    }
+                }
+
+                dataGridLogs.DataSource = unifiedLogs;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading logs: {ex.Message}");
+            }
+        }
+
+        private bool CheckRegistration(string tag, string plateNumber, string connStr)
+        {
+            string query = "SELECT COUNT(*) FROM vehicle_registration WHERE " +
+                           "(rfid_tag = @tag OR @tag IS NULL) AND " +
+                           "(plate_number = @plateNumber OR @plateNumber IS NULL)";
+            using (MySqlConnection conn = new MySqlConnection(connStr))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@tag", tag ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@plateNumber", plateNumber ?? (object)DBNull.Value);
+
+                    return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
+                }
+            }
+        }
+        private (string registration, string vehicleType, string stickerType) GetRegistrationDetails(string tag, string plateNumber, string connStr)
+        {
+            string query = "SELECT vehicle_type, sticker_type FROM vehicle_registration WHERE " +
+                           "(rfid_tag = @tag OR @tag IS NULL) AND " +
+                           "(plate_number = @plateNumber OR @plateNumber IS NULL)";
+            using (MySqlConnection conn = new MySqlConnection(connStr))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@tag", tag ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@plateNumber", plateNumber ?? (object)DBNull.Value);
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return (
+                                "Yes",
+                                reader["vehicle_type"].ToString(),
+                                reader["sticker_type"].ToString()
+                            );
+                        }
+                        else
+                        {
+                            return ("No", DBNull.Value.ToString(), DBNull.Value.ToString());
+                        }
+                    }
+                }
+            }
+        }
+        private void dateTimePicker1_ValueChanged_1(object sender, EventArgs e)
+        {
+            DateTime selectedDate = dateTimePicker1.Value.Date;
+            LoadLogs(selectedDate);
+        }
+
+        private void cbMonth_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cbMonth.SelectedIndex >= 0) // Ensure a valid selection
+            {
+                int selectedMonth = cbMonth.SelectedIndex + 1; // Convert month name to number (0-based index)
+                LoadLogsByMonth(selectedMonth);
+            }
+        }
+
+        private void LoadLogsByMonth(int month)
+        {
+            DataTable filteredLogs = new DataTable();
+            filteredLogs.Columns.Add("tag", typeof(string));
+            filteredLogs.Columns.Add("plate_number", typeof(string));
+            filteredLogs.Columns.Add("detection_time", typeof(DateTime));
+            filteredLogs.Columns.Add("logType", typeof(string));
+            filteredLogs.Columns.Add("status", typeof(string)); // Status for RFID
+            filteredLogs.Columns.Add("registration", typeof(string)); // Registration status
+            filteredLogs.Columns.Add("vehicle_type", typeof(string)); // Vehicle type
+            filteredLogs.Columns.Add("sticker_type", typeof(string)); // Sticker type
+
+            string connStr = "server=localhost;user=root;database=thesis;password=parasathesis;";
+
+            try
+            {
+                // RFID logs with month filter
+                using (MySqlConnection conn = new MySqlConnection(connStr))
+                {
+                    conn.Open();
+                    string rfidQuery = "SELECT tag, detection_time, status FROM rfid_tag";
+                    using (MySqlCommand rfidCmd = new MySqlCommand(rfidQuery, conn))
+                    using (MySqlDataReader rfidReader = rfidCmd.ExecuteReader())
+                    {
+                        while (rfidReader.Read())
+                        {
+                            DateTime detectionTime = Convert.ToDateTime(rfidReader["detection_time"]);
+                            if (detectionTime.Month == month) // Filter by month
+                            {
+                                string tag = rfidReader["tag"].ToString();
+                                string status = rfidReader["status"].ToString();
+                                (string registration, string vehicleType, string stickerType) = GetRegistrationDetails(tag, null, connStr);
+
+                                filteredLogs.Rows.Add(
+                                    tag,
+                                    DBNull.Value,
+                                    detectionTime,
+                                    "RFID",
+                                    status,
+                                    registration,
+                                    vehicleType,
+                                    stickerType
+                                );
+                            }
+                        }
+                    }
+                }
+
+                // Plate logs with month filter
+                using (MySqlConnection conn = new MySqlConnection(connStr))
+                {
+                    conn.Open();
+                    string plateQuery = "SELECT plate_number, detection_time FROM license_plate";
+                    using (MySqlCommand plateCmd = new MySqlCommand(plateQuery, conn))
+                    using (MySqlDataReader plateReader = plateCmd.ExecuteReader())
+                    {
+                        while (plateReader.Read())
+                        {
+                            DateTime detectionTime = Convert.ToDateTime(plateReader["detection_time"]);
+                            if (detectionTime.Month == month) // Filter by month
+                            {
+                                string plateNumber = plateReader["plate_number"].ToString();
+                                (string registration, string vehicleType, string stickerType) = GetRegistrationDetails(null, plateNumber, connStr);
+
+                                filteredLogs.Rows.Add(
+                                    DBNull.Value,
+                                    plateNumber,
+                                    detectionTime,
+                                    "Plate",
+                                    DBNull.Value, // No status for plates
+                                    registration,
+                                    vehicleType,
+                                    stickerType
+                                );
+                            }
+                        }
+                    }
+                }
+
+                // Set the filtered logs to the DataGridView
+                dataGridLogs.DataSource = filteredLogs;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading logs: {ex.Message}");
+            }
+        }
+
+
+        private void cbFilter1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            switch (cbFilter1.SelectedIndex)
+            {
+                case 0: // All Log
+                    LoadAllLogs();
+                    break;
+                case 1: // Last 24 Hours
+                    LoadLogsLast24Hours();
+                    break;
+                case 2: // This Week
+                    LoadLogsThisWeek();
+                    break;
+                case 3: // This Month
+                    LoadLogsThisMonth();
+                    break;
+                case 4: // Custom Range
+                    dtpCustomRange1.Visible = true;
+                    dtpCustomRange2.Visible = true;
+
+                    break;
+            }
+        }
+        private void LoadAllLogs()
+        {
+            DataTable allLogs = new DataTable();
+            allLogs.Columns.Add("tag", typeof(string));
+            allLogs.Columns.Add("plate_number", typeof(string));
+            allLogs.Columns.Add("detection_time", typeof(DateTime));
+            allLogs.Columns.Add("logType", typeof(string));
+            allLogs.Columns.Add("status", typeof(string));
+            allLogs.Columns.Add("registration", typeof(string));
+            allLogs.Columns.Add("vehicle_type", typeof(string));
+            allLogs.Columns.Add("sticker_type", typeof(string));
+
+            string connStr = "server=localhost;user=root;database=thesis;password=parasathesis;";
+
+            try
+            {
+                using (MySqlConnection conn = new MySqlConnection(connStr))
+                {
+                    conn.Open();
+
+                    // Fetch all RFID logs
+                    string rfidQuery = "SELECT tag, detection_time, status FROM rfid_tag";
+                    using (MySqlCommand rfidCmd = new MySqlCommand(rfidQuery, conn))
+                    using (MySqlDataReader rfidReader = rfidCmd.ExecuteReader())
+                    {
+                        while (rfidReader.Read())
+                        {
+                            string tag = rfidReader["tag"].ToString();
+                            DateTime detectionTime = Convert.ToDateTime(rfidReader["detection_time"]);
+                            string status = rfidReader["status"].ToString();
+                            (string registration, string vehicleType, string stickerType) = GetRegistrationDetails(tag, null, connStr);
+
+                            allLogs.Rows.Add(tag, DBNull.Value, detectionTime, "RFID", status, registration, vehicleType, stickerType);
+                        }
+                    }
+
+                    // Fetch all license plate logs
+                    string plateQuery = "SELECT plate_number, detection_time FROM license_plate";
+                    using (MySqlCommand plateCmd = new MySqlCommand(plateQuery, conn))
+                    using (MySqlDataReader plateReader = plateCmd.ExecuteReader())
+                    {
+                        while (plateReader.Read())
+                        {
+                            string plateNumber = plateReader["plate_number"].ToString();
+                            DateTime detectionTime = Convert.ToDateTime(plateReader["detection_time"]);
+                            (string registration, string vehicleType, string stickerType) = GetRegistrationDetails(null, plateNumber, connStr);
+
+                            allLogs.Rows.Add(DBNull.Value, plateNumber, detectionTime, "Plate", DBNull.Value, registration, vehicleType, stickerType);
+                        }
+                    }
+
+                    // Bind the result to the DataGridView
+                    dataGridLogs.DataSource = allLogs;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading logs: {ex.Message}");
+            }
+        }
+        private void LoadLogsLast24Hours()
+        {
+            DateTime now = DateTime.Now;
+            DateTime start = now.AddHours(-24); // 24 hours ago
+
+            DataTable filteredLogs = new DataTable();
+            filteredLogs.Columns.Add("tag", typeof(string));
+            filteredLogs.Columns.Add("plate_number", typeof(string));
+            filteredLogs.Columns.Add("detection_time", typeof(DateTime));
+            filteredLogs.Columns.Add("logType", typeof(string));
+            filteredLogs.Columns.Add("status", typeof(string));
+            filteredLogs.Columns.Add("registration", typeof(string));
+            filteredLogs.Columns.Add("vehicle_type", typeof(string));
+            filteredLogs.Columns.Add("sticker_type", typeof(string));
+
+            string connStr = "server=localhost;user=root;database=thesis;password=parasathesis;";
+
+            try
+            {
+                using (MySqlConnection conn = new MySqlConnection(connStr))
+                {
+                    conn.Open();
+
+                    // Fetch RFID logs within last 24 hours
+                    string rfidQuery = "SELECT tag, detection_time, status FROM rfid_tag WHERE detection_time >= @start";
+                    using (MySqlCommand rfidCmd = new MySqlCommand(rfidQuery, conn))
+                    {
+                        rfidCmd.Parameters.AddWithValue("@start", start);
+                        using (MySqlDataReader rfidReader = rfidCmd.ExecuteReader())
+                        {
+                            while (rfidReader.Read())
+                            {
+                                string tag = rfidReader["tag"].ToString();
+                                DateTime detectionTime = Convert.ToDateTime(rfidReader["detection_time"]);
+                                string status = rfidReader["status"].ToString();
+                                (string registration, string vehicleType, string stickerType) = GetRegistrationDetails(tag, null, connStr);
+
+                                filteredLogs.Rows.Add(tag, DBNull.Value, detectionTime, "RFID", status, registration, vehicleType, stickerType);
+                            }
+                        }
+                    }
+
+                    // Fetch license plate logs within last 24 hours
+                    string plateQuery = "SELECT plate_number, detection_time FROM license_plate WHERE detection_time >= @start";
+                    using (MySqlCommand plateCmd = new MySqlCommand(plateQuery, conn))
+                    {
+                        plateCmd.Parameters.AddWithValue("@start", start);
+                        using (MySqlDataReader plateReader = plateCmd.ExecuteReader())
+                        {
+                            while (plateReader.Read())
+                            {
+                                string plateNumber = plateReader["plate_number"].ToString();
+                                DateTime detectionTime = Convert.ToDateTime(plateReader["detection_time"]);
+                                (string registration, string vehicleType, string stickerType) = GetRegistrationDetails(null, plateNumber, connStr);
+
+                                filteredLogs.Rows.Add(DBNull.Value, plateNumber, detectionTime, "Plate", DBNull.Value, registration, vehicleType, stickerType);
+                            }
+                        }
+                    }
+
+                    // Bind the result to the DataGridView
+                    dataGridLogs.DataSource = filteredLogs;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading logs: {ex.Message}");
+            }
+        }
+        private void LoadLogsThisWeek()
+        {
+            // Get the current date and the start of the week (Monday)
+            DateTime now = DateTime.Now;
+            DateTime startOfWeek = now.AddDays(DayOfWeek.Monday - now.DayOfWeek).Date; // Start of the current week
+            DateTime endOfWeek = startOfWeek.AddDays(7).AddSeconds(-1); // End of the current week (Sunday 11:59 PM)
+
+            DataTable filteredLogs = new DataTable();
+            filteredLogs.Columns.Add("tag", typeof(string));
+            filteredLogs.Columns.Add("plate_number", typeof(string));
+            filteredLogs.Columns.Add("detection_time", typeof(DateTime));
+            filteredLogs.Columns.Add("logType", typeof(string));
+            filteredLogs.Columns.Add("status", typeof(string));
+            filteredLogs.Columns.Add("registration", typeof(string));
+            filteredLogs.Columns.Add("vehicle_type", typeof(string));
+            filteredLogs.Columns.Add("sticker_type", typeof(string));
+
+            string connStr = "server=localhost;user=root;database=thesis;password=parasathesis;";
+
+            try
+            {
+                using (MySqlConnection conn = new MySqlConnection(connStr))
+                {
+                    conn.Open();
+
+                    // Fetch RFID logs for the current week
+                    string rfidQuery = "SELECT tag, detection_time, status FROM rfid_tag WHERE detection_time BETWEEN @startOfWeek AND @endOfWeek";
+                    using (MySqlCommand rfidCmd = new MySqlCommand(rfidQuery, conn))
+                    {
+                        rfidCmd.Parameters.AddWithValue("@startOfWeek", startOfWeek);
+                        rfidCmd.Parameters.AddWithValue("@endOfWeek", endOfWeek);
+                        using (MySqlDataReader rfidReader = rfidCmd.ExecuteReader())
+                        {
+                            while (rfidReader.Read())
+                            {
+                                string tag = rfidReader["tag"].ToString();
+                                DateTime detectionTime = Convert.ToDateTime(rfidReader["detection_time"]);
+                                string status = rfidReader["status"].ToString();
+                                (string registration, string vehicleType, string stickerType) = GetRegistrationDetails(tag, null, connStr);
+
+                                filteredLogs.Rows.Add(tag, DBNull.Value, detectionTime, "RFID", status, registration, vehicleType, stickerType);
+                            }
+                        }
+                    }
+
+                    // Fetch license plate logs for the current week
+                    string plateQuery = "SELECT plate_number, detection_time FROM license_plate WHERE detection_time BETWEEN @startOfWeek AND @endOfWeek";
+                    using (MySqlCommand plateCmd = new MySqlCommand(plateQuery, conn))
+                    {
+                        plateCmd.Parameters.AddWithValue("@startOfWeek", startOfWeek);
+                        plateCmd.Parameters.AddWithValue("@endOfWeek", endOfWeek);
+                        using (MySqlDataReader plateReader = plateCmd.ExecuteReader())
+                        {
+                            while (plateReader.Read())
+                            {
+                                string plateNumber = plateReader["plate_number"].ToString();
+                                DateTime detectionTime = Convert.ToDateTime(plateReader["detection_time"]);
+                                (string registration, string vehicleType, string stickerType) = GetRegistrationDetails(null, plateNumber, connStr);
+
+                                filteredLogs.Rows.Add(DBNull.Value, plateNumber, detectionTime, "Plate", DBNull.Value, registration, vehicleType, stickerType);
+                            }
+                        }
+                    }
+
+                    // Bind the result to the DataGridView
+                    dataGridLogs.DataSource = filteredLogs;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading logs: {ex.Message}");
+            }
+        }
+        private void LoadLogsThisMonth()
+        {
+            // Get the current month
+            int currentMonth = DateTime.Now.Month;
+            LoadLogsByMonth(currentMonth);
+        }
+        private void LoadLogsByDateRange(DateTime startDate, DateTime endDate)
+        {
+            DataTable filteredLogs = new DataTable();
+            filteredLogs.Columns.Add("tag", typeof(string));
+            filteredLogs.Columns.Add("plate_number", typeof(string));
+            filteredLogs.Columns.Add("detection_time", typeof(DateTime));
+            filteredLogs.Columns.Add("logType", typeof(string));
+            filteredLogs.Columns.Add("status", typeof(string));
+            filteredLogs.Columns.Add("registration", typeof(string));
+            filteredLogs.Columns.Add("vehicle_type", typeof(string));
+            filteredLogs.Columns.Add("sticker_type", typeof(string));
+
+            string connStr = "server=localhost;user=root;database=thesis;password=parasathesis;";
+
+            try
+            {
+                using (MySqlConnection conn = new MySqlConnection(connStr))
+                {
+                    conn.Open();
+
+                    // Fetch RFID logs for the selected date range
+                    string rfidQuery = "SELECT tag, detection_time, status FROM rfid_tag WHERE detection_time BETWEEN @startDate AND @endDate";
+                    using (MySqlCommand rfidCmd = new MySqlCommand(rfidQuery, conn))
+                    {
+                        rfidCmd.Parameters.AddWithValue("@startDate", startDate);
+                        rfidCmd.Parameters.AddWithValue("@endDate", endDate);
+                        using (MySqlDataReader rfidReader = rfidCmd.ExecuteReader())
+                        {
+                            while (rfidReader.Read())
+                            {
+                                string tag = rfidReader["tag"].ToString();
+                                DateTime detectionTime = Convert.ToDateTime(rfidReader["detection_time"]);
+                                string status = rfidReader["status"].ToString();
+                                (string registration, string vehicleType, string stickerType) = GetRegistrationDetails(tag, null, connStr);
+
+                                filteredLogs.Rows.Add(tag, DBNull.Value, detectionTime, "RFID", status, registration, vehicleType, stickerType);
+                            }
+                        }
+                    }
+
+                    // Fetch license plate logs for the selected date range
+                    string plateQuery = "SELECT plate_number, detection_time FROM license_plate WHERE detection_time BETWEEN @startDate AND @endDate";
+                    using (MySqlCommand plateCmd = new MySqlCommand(plateQuery, conn))
+                    {
+                        plateCmd.Parameters.AddWithValue("@startDate", startDate);
+                        plateCmd.Parameters.AddWithValue("@endDate", endDate);
+                        using (MySqlDataReader plateReader = plateCmd.ExecuteReader())
+                        {
+                            while (plateReader.Read())
+                            {
+                                string plateNumber = plateReader["plate_number"].ToString();
+                                DateTime detectionTime = Convert.ToDateTime(plateReader["detection_time"]);
+                                (string registration, string vehicleType, string stickerType) = GetRegistrationDetails(null, plateNumber, connStr);
+
+                                filteredLogs.Rows.Add(DBNull.Value, plateNumber, detectionTime, "Plate", DBNull.Value, registration, vehicleType, stickerType);
+                            }
+                        }
+                    }
+
+                    // Bind the result to the DataGridView
+                    dataGridLogs.DataSource = filteredLogs;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading logs: {ex.Message}");
+            }
+        }
+
+        private void dtpCustomRange1_ValueChanged(object sender, EventArgs e)
+        {
+            if (dtpCustomRange1.Value <= dtpCustomRange2.Value)
+            {
+                LoadLogsByDateRange(dtpCustomRange1.Value, dtpCustomRange2.Value);
+            }
+            else
+            {
+                MessageBox.Show("Start date cannot be later than end date.");
+            }
+        }
+
+        private void dtpCustomRange2_ValueChanged(object sender, EventArgs e)
+        {
+            if (dtpCustomRange1.Value <= dtpCustomRange2.Value)
+            {
+                LoadLogsByDateRange(dtpCustomRange1.Value, dtpCustomRange2.Value);
+            }
+            else
+            {
+                MessageBox.Show("Start date cannot be later than end date.");
+            }
+        }
+
+        private void cbhour1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Trigger the filtering when either combo box value changes
+            FilterLogsByTime();
+        }
+
+        private void cbhour2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Trigger the filtering when either combo box value changes
+            FilterLogsByTime();
+        }
+        private void FilterLogsByTime()
+        {
+            // Ensure the selected times are valid
+            int startHour = int.Parse(cbhour1.SelectedItem.ToString());
+            int endHour = int.Parse(cbhour2.SelectedItem.ToString());
+
+            // Ensure that the start time is not later than the end time
+            if (startHour > endHour)
+            {
+                MessageBox.Show("Start hour cannot be later than end hour.");
+                return;
+            }
+
+            // Call the method to load logs based on the selected time range
+            LoadLogsByTimeRange(startHour, endHour);
+        }
+        private void LoadLogsByTimeRange(int startHour, int endHour)
+        {
+            DataTable filteredLogs = new DataTable();
+            filteredLogs.Columns.Add("tag", typeof(string));
+            filteredLogs.Columns.Add("plate_number", typeof(string));
+            filteredLogs.Columns.Add("detection_time", typeof(DateTime));
+            filteredLogs.Columns.Add("logType", typeof(string));
+            filteredLogs.Columns.Add("status", typeof(string)); // Status for RFID
+            filteredLogs.Columns.Add("registration", typeof(string)); // Registration status
+            filteredLogs.Columns.Add("vehicle_type", typeof(string)); // Vehicle type
+            filteredLogs.Columns.Add("sticker_type", typeof(string)); // Sticker type
+
+            string connStr = "server=localhost;user=root;database=thesis;password=parasathesis;";
+
+            try
+            {
+                // RFID logs with time filter
+                using (MySqlConnection conn = new MySqlConnection(connStr))
+                {
+                    conn.Open();
+                    string rfidQuery = "SELECT tag, detection_time, status FROM rfid_tag";
+                    using (MySqlCommand rfidCmd = new MySqlCommand(rfidQuery, conn))
+                    using (MySqlDataReader rfidReader = rfidCmd.ExecuteReader())
+                    {
+                        while (rfidReader.Read())
+                        {
+                            DateTime detectionTime = Convert.ToDateTime(rfidReader["detection_time"]);
+                            int hour = detectionTime.Hour;
+
+                            if (hour >= startHour && hour <= endHour) // Filter by hour
+                            {
+                                string tag = rfidReader["tag"].ToString();
+                                string status = rfidReader["status"].ToString();
+                                (string registration, string vehicleType, string stickerType) = GetRegistrationDetails(tag, null, connStr);
+
+                                filteredLogs.Rows.Add(
+                                    tag,
+                                    DBNull.Value,
+                                    detectionTime,
+                                    "RFID",
+                                    status,
+                                    registration,
+                                    vehicleType,
+                                    stickerType
+                                );
+                            }
+                        }
+                    }
+                }
+
+                // Plate logs with time filter
+                using (MySqlConnection conn = new MySqlConnection(connStr))
+                {
+                    conn.Open();
+                    string plateQuery = "SELECT plate_number, detection_time FROM license_plate";
+                    using (MySqlCommand plateCmd = new MySqlCommand(plateQuery, conn))
+                    using (MySqlDataReader plateReader = plateCmd.ExecuteReader())
+                    {
+                        while (plateReader.Read())
+                        {
+                            DateTime detectionTime = Convert.ToDateTime(plateReader["detection_time"]);
+                            int hour = detectionTime.Hour;
+
+                            if (hour >= startHour && hour <= endHour) // Filter by hour
+                            {
+                                string plateNumber = plateReader["plate_number"].ToString();
+                                (string registration, string vehicleType, string stickerType) = GetRegistrationDetails(null, plateNumber, connStr);
+
+                                filteredLogs.Rows.Add(
+                                    DBNull.Value,
+                                    plateNumber,
+                                    detectionTime,
+                                    "Plate",
+                                    DBNull.Value, // No status for plates
+                                    registration,
+                                    vehicleType,
+                                    stickerType
+                                );
+                            }
+                        }
+                    }
+                }
+
+                // Set the filtered logs to the DataGridView
+                dataGridLogs.DataSource = filteredLogs;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading logs: {ex.Message}");
+            }
+        }
+
+        
     }
+
 }
 
 

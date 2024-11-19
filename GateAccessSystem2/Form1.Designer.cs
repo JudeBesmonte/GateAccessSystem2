@@ -30,11 +30,11 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea5 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend5 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.materialTabControl1 = new MaterialSkin.Controls.MaterialTabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
@@ -49,11 +49,14 @@
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.materialLabel13 = new MaterialSkin.Controls.MaterialLabel();
             this.materialCard2 = new MaterialSkin.Controls.MaterialCard();
-            this.pictureBox5 = new System.Windows.Forms.PictureBox();
-            this.RegPlate = new MaterialSkin.Controls.MaterialComboBox();
-            this.RegRFID = new MaterialSkin.Controls.MaterialComboBox();
+            this.RegDriver2 = new System.Windows.Forms.ComboBox();
+            this.RegRFID2 = new System.Windows.Forms.ComboBox();
+            this.RegPlate2 = new System.Windows.Forms.ComboBox();
+            this.cbColor = new MaterialSkin.Controls.MaterialComboBox();
+            this.cbVehicleType = new MaterialSkin.Controls.MaterialComboBox();
             this.RegisterAll = new MaterialSkin.Controls.MaterialButton();
-            this.RegDriver = new MaterialSkin.Controls.MaterialComboBox();
+            this.cbStickerType = new MaterialSkin.Controls.MaterialComboBox();
+            this.pictureBox5 = new System.Windows.Forms.PictureBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.btnRecord = new MaterialSkin.Controls.MaterialButton();
             this.label16 = new System.Windows.Forms.Label();
@@ -127,8 +130,17 @@
             this.searchButton2 = new MaterialSkin.Controls.MaterialButton();
             this.searchTextBox2 = new System.Windows.Forms.TextBox();
             this.tabPage6 = new System.Windows.Forms.TabPage();
-            this.materialMultiLineTextBox1 = new MaterialSkin.Controls.MaterialMultiLineTextBox();
-            this.materialLabel6 = new MaterialSkin.Controls.MaterialLabel();
+            this.materialCard10 = new MaterialSkin.Controls.MaterialCard();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.cbhour2 = new MaterialSkin.Controls.MaterialComboBox();
+            this.cbFilter1 = new MaterialSkin.Controls.MaterialComboBox();
+            this.cbhour1 = new MaterialSkin.Controls.MaterialComboBox();
+            this.cbMonth = new MaterialSkin.Controls.MaterialComboBox();
+            this.dtpCustomRange2 = new System.Windows.Forms.DateTimePicker();
+            this.dtpCustomRange1 = new System.Windows.Forms.DateTimePicker();
+            this.dataGridLogs = new System.Windows.Forms.DataGridView();
+            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
+            this.tabPage7 = new System.Windows.Forms.TabPage();
             this.timerRfid = new System.Windows.Forms.Timer(this.components);
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.materialTabControl1.SuspendLayout();
@@ -163,6 +175,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.searchResultsGridView2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
             this.tabPage6.SuspendLayout();
+            this.materialCard10.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridLogs)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             this.SuspendLayout();
             // 
@@ -185,6 +200,7 @@
             this.materialTabControl1.Controls.Add(this.tabPage4);
             this.materialTabControl1.Controls.Add(this.tabPage5);
             this.materialTabControl1.Controls.Add(this.tabPage6);
+            this.materialTabControl1.Controls.Add(this.tabPage7);
             this.materialTabControl1.Depth = 0;
             this.materialTabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.materialTabControl1.ImageList = this.imageList1;
@@ -194,7 +210,7 @@
             this.materialTabControl1.Multiline = true;
             this.materialTabControl1.Name = "materialTabControl1";
             this.materialTabControl1.SelectedIndex = 0;
-            this.materialTabControl1.Size = new System.Drawing.Size(1440, 703);
+            this.materialTabControl1.Size = new System.Drawing.Size(1440, 789);
             this.materialTabControl1.TabIndex = 0;
             // 
             // tabPage1
@@ -209,7 +225,7 @@
             this.tabPage1.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPage1.Size = new System.Drawing.Size(1432, 660);
+            this.tabPage1.Size = new System.Drawing.Size(1432, 746);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "RFID Tag";
             // 
@@ -321,7 +337,7 @@
             this.tabPage2.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPage2.Size = new System.Drawing.Size(1432, 660);
+            this.tabPage2.Size = new System.Drawing.Size(1432, 746);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Registration";
             // 
@@ -341,77 +357,123 @@
             // materialCard2
             // 
             this.materialCard2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.materialCard2.Controls.Add(this.pictureBox5);
-            this.materialCard2.Controls.Add(this.RegPlate);
-            this.materialCard2.Controls.Add(this.RegRFID);
+            this.materialCard2.Controls.Add(this.RegDriver2);
+            this.materialCard2.Controls.Add(this.RegRFID2);
+            this.materialCard2.Controls.Add(this.RegPlate2);
+            this.materialCard2.Controls.Add(this.cbColor);
+            this.materialCard2.Controls.Add(this.cbVehicleType);
             this.materialCard2.Controls.Add(this.RegisterAll);
-            this.materialCard2.Controls.Add(this.RegDriver);
+            this.materialCard2.Controls.Add(this.cbStickerType);
+            this.materialCard2.Controls.Add(this.pictureBox5);
             this.materialCard2.Depth = 0;
             this.materialCard2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.materialCard2.Location = new System.Drawing.Point(339, 104);
+            this.materialCard2.Location = new System.Drawing.Point(349, 86);
             this.materialCard2.Margin = new System.Windows.Forms.Padding(14);
             this.materialCard2.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialCard2.Name = "materialCard2";
             this.materialCard2.Padding = new System.Windows.Forms.Padding(14);
-            this.materialCard2.Size = new System.Drawing.Size(649, 493);
+            this.materialCard2.Size = new System.Drawing.Size(649, 517);
             this.materialCard2.TabIndex = 0;
             // 
-            // pictureBox5
+            // RegDriver2
             // 
-            this.pictureBox5.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pictureBox5.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox5.Image")));
-            this.pictureBox5.Location = new System.Drawing.Point(14, 14);
-            this.pictureBox5.Name = "pictureBox5";
-            this.pictureBox5.Size = new System.Drawing.Size(621, 106);
-            this.pictureBox5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox5.TabIndex = 13;
-            this.pictureBox5.TabStop = false;
+            this.RegDriver2.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.RegDriver2.FormattingEnabled = true;
+            this.RegDriver2.Location = new System.Drawing.Point(15, 269);
+            this.RegDriver2.Name = "RegDriver2";
+            this.RegDriver2.Size = new System.Drawing.Size(618, 36);
+            this.RegDriver2.TabIndex = 20;
             // 
-            // RegPlate
+            // RegRFID2
             // 
-            this.RegPlate.AutoResize = false;
-            this.RegPlate.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.RegPlate.Depth = 0;
-            this.RegPlate.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
-            this.RegPlate.DropDownHeight = 174;
-            this.RegPlate.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.RegPlate.DropDownWidth = 121;
-            this.RegPlate.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
-            this.RegPlate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.RegPlate.FormattingEnabled = true;
-            this.RegPlate.Hint = "Plate Number";
-            this.RegPlate.IntegralHeight = false;
-            this.RegPlate.ItemHeight = 43;
-            this.RegPlate.Location = new System.Drawing.Point(14, 166);
-            this.RegPlate.MaxDropDownItems = 4;
-            this.RegPlate.MouseState = MaterialSkin.MouseState.OUT;
-            this.RegPlate.Name = "RegPlate";
-            this.RegPlate.Size = new System.Drawing.Size(615, 49);
-            this.RegPlate.StartIndex = 0;
-            this.RegPlate.TabIndex = 12;
+            this.RegRFID2.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.RegRFID2.FormattingEnabled = true;
+            this.RegRFID2.Location = new System.Drawing.Point(14, 211);
+            this.RegRFID2.Name = "RegRFID2";
+            this.RegRFID2.Size = new System.Drawing.Size(618, 36);
+            this.RegRFID2.TabIndex = 19;
             // 
-            // RegRFID
+            // RegPlate2
             // 
-            this.RegRFID.AutoResize = false;
-            this.RegRFID.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.RegRFID.Depth = 0;
-            this.RegRFID.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
-            this.RegRFID.DropDownHeight = 174;
-            this.RegRFID.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.RegRFID.DropDownWidth = 121;
-            this.RegRFID.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
-            this.RegRFID.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.RegRFID.FormattingEnabled = true;
-            this.RegRFID.Hint = "RFID Tag";
-            this.RegRFID.IntegralHeight = false;
-            this.RegRFID.ItemHeight = 43;
-            this.RegRFID.Location = new System.Drawing.Point(14, 238);
-            this.RegRFID.MaxDropDownItems = 4;
-            this.RegRFID.MouseState = MaterialSkin.MouseState.OUT;
-            this.RegRFID.Name = "RegRFID";
-            this.RegRFID.Size = new System.Drawing.Size(615, 49);
-            this.RegRFID.StartIndex = 0;
-            this.RegRFID.TabIndex = 11;
+            this.RegPlate2.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.RegPlate2.FormattingEnabled = true;
+            this.RegPlate2.Location = new System.Drawing.Point(14, 138);
+            this.RegPlate2.Name = "RegPlate2";
+            this.RegPlate2.Size = new System.Drawing.Size(618, 36);
+            this.RegPlate2.TabIndex = 18;
+            // 
+            // cbColor
+            // 
+            this.cbColor.AutoResize = false;
+            this.cbColor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.cbColor.Depth = 0;
+            this.cbColor.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+            this.cbColor.DropDownHeight = 174;
+            this.cbColor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbColor.DropDownWidth = 121;
+            this.cbColor.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.cbColor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.cbColor.FormattingEnabled = true;
+            this.cbColor.Hint = "Vehicle Color";
+            this.cbColor.IntegralHeight = false;
+            this.cbColor.ItemHeight = 43;
+            this.cbColor.Items.AddRange(new object[] {
+            "White",
+            "Black",
+            "Silver",
+            "Gray",
+            "Blue",
+            "Navy Blue",
+            "Sky Blue",
+            "Red",
+            "Maroon",
+            "Green",
+            "Yellow",
+            "Orange",
+            "Copper Orange",
+            "Bronze",
+            "Brown",
+            "Pink",
+            "Purple"});
+            this.cbColor.Location = new System.Drawing.Point(451, 363);
+            this.cbColor.MaxDropDownItems = 4;
+            this.cbColor.MouseState = MaterialSkin.MouseState.OUT;
+            this.cbColor.Name = "cbColor";
+            this.cbColor.Size = new System.Drawing.Size(176, 49);
+            this.cbColor.StartIndex = 0;
+            this.cbColor.TabIndex = 17;
+            // 
+            // cbVehicleType
+            // 
+            this.cbVehicleType.AutoResize = false;
+            this.cbVehicleType.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.cbVehicleType.Depth = 0;
+            this.cbVehicleType.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+            this.cbVehicleType.DropDownHeight = 174;
+            this.cbVehicleType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbVehicleType.DropDownWidth = 121;
+            this.cbVehicleType.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.cbVehicleType.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.cbVehicleType.FormattingEnabled = true;
+            this.cbVehicleType.Hint = "Vehicle Type";
+            this.cbVehicleType.IntegralHeight = false;
+            this.cbVehicleType.ItemHeight = 43;
+            this.cbVehicleType.Items.AddRange(new object[] {
+            "SUV",
+            "Pickup",
+            "Sedan",
+            "Hatchback",
+            "Motorcycle",
+            "Van",
+            "Bus",
+            "Tricycle"});
+            this.cbVehicleType.Location = new System.Drawing.Point(269, 362);
+            this.cbVehicleType.MaxDropDownItems = 4;
+            this.cbVehicleType.MouseState = MaterialSkin.MouseState.OUT;
+            this.cbVehicleType.Name = "cbVehicleType";
+            this.cbVehicleType.Size = new System.Drawing.Size(176, 49);
+            this.cbVehicleType.StartIndex = 0;
+            this.cbVehicleType.TabIndex = 16;
             // 
             // RegisterAll
             // 
@@ -420,7 +482,7 @@
             this.RegisterAll.Depth = 0;
             this.RegisterAll.HighEmphasis = true;
             this.RegisterAll.Icon = null;
-            this.RegisterAll.Location = new System.Drawing.Point(294, 424);
+            this.RegisterAll.Location = new System.Drawing.Point(280, 462);
             this.RegisterAll.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
             this.RegisterAll.MouseState = MaterialSkin.MouseState.HOVER;
             this.RegisterAll.Name = "RegisterAll";
@@ -433,28 +495,44 @@
             this.RegisterAll.UseVisualStyleBackColor = true;
             this.RegisterAll.Click += new System.EventHandler(this.RegisterAll_Click);
             // 
-            // RegDriver
+            // cbStickerType
             // 
-            this.RegDriver.AutoResize = false;
-            this.RegDriver.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.RegDriver.Depth = 0;
-            this.RegDriver.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
-            this.RegDriver.DropDownHeight = 174;
-            this.RegDriver.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.RegDriver.DropDownWidth = 121;
-            this.RegDriver.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
-            this.RegDriver.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.RegDriver.FormattingEnabled = true;
-            this.RegDriver.Hint = "Driver";
-            this.RegDriver.IntegralHeight = false;
-            this.RegDriver.ItemHeight = 43;
-            this.RegDriver.Location = new System.Drawing.Point(14, 313);
-            this.RegDriver.MaxDropDownItems = 4;
-            this.RegDriver.MouseState = MaterialSkin.MouseState.OUT;
-            this.RegDriver.Name = "RegDriver";
-            this.RegDriver.Size = new System.Drawing.Size(615, 49);
-            this.RegDriver.StartIndex = 0;
-            this.RegDriver.TabIndex = 7;
+            this.cbStickerType.AutoResize = false;
+            this.cbStickerType.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.cbStickerType.Depth = 0;
+            this.cbStickerType.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+            this.cbStickerType.DropDownHeight = 174;
+            this.cbStickerType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbStickerType.DropDownWidth = 121;
+            this.cbStickerType.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.cbStickerType.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.cbStickerType.FormattingEnabled = true;
+            this.cbStickerType.Hint = "Type of Sticker";
+            this.cbStickerType.IntegralHeight = false;
+            this.cbStickerType.ItemHeight = 43;
+            this.cbStickerType.Items.AddRange(new object[] {
+            "Blue (Drop by)",
+            "Red (Admin)",
+            "Yellow (Regular Employee)",
+            "Green (Student)"});
+            this.cbStickerType.Location = new System.Drawing.Point(15, 363);
+            this.cbStickerType.MaxDropDownItems = 4;
+            this.cbStickerType.MouseState = MaterialSkin.MouseState.OUT;
+            this.cbStickerType.Name = "cbStickerType";
+            this.cbStickerType.Size = new System.Drawing.Size(248, 49);
+            this.cbStickerType.StartIndex = 0;
+            this.cbStickerType.TabIndex = 14;
+            // 
+            // pictureBox5
+            // 
+            this.pictureBox5.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pictureBox5.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox5.Image")));
+            this.pictureBox5.Location = new System.Drawing.Point(14, 14);
+            this.pictureBox5.Name = "pictureBox5";
+            this.pictureBox5.Size = new System.Drawing.Size(621, 106);
+            this.pictureBox5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox5.TabIndex = 13;
+            this.pictureBox5.TabStop = false;
             // 
             // tabPage3
             // 
@@ -503,7 +581,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 39);
             this.tabPage3.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(1432, 660);
+            this.tabPage3.Size = new System.Drawing.Size(1432, 746);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "License";
             // 
@@ -1069,7 +1147,7 @@
             this.tabPage4.Location = new System.Drawing.Point(4, 39);
             this.tabPage4.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Size = new System.Drawing.Size(1432, 660);
+            this.tabPage4.Size = new System.Drawing.Size(1432, 746);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Plate";
             // 
@@ -1277,7 +1355,7 @@
             this.tabPage5.Location = new System.Drawing.Point(4, 39);
             this.tabPage5.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Size = new System.Drawing.Size(1432, 660);
+            this.tabPage5.Size = new System.Drawing.Size(1432, 746);
             this.tabPage5.TabIndex = 4;
             this.tabPage5.Text = "Reports";
             // 
@@ -1290,7 +1368,7 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(1432, 660);
+            this.panel2.Size = new System.Drawing.Size(1432, 746);
             this.panel2.TabIndex = 22;
             // 
             // materialCard7
@@ -1379,16 +1457,16 @@
             // 
             // chart1
             // 
-            chartArea1.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea1);
-            legend1.Name = "Legend1";
-            this.chart1.Legends.Add(legend1);
+            chartArea5.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea5);
+            legend5.Name = "Legend1";
+            this.chart1.Legends.Add(legend5);
             this.chart1.Location = new System.Drawing.Point(0, 66);
             this.chart1.Name = "chart1";
-            series1.ChartArea = "ChartArea1";
-            series1.Legend = "Legend1";
-            series1.Name = "Series1";
-            this.chart1.Series.Add(series1);
+            series5.ChartArea = "ChartArea1";
+            series5.Legend = "Legend1";
+            series5.Name = "Series1";
+            this.chart1.Series.Add(series5);
             this.chart1.Size = new System.Drawing.Size(892, 300);
             this.chart1.TabIndex = 21;
             this.chart1.Text = "chart1";
@@ -1434,21 +1512,21 @@
             // 
             // searchResultsGridView2
             // 
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle1.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(135)))), ((int)(((byte)(163)))), ((int)(((byte)(187)))));
-            this.searchResultsGridView2.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle9.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle9.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
+            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(135)))), ((int)(((byte)(163)))), ((int)(((byte)(187)))));
+            this.searchResultsGridView2.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle9;
             this.searchResultsGridView2.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.searchResultsGridView2.BackgroundColor = System.Drawing.Color.White;
             this.searchResultsGridView2.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(123)))), ((int)(((byte)(153)))));
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(238)))), ((int)(((byte)(243)))));
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(123)))), ((int)(((byte)(153)))));
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(238)))), ((int)(((byte)(243)))));
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.searchResultsGridView2.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle10.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(123)))), ((int)(((byte)(153)))));
+            dataGridViewCellStyle10.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(238)))), ((int)(((byte)(243)))));
+            dataGridViewCellStyle10.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(123)))), ((int)(((byte)(153)))));
+            dataGridViewCellStyle10.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(238)))), ((int)(((byte)(243)))));
+            dataGridViewCellStyle10.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.searchResultsGridView2.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle10;
             this.searchResultsGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.searchResultsGridView2.Location = new System.Drawing.Point(299, 179);
             this.searchResultsGridView2.Name = "searchResultsGridView2";
@@ -1500,43 +1578,254 @@
             // tabPage6
             // 
             this.tabPage6.BackColor = System.Drawing.Color.White;
-            this.tabPage6.Controls.Add(this.materialMultiLineTextBox1);
-            this.tabPage6.Controls.Add(this.materialLabel6);
+            this.tabPage6.Controls.Add(this.materialCard10);
             this.tabPage6.ImageKey = "about.png";
             this.tabPage6.Location = new System.Drawing.Point(4, 39);
             this.tabPage6.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage6.Name = "tabPage6";
-            this.tabPage6.Size = new System.Drawing.Size(1432, 660);
+            this.tabPage6.Size = new System.Drawing.Size(1432, 746);
             this.tabPage6.TabIndex = 5;
-            this.tabPage6.Text = "About";
+            this.tabPage6.Text = "Logs";
             // 
-            // materialMultiLineTextBox1
+            // materialCard10
             // 
-            this.materialMultiLineTextBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.materialMultiLineTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.materialMultiLineTextBox1.Depth = 0;
-            this.materialMultiLineTextBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            this.materialMultiLineTextBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.materialMultiLineTextBox1.Location = new System.Drawing.Point(424, 129);
-            this.materialMultiLineTextBox1.MouseState = MaterialSkin.MouseState.HOVER;
-            this.materialMultiLineTextBox1.Name = "materialMultiLineTextBox1";
-            this.materialMultiLineTextBox1.Size = new System.Drawing.Size(599, 186);
-            this.materialMultiLineTextBox1.TabIndex = 2;
-            this.materialMultiLineTextBox1.Text = resources.GetString("materialMultiLineTextBox1.Text");
+            this.materialCard10.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.materialCard10.Controls.Add(this.groupBox1);
+            this.materialCard10.Controls.Add(this.dataGridLogs);
+            this.materialCard10.Controls.Add(this.dateTimePicker1);
+            this.materialCard10.Depth = 0;
+            this.materialCard10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.materialCard10.Location = new System.Drawing.Point(32, 29);
+            this.materialCard10.Margin = new System.Windows.Forms.Padding(14);
+            this.materialCard10.MouseState = MaterialSkin.MouseState.HOVER;
+            this.materialCard10.Name = "materialCard10";
+            this.materialCard10.Padding = new System.Windows.Forms.Padding(14);
+            this.materialCard10.Size = new System.Drawing.Size(1312, 707);
+            this.materialCard10.TabIndex = 2;
             // 
-            // materialLabel6
+            // groupBox1
             // 
-            this.materialLabel6.AutoSize = true;
-            this.materialLabel6.Depth = 0;
-            this.materialLabel6.Font = new System.Drawing.Font("Roboto", 48F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
-            this.materialLabel6.FontType = MaterialSkin.MaterialSkinManager.fontType.H3;
-            this.materialLabel6.Location = new System.Drawing.Point(642, 36);
-            this.materialLabel6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.materialLabel6.MouseState = MaterialSkin.MouseState.HOVER;
-            this.materialLabel6.Name = "materialLabel6";
-            this.materialLabel6.Size = new System.Drawing.Size(128, 58);
-            this.materialLabel6.TabIndex = 1;
-            this.materialLabel6.Text = "About";
+            this.groupBox1.Controls.Add(this.cbhour2);
+            this.groupBox1.Controls.Add(this.cbFilter1);
+            this.groupBox1.Controls.Add(this.cbhour1);
+            this.groupBox1.Controls.Add(this.cbMonth);
+            this.groupBox1.Controls.Add(this.dtpCustomRange2);
+            this.groupBox1.Controls.Add(this.dtpCustomRange1);
+            this.groupBox1.Location = new System.Drawing.Point(393, 17);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(791, 136);
+            this.groupBox1.TabIndex = 7;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Filter";
+            // 
+            // cbhour2
+            // 
+            this.cbhour2.AutoResize = false;
+            this.cbhour2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.cbhour2.Depth = 0;
+            this.cbhour2.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+            this.cbhour2.DropDownHeight = 174;
+            this.cbhour2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbhour2.DropDownWidth = 121;
+            this.cbhour2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.cbhour2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.cbhour2.FormattingEnabled = true;
+            this.cbhour2.IntegralHeight = false;
+            this.cbhour2.ItemHeight = 43;
+            this.cbhour2.Items.AddRange(new object[] {
+            "00",
+            "01",
+            "02",
+            "03",
+            "04",
+            "05",
+            "06",
+            "07",
+            "08",
+            "09",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23"});
+            this.cbhour2.Location = new System.Drawing.Point(630, 38);
+            this.cbhour2.MaxDropDownItems = 4;
+            this.cbhour2.MouseState = MaterialSkin.MouseState.OUT;
+            this.cbhour2.Name = "cbhour2";
+            this.cbhour2.Size = new System.Drawing.Size(92, 49);
+            this.cbhour2.StartIndex = 0;
+            this.cbhour2.TabIndex = 7;
+            this.cbhour2.SelectedIndexChanged += new System.EventHandler(this.cbhour2_SelectedIndexChanged);
+            // 
+            // cbFilter1
+            // 
+            this.cbFilter1.AutoResize = false;
+            this.cbFilter1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.cbFilter1.Depth = 0;
+            this.cbFilter1.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+            this.cbFilter1.DropDownHeight = 174;
+            this.cbFilter1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbFilter1.DropDownWidth = 121;
+            this.cbFilter1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbFilter1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.cbFilter1.FormattingEnabled = true;
+            this.cbFilter1.IntegralHeight = false;
+            this.cbFilter1.ItemHeight = 43;
+            this.cbFilter1.Items.AddRange(new object[] {
+            "All Log",
+            "Last 24 Hours",
+            "This Week",
+            "This Month",
+            "Custom range"});
+            this.cbFilter1.Location = new System.Drawing.Point(47, 36);
+            this.cbFilter1.MaxDropDownItems = 4;
+            this.cbFilter1.MouseState = MaterialSkin.MouseState.OUT;
+            this.cbFilter1.Name = "cbFilter1";
+            this.cbFilter1.Size = new System.Drawing.Size(222, 49);
+            this.cbFilter1.StartIndex = 0;
+            this.cbFilter1.TabIndex = 2;
+            this.cbFilter1.SelectedIndexChanged += new System.EventHandler(this.cbFilter1_SelectedIndexChanged);
+            // 
+            // cbhour1
+            // 
+            this.cbhour1.AutoResize = false;
+            this.cbhour1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.cbhour1.Depth = 0;
+            this.cbhour1.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+            this.cbhour1.DropDownHeight = 174;
+            this.cbhour1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbhour1.DropDownWidth = 121;
+            this.cbhour1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.cbhour1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.cbhour1.FormattingEnabled = true;
+            this.cbhour1.IntegralHeight = false;
+            this.cbhour1.ItemHeight = 43;
+            this.cbhour1.Items.AddRange(new object[] {
+            "00",
+            "01",
+            "02",
+            "03",
+            "04",
+            "05",
+            "06",
+            "07",
+            "08",
+            "09",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23"});
+            this.cbhour1.Location = new System.Drawing.Point(532, 37);
+            this.cbhour1.MaxDropDownItems = 4;
+            this.cbhour1.MouseState = MaterialSkin.MouseState.OUT;
+            this.cbhour1.Name = "cbhour1";
+            this.cbhour1.Size = new System.Drawing.Size(92, 49);
+            this.cbhour1.StartIndex = 0;
+            this.cbhour1.TabIndex = 6;
+            this.cbhour1.SelectedIndexChanged += new System.EventHandler(this.cbhour1_SelectedIndexChanged);
+            // 
+            // cbMonth
+            // 
+            this.cbMonth.AutoResize = false;
+            this.cbMonth.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.cbMonth.Depth = 0;
+            this.cbMonth.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+            this.cbMonth.DropDownHeight = 174;
+            this.cbMonth.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbMonth.DropDownWidth = 121;
+            this.cbMonth.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbMonth.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.cbMonth.FormattingEnabled = true;
+            this.cbMonth.IntegralHeight = false;
+            this.cbMonth.ItemHeight = 43;
+            this.cbMonth.Items.AddRange(new object[] {
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June ",
+            "July ",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December"});
+            this.cbMonth.Location = new System.Drawing.Point(300, 38);
+            this.cbMonth.MaxDropDownItems = 4;
+            this.cbMonth.MouseState = MaterialSkin.MouseState.OUT;
+            this.cbMonth.Name = "cbMonth";
+            this.cbMonth.Size = new System.Drawing.Size(146, 49);
+            this.cbMonth.StartIndex = 0;
+            this.cbMonth.TabIndex = 3;
+            this.cbMonth.SelectedIndexChanged += new System.EventHandler(this.cbMonth_SelectedIndexChanged);
+            // 
+            // dtpCustomRange2
+            // 
+            this.dtpCustomRange2.Location = new System.Drawing.Point(161, 96);
+            this.dtpCustomRange2.Name = "dtpCustomRange2";
+            this.dtpCustomRange2.Size = new System.Drawing.Size(108, 22);
+            this.dtpCustomRange2.TabIndex = 5;
+            this.dtpCustomRange2.Visible = false;
+            this.dtpCustomRange2.ValueChanged += new System.EventHandler(this.dtpCustomRange2_ValueChanged);
+            // 
+            // dtpCustomRange1
+            // 
+            this.dtpCustomRange1.Location = new System.Drawing.Point(47, 96);
+            this.dtpCustomRange1.Name = "dtpCustomRange1";
+            this.dtpCustomRange1.Size = new System.Drawing.Size(108, 22);
+            this.dtpCustomRange1.TabIndex = 4;
+            this.dtpCustomRange1.Visible = false;
+            this.dtpCustomRange1.ValueChanged += new System.EventHandler(this.dtpCustomRange1_ValueChanged);
+            // 
+            // dataGridLogs
+            // 
+            this.dataGridLogs.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
+            this.dataGridLogs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridLogs.Location = new System.Drawing.Point(62, 159);
+            this.dataGridLogs.Name = "dataGridLogs";
+            this.dataGridLogs.RowHeadersWidth = 51;
+            this.dataGridLogs.RowTemplate.Height = 24;
+            this.dataGridLogs.Size = new System.Drawing.Size(1122, 534);
+            this.dataGridLogs.TabIndex = 1;
+            // 
+            // dateTimePicker1
+            // 
+            this.dateTimePicker1.CalendarFont = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dateTimePicker1.Location = new System.Drawing.Point(62, 52);
+            this.dateTimePicker1.Name = "dateTimePicker1";
+            this.dateTimePicker1.Size = new System.Drawing.Size(319, 22);
+            this.dateTimePicker1.TabIndex = 0;
+            this.dateTimePicker1.ValueChanged += new System.EventHandler(this.dateTimePicker1_ValueChanged_1);
+            // 
+            // tabPage7
+            // 
+            this.tabPage7.Location = new System.Drawing.Point(4, 39);
+            this.tabPage7.Name = "tabPage7";
+            this.tabPage7.Size = new System.Drawing.Size(1432, 746);
+            this.tabPage7.TabIndex = 6;
+            this.tabPage7.Text = "Unregistered";
+            this.tabPage7.UseVisualStyleBackColor = true;
+            this.tabPage7.Click += new System.EventHandler(this.tabPage7_Click);
             // 
             // timerRfid
             // 
@@ -1556,7 +1845,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1448, 786);
+            this.ClientSize = new System.Drawing.Size(1448, 872);
             this.Controls.Add(this.pictureBox3);
             this.Controls.Add(this.materialTabControl1);
             this.DrawerIsOpen = true;
@@ -1566,6 +1855,7 @@
             this.Name = "Form1";
             this.Padding = new System.Windows.Forms.Padding(4, 79, 4, 4);
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.materialTabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
@@ -1609,7 +1899,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.searchResultsGridView2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).EndInit();
             this.tabPage6.ResumeLayout(false);
-            this.tabPage6.PerformLayout();
+            this.materialCard10.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridLogs)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             this.ResumeLayout(false);
 
@@ -1624,7 +1916,6 @@
         private System.Windows.Forms.TabPage tabPage4;
         private System.Windows.Forms.TabPage tabPage5;
         private System.Windows.Forms.TabPage tabPage6;
-        private MaterialSkin.Controls.MaterialLabel materialLabel6;
         private MaterialSkin.Controls.MaterialCard materialCard1;
         private MaterialSkin.Controls.MaterialCard materialCard4;
         private System.Windows.Forms.PictureBox P1_pictureBox1;
@@ -1640,7 +1931,6 @@
         private MaterialSkin.Controls.MaterialCard materialCard5;
         private MaterialSkin.Controls.MaterialLabel materialLabel4;
         private MaterialSkin.Controls.MaterialLabel materialLabel3;
-        private MaterialSkin.Controls.MaterialMultiLineTextBox materialMultiLineTextBox1;
         private MaterialSkin.Controls.MaterialLabel materialLabel5;
         private MaterialSkin.Controls.MaterialButton btnCapture;
         private MaterialSkin.Controls.MaterialCard materialCard9;
@@ -1687,10 +1977,7 @@
         private MaterialSkin.Controls.MaterialLabel lblenterexit;
         private System.Windows.Forms.PictureBox pictureBox4;
         private System.Windows.Forms.Panel panel1;
-        private MaterialSkin.Controls.MaterialComboBox RegDriver;
         private MaterialSkin.Controls.MaterialButton RegisterAll;
-        private MaterialSkin.Controls.MaterialComboBox RegRFID;
-        private MaterialSkin.Controls.MaterialComboBox RegPlate;
         private System.Windows.Forms.PictureBox pictureBox5;
         private System.Windows.Forms.TextBox searchTextBox2;
         private System.Windows.Forms.DataGridView searchResultsGridView2;
@@ -1712,6 +1999,23 @@
         private System.Windows.Forms.PictureBox pbCropped;
         private System.Windows.Forms.ListBox lbUnauthorized2;
         private System.Windows.Forms.PictureBox pictureBox3;
+        private MaterialSkin.Controls.MaterialComboBox cbColor;
+        private MaterialSkin.Controls.MaterialComboBox cbVehicleType;
+        private MaterialSkin.Controls.MaterialComboBox cbStickerType;
+        private System.Windows.Forms.TabPage tabPage7;
+        private System.Windows.Forms.ComboBox RegRFID2;
+        private System.Windows.Forms.ComboBox RegPlate2;
+        private System.Windows.Forms.ComboBox RegDriver2;
+        private System.Windows.Forms.DataGridView dataGridLogs;
+        private System.Windows.Forms.DateTimePicker dateTimePicker1;
+        private MaterialSkin.Controls.MaterialCard materialCard10;
+        private MaterialSkin.Controls.MaterialComboBox cbFilter1;
+        private MaterialSkin.Controls.MaterialComboBox cbMonth;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private MaterialSkin.Controls.MaterialComboBox cbhour2;
+        private MaterialSkin.Controls.MaterialComboBox cbhour1;
+        private System.Windows.Forms.DateTimePicker dtpCustomRange2;
+        private System.Windows.Forms.DateTimePicker dtpCustomRange1;
     }
 }
 
