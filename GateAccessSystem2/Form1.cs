@@ -277,7 +277,7 @@ namespace GateAccessSystem2
         {
             try
             {
-                string tessDataPath = @"C:\Users\judde\source\repos\GateAccessSystem2\GateAccessSystem2\tessdata";
+                string tessDataPath = @"C:\Users\Kent\source\repos\BAGO NANAMAN\GateAccessSystem2\tessdata";
                 ocrEngine = new TesseractEngine(tessDataPath, "eng", EngineMode.Default);
             }
             catch (Exception ex)
@@ -288,14 +288,14 @@ namespace GateAccessSystem2
 
         private void InitializeTesseract()
         {
-            string tessdataPath = @"C:\Users\judde\source\repos\GateAccessSystem2\GateAccessSystem2\Resource";
+            string tessdataPath = @"C:\Users\Kent\source\repos\BAGO NANAMAN\GateAccessSystem2\Resource";
             _tesseractEngine = new TesseractEngine(tessdataPath, "eng", EngineMode.Default);
             _tesseractEngine.SetVariable("tessedit_char_whitelist", "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
         }
         // Haar Cascade -------
         private void LoadCascade()
         {
-            string cascadePath = @"C:\Users\judde\source\repos\GateAccessSystem2\GateAccessSystem2\Resource\cascade.xml";
+            string cascadePath = @"C:\Users\Kent\source\repos\BAGO NANAMAN\GateAccessSystem2\Resource\cascade.xml";
             if (System.IO.File.Exists(cascadePath))
             {
                 _licensePlateCascade = new CascadeClassifier(cascadePath);
